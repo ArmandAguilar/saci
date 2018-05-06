@@ -16,29 +16,28 @@ class Cat_UnidadAdmin {
     
   public function frm_add_ua()
     {
-            $objCboEmpleado = new poolConnection();
+           $CboZona = "";
+           $objCboEmpleado = new poolConnection();
            $con=$objCboEmpleado->Conexion();
-           $objCboEmpleado->BaseDatos();
+           $objCboEmpleado->BaseDatos($con);
            $sql="SELECT Id_NumEmpleado,vNombre FROM sa_empleado order by vNombre";
-           $RSet=$objCboEmpleado->Query($sql);
-           while($fila=  mysql_fetch_array($RSet))
+           $RSet=$objCboEmpleado->Query($con,$sql);
+           while($fila=  mysqli_fetch_array($RSet))
            {
                $CboEmpleado .= "<option value='$fila[Id_NumEmpleado]'>$fila[vNombre]</option>";
            }
-           mysql_free_result($RSet); 
-            $objCboEmpleado->Cerrar($con);
+            $objCboEmpleado->Cerrar($con,$RSet);
             
            $objCboZona = new poolConnection();
            $con=$objCboZona->Conexion();
-           $objCboZona->BaseDatos();
+           $objCboZona->BaseDatos($con);
            $sql="SELECT Id_Zonas,vDescripcionZn FROM sa_zona order by vDescripcionZn";
-           $RSet=$objCboZona->Query($sql);
-           while($fila=  mysql_fetch_array($RSet))
+           $RSet=$objCboZona->Query($con,$sql);
+           while($fila=  mysqli_fetch_array($RSet))
            {
                $CboZona .= "<option value='$fila[Id_Zonas]'>$fila[vDescripcionZn]</option>";
            }
-           mysql_free_result($RSet);
-           $objCboZona->Cerrar($con);
+           $objCboZona->Cerrar($con,$RSet);
         $frm="<form  id='frmAddUA' name='frmAddUA' mathod='post'><center>
         <br><br>
             <div id=\"tabs\" class=\"tabs-bottom\" style=\"width: 800px;\">
@@ -207,9 +206,9 @@ class Cat_UnidadAdmin {
               )";
         $ObjAdd = new poolConnection();
         $con=$ObjAdd->Conexion();
-        $ObjAdd->BaseDatos();
-        $ObjAdd->Query($sql);
-        $ObjAdd->Cerrar($con);
+        $ObjAdd->BaseDatos($con);
+        $R=$ObjAdd->Query($con,$sql);
+        $ObjAdd->Cerrar($con,$R);
         return $sql;
     } 
   public function fmr_buscar_ua()
@@ -248,10 +247,10 @@ class Cat_UnidadAdmin {
                 
              $objData = new poolConnection();
              $con=$objData->Conexion();
-             $objData->BaseDatos();
+             $objData->BaseDatos($con);
              $sqlE="SELECT * FROM sa_unidadadmva where Id='$id'";
-             $Rset=$objData->Query($sqlE);
-             while($fila=  mysql_fetch_array($Rset))
+             $Rset=$objData->Query($con,$sqlE);
+             while($fila=  mysqli_fetch_array($Rset))
                   {
                         $txtCodigo=$fila[Id_Unidad];
                         $txtUA=$fila[vDescripcion];
@@ -270,15 +269,15 @@ class Cat_UnidadAdmin {
                         $txtUEjecutora=$fila[uEjec];
                         $txtEmpleados=$fila[eNumEmpleados];
                   }
-             mysql_free_result($Rset);
-             $objData->Cerrar($con);
-      
+             $objData->Cerrar($con,$Rset);
+
+              $CboEmpleadoE = "";
               $objCboEmpleado = new poolConnection();
               $con=$objCboEmpleado->Conexion();
-              $objCboEmpleado->BaseDatos();
+              $objCboEmpleado->BaseDatos($con);
               $sql="SELECT Id_NumEmpleado,vNombre FROM sa_empleado order by vNombre";
-              $RSet=$objCboEmpleado->Query($sql);
-              while($fila=mysql_fetch_array($RSet))
+              $RSet=$objCboEmpleado->Query($con,$sql);
+              while($fila=mysqli_fetch_array($RSet))
               {
                   if($cboEmpleado==$fila[Id_NumEmpleado])
                     {
@@ -290,15 +289,14 @@ class Cat_UnidadAdmin {
                    }
                   
               }
-              mysql_free_result($RSet); 
-               $objCboEmpleado->Cerrar($con);
+               $objCboEmpleado->Cerrar($con,$RSet);
 
               $objCboZona = new poolConnection();
               $con=$objCboZona->Conexion();
               $objCboZona->BaseDatos();
               $sql="SELECT Id_Zonas,vDescripcionZn FROM sa_zona order by vDescripcionZn";
-              $RSet=$objCboZona->Query($sql);
-              while($fila=  mysql_fetch_array($RSet))
+              $RSet=$objCboZona->Query($con,$sql);
+              while($fila=  mysqli_fetch_array($RSet))
               {
                   if($cboZona==$fila[Id_Zonas])
                   {
@@ -310,8 +308,7 @@ class Cat_UnidadAdmin {
                  }
                   
               }
-              mysql_free_result($RSet);
-              $objCboZona->Cerrar($con);
+              $objCboZona->Cerrar($con,$RSet);
             if($chkAreaActiva=="YES")
             {
                 $ckSelected="checked";
@@ -493,9 +490,9 @@ class Cat_UnidadAdmin {
         
         $objUpdate = new poolConnection();
         $con=$objUpdate->Conexion();
-        $objUpdate->BaseDatos();
-        $objUpdate->Query($sql);
-        $objUpdate->Cerrar($con);
+        $objUpdate->BaseDatos($con);
+        $R=$objUpdate->Query($con,$sql);
+        $objUpdate->Cerrar($con,$R);
         return $sql;
     }
      function frm_buscador_borrar()
@@ -537,10 +534,10 @@ public function buscar_borrar_ua($texto)
         
                           $objBuscar = new poolConnection();
                           $con=$objBuscar->Conexion();
-                          $objBuscar->BaseDatos();
+                          $objBuscar->BaseDatos($con);
                           $sql="SELECT Id,Id_Unidad,Id_ResponsableArea,Id_Zonas,vDescripcion From sa_unidadadmva where vDescripcion like  '%$texto%'";
-                          $RSet=$objBuscar->Query($sql);
-                          while($fila=  mysql_fetch_array($RSet))
+                          $RSet=$objBuscar->Query($con,$sql);
+                          while($fila=  mysqli_fetch_array($RSet))
                           {
                               $i++;
                               $FliexGrid.="
@@ -555,8 +552,7 @@ public function buscar_borrar_ua($texto)
                                                 </tr>
                                             ";
                           }
-                          mysql_free_result($RSet);
-                          $objBuscar->Cerrar($con);
+                          $objBuscar->Cerrar($con,$RSet);
                           $FliexGrid.="       </tbody>
                                                                         </table><script>$('.flexme1').flexigrid({
                                             title: '',
@@ -589,10 +585,10 @@ public function borrar_ua($id)
  {
      $objBorrar = new poolConnection();
      $con=$objBorrar->Conexion();
-     $objBorrar->BaseDatos();
+     $objBorrar->BaseDatos($con);
      $sql="Delete from sa_unidadadmva Where Id='$id'";
-     $objBorrar->Query($sql);
-     $objBorrar->Cerrar($con);
+     $R=$objBorrar->Query($con,$sql);
+     $objBorrar->Cerrar($con,$R);
      
  }
   public function frm_consultar_ua()
@@ -629,15 +625,13 @@ public function borrar_ua($id)
  {
      $FliexGrid = "<br><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
                                             <tbody>";
-                  
-                                    
-        
+
                           $objBuscar = new poolConnection();
                           $con=$objBuscar->Conexion();
-                          $objBuscar->BaseDatos();
+                          $objBuscar->BaseDatos($con);
                           $sql="SELECT Id,Id_Unidad,Id_ResponsableArea,Id_Zonas,vDescripcion From sa_unidadadmva where vDescripcion like  '%$texto%'";
-                          $RSet=$objBuscar->Query($sql);
-                          while($fila=  mysql_fetch_array($RSet))
+                          $RSet=$objBuscar->Query($con,$sql);
+                          while($fila=  mysqli_fetch_array($RSet))
                           {
                               $i++;
                               $FliexGrid.="
@@ -649,8 +643,7 @@ public function borrar_ua($id)
                                                 </tr>
                                             ";
                           }
-                          mysql_free_result($RSet);
-                          $objBuscar->Cerrar($con);
+                          $objBuscar->Cerrar($con,$RSet);
                           $FliexGrid.="       </tbody>
                                                                         </table><script>$('.flexme1').flexigrid({
                                             title: '',

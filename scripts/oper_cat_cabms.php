@@ -44,10 +44,10 @@
         
                           $objBuscar = new poolConnection();
                           $con=$objBuscar->Conexion();
-                          $objBuscar->BaseDatos();
+                          $objBuscar->BaseDatos($con);
                           $sql="Select Id,Id_CABMS,Id_UMedida,vDescripcionCABMS,cTipoAlmacen,ePartidaPresupuestal from sa_cabms  where Id_CABMS like '%$_POST[txtCabms]%'";
-                          $RSet=$objBuscar->Query($sql);
-                          while($fila=  mysql_fetch_array($RSet))
+                          $RSet=$objBuscar->Query($con,$sql);
+                          while($fila=  mysqli_fetch_array($RSet))
                           {
                               $i++;
                               $FliexGrid.="
@@ -61,8 +61,7 @@
                                                 </tr>
                                             ";
                           }
-                          mysql_free_result($RSet);
-                          $objBuscar->Cerrar($con);
+                          $objBuscar->Cerrar($con,$RSet);
                           $FliexGrid.="       </tbody>
                                                                         </table><script>$('.flexme1').flexigrid({
                                             title: '',
@@ -137,15 +136,14 @@
                         case '13':
                                         $objunidad = new poolConnection();
                                         $con=$objunidad->Conexion();
-                                        $objunidad->BaseDatos();
+                                        $objunidad->BaseDatos($con);
                                         $sql="SELECT * FROM sa_umedida order by Id_UMedida";
-                                        $RSet=$objunidad->Query($sql);
-                                        while($fila=  mysql_fetch_array($RSet))
+                                        $RSet=$objunidad->Query($con,$sql);
+                                        while($fila=  mysqli_fetch_array($RSet))
                                         {
                                             $cboUnidad .= "<option value='$fila[Id_UMedida]'>$fila[vDescripcion]</option>";
                                         }
-                                        mysql_free_result($RSet);
-                                        $objunidad->Cerrar($con);
+                                        $objunidad->Cerrar($con,$RSet);
                                     echo $cboUnidad;
                             break;
           }

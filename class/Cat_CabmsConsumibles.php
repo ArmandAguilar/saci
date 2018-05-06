@@ -13,31 +13,29 @@
 class Cat_CabmsConsumibles {
     public function frm_add_cabmsconsumibles()
     {
-        
-        
+            $cboCabms = "";
            $objCboCabms = new poolConnection();
            $con=$objCboCabms->Conexion();
-           $objCboCabms->BaseDatos();
+           $objCboCabms->BaseDatos($con);
            $sql="SELECT Id_CABMS,vDescripcionCABMS FROM sa_cabms order by vDescripcionCABMS";
            $RSet=$objCboCabms->Query($sql);
-           while($fila=  mysql_fetch_array($RSet))
+           while($fila=  mysqli_fetch_array($RSet))
            {
                $cboCabms .= "<option value='$fila[Id_CABMS]'>$fila[vDescripcionCABMS]</option>";
            }
-           mysql_free_result($RSet);
-           $objCboCabms->Cerrar($con);
-           
+           $objCboCabms->Cerrar($con,$RSet);
+
+           $cboUMedida = "";
            $objCboUMedida = new poolConnection();
            $con=$objCboUMedida->Conexion();
-           $objCboUMedida->BaseDatos();
+           $objCboUMedida->BaseDatos($con);
            $sql="SELECT Id_UMedida,vDescripcion FROM sa_umedida order by vDescripcion";
-           $RSet=$objCboUMedida->Query($sql);
-           while($fila=  mysql_fetch_array($RSet))
+           $RSet=$objCboUMedida->Query($con,$sql);
+           while($fila=  mysqli_fetch_array($RSet))
            {
                $cboUMedida .= "<option value='$fila[Id_UMedida]'>$fila[vDescripcion]</option>";
            }
-           mysql_free_result($RSet);
-           $objCboUMedida->Cerrar($con);
+           $objCboUMedida->Cerrar($con,$RSet);
         
         $frm="<form  id='frmAddCabmsC' name='frmAddCabmsC'' mathod='post'><br><fieldset>
                 <legend class=\"txt_titulos_bold\">Nuevo</legend>
@@ -109,10 +107,10 @@ class Cat_CabmsConsumibles {
         
         $ObjAdd = new poolConnection();
         $con=$ObjAdd->Conexion();
-        $ObjAdd->BaseDatos();
+        $ObjAdd->BaseDatos($con);
         $sql="insert into sa_cabmsconsumible values('0','$Id_CveInternaAC','$Id_CveARTCABMS','$vDescripcion','$Id_CABMS','$Id_UMedida','$ePartidaPresupuestal')";
-        $ObjAdd->Query($sql);
-        $ObjAdd->Cerrar($con);
+        $R=$ObjAdd->Query($con,$sql);
+        $ObjAdd->Cerrar($con,$R);
     }  
  public function fmr_buscar_cabmsconsumibles()
     {
@@ -146,13 +144,12 @@ class Cat_CabmsConsumibles {
     }  
     public function frm_editar_cabmsconsumibles($id)
     {
-        
              $objData = new poolConnection();
              $con=$objData->Conexion();
-             $objData->BaseDatos();
+             $objData->BaseDatos($con);
              $sqlData="Select Id_CveInternaAC,Id_CveARTCABMS,vDescripcion,Id_CABMS,Id_UMedida,ePartidaPresupuestal from sa_cabmsconsumible where Id='$id'";
-             $Rset=$objData->Query($sqlData);
-             while($fila=  mysql_fetch_array($Rset))
+             $Rset=$objData->Query($con,$sqlData);
+             while($fila=  mysqli_fetch_array($Rset))
              {
                  $Id_CveInternaAC=$fila[Id_CveInternaAC];
                  $Id_CveARTCABMS=$fila[Id_CveARTCABMS];
@@ -161,17 +158,16 @@ class Cat_CabmsConsumibles {
                  $Id_UMedida=$fila[Id_UMedida];
                  $ePartidaPresupuestal=$fila[ePartidaPresupuestal];
              }
-             mysql_free_result($Rset);
              $objData->Cerrar($con);
         
         
         
            $objCboCabms = new poolConnection();
            $con=$objCboCabms->Conexion();
-           $objCboCabms->BaseDatos();
+           $objCboCabms->BaseDatos($con);
            $sql="SELECT Id_CABMS,vDescripcionCABMS FROM sa_cabms order by vDescripcionCABMS";
-           $RSet=$objCboCabms->Query($sql);
-           while($fila=  mysql_fetch_array($RSet))
+           $RSet=$objCboCabms->Query($con,$sql);
+           while($fila=  mysqli_fetch_array($RSet))
            {
                if($Id_CABMS==$fila[Id_CABMS])
                {
@@ -183,15 +179,15 @@ class Cat_CabmsConsumibles {
                }
                
            }
-           mysql_free_result($RSet);
-           $objCboCabms->Cerrar($con);
-           
+           $objCboCabms->Cerrar($con,$RSet);
+
+            $cboUMedida = "";
            $objCboUMedida = new poolConnection();
            $con=$objCboUMedida->Conexion();
-           $objCboUMedida->BaseDatos();
+           $objCboUMedida->BaseDatos($con);
            $sql="SELECT Id_UMedida,vDescripcion FROM sa_umedida order by vDescripcion";
-           $RSet=$objCboUMedida->Query($sql);
-           while($fila=  mysql_fetch_array($RSet))
+           $RSet=$objCboUMedida->Query($con,$sql);
+           while($fila=  mysqli_fetch_array($RSet))
            {
                if($Id_UMedida==$fila[Id_UMedida])
                {
@@ -203,8 +199,7 @@ class Cat_CabmsConsumibles {
                }
                
            }
-           mysql_free_result($RSet);
-           $objCboUMedida->Cerrar($con);
+           $objCboUMedida->Cerrar($con,$RSet);
         
         $frm="<form  id='frmEditCabmsC' name='frmAddCabmsC'' mathod='post'><br>
                 
@@ -285,9 +280,9 @@ class Cat_CabmsConsumibles {
                 Where Id='$id';";
         $objUpdate = new poolConnection();
         $con=$objUpdate->Conexion();
-        $objUpdate->BaseDatos();
-        $objUpdate->Query($sql);
-        $objUpdate->Cerrar($con);
+        $objUpdate->BaseDatos($con);
+        $R=$objUpdate->Query($con,$sql);
+        $objUpdate->Cerrar($con,$R);
         return $sql;
     }
   function frm_buscador_borrar()
@@ -329,10 +324,10 @@ class Cat_CabmsConsumibles {
         
                           $objBuscar = new poolConnection();
                           $con=$objBuscar->Conexion();
-                          $objBuscar->BaseDatos();
+                          $objBuscar->BaseDatos($con);
                           $sql="Select Id,Id_CveInternaAC,Id_CveARTCABMS,vDescripcion,Id_CABMS,Id_UMedida,ePartidaPresupuestal from sa_cabmsconsumible where vDescripcion like '%$texto%'";
-                          $RSet=$objBuscar->Query($sql);
-                          while($fila=  mysql_fetch_array($RSet))
+                          $RSet=$objBuscar->Query($con,$sql);
+                          while($fila=  mysqlI_fetch_array($RSet))
                           {
                               $i++;
                               $FliexGrid.="
@@ -347,8 +342,7 @@ class Cat_CabmsConsumibles {
                                                 </tr>
                                             ";
                           }
-                          mysql_free_result($RSet);
-                          $objBuscar->Cerrar($con);
+                          $objBuscar->Cerrar($con,$RSet);
                           $FliexGrid.="       </tbody>
                                                                         </table><script>$('.flexme1').flexigrid({
                                             title: '',
@@ -379,10 +373,10 @@ public function borrar_cabmsconsumibles($id)
  {
      $objBorrar = new poolConnection();
      $con=$objBorrar->Conexion();
-     $objBorrar->BaseDatos();
+     $objBorrar->BaseDatos($con);
      $sql="Delete from sa_cabmsconsumible Where Id='$id'";
-     $objBorrar->Query($sql);
-     $objBorrar->Cerrar($con);
+     $R=$objBorrar->Query($con,$sql);
+     $objBorrar->Cerrar($con,$R);
      
  }
   public function frm_consultar_cabmsconsumibles()
@@ -424,10 +418,10 @@ public function borrar_cabmsconsumibles($id)
         
                           $objBuscar = new poolConnection();
                           $con=$objBuscar->Conexion();
-                          $objBuscar->BaseDatos();
+                          $objBuscar->BaseDatos($con);
                           $sql="Select Id,Id_CveInternaAC,Id_CveARTCABMS,vDescripcion,Id_CABMS,Id_UMedida,ePartidaPresupuestal from sa_cabmsconsumible where vDescripcion like '%$texto%'";
-                          $RSet=$objBuscar->Query($sql);
-                          while($fila=  mysql_fetch_array($RSet))
+                          $RSet=$objBuscar->Query($con,$sql);
+                          while($fila=  mysqli_fetch_array($RSet))
                           {
                               $i++;
                               $FliexGrid.="
@@ -442,8 +436,7 @@ public function borrar_cabmsconsumibles($id)
                                                 </tr>
                                             ";
                           }
-                          mysql_free_result($RSet);
-                          $objBuscar->Cerrar($con);
+                          $objBuscar->Cerrar($con,$RSet);
                           $FliexGrid.="       </tbody>
                                                                         </table><script>$('.flexme1').flexigrid({
                                             title: '',

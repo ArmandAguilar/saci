@@ -34,10 +34,10 @@
                   
                           $objBuscar = new poolConnection();
                           $con=$objBuscar->Conexion();
-                          $objBuscar->BaseDatos();
+                          $objBuscar->BaseDatos($con);
                           $sql="SELECT Id,Id_TipoMovimiento,vDescripcion,bEntrada,bBaja,cTipoAlmacen,bSalida,bEstadoMov FROM sa_tipomovimiento WHERE vDescripcion like  '%$_POST[Parametro]%' ";
-                          $RSet=$objBuscar->Query($sql);
-                          while($fila=  mysql_fetch_array($RSet))
+                          $RSet=$objBuscar->Query($con,$sql);
+                          while($fila=  mysqli_fetch_array($RSet))
                           {
                               $i++;
                               $FliexGrid.="
@@ -52,8 +52,7 @@
                                                 </tr>
                                             ";
                           }
-                          mysql_free_result($RSet);
-                          $objBuscar->Cerrar($con);
+                          $objBuscar->Cerrar($con,$RSet);
                           $FliexGrid.="       </tbody>
                                                                         </table><script>$('.flexme1').flexigrid({
                                             title: '',

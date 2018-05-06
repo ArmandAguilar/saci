@@ -78,10 +78,10 @@ class cat_empleado extends poolConnection
         
         $ObjAdd = new poolConnection();
         $con=$ObjAdd->Conexion();
-        $ObjAdd->BaseDatos();
+        $ObjAdd->BaseDatos($con);
         $sql="insert into sa_empleado values('0','$empleado','$rfc','$zonapago','$cargo','$Adscripcion','$Ubicacion','$Domicilio','Null','-1')";
-        $ObjAdd->Query($sql);
-        $ObjAdd->Cerrar($con);
+        $R=$ObjAdd->Query($con,$sql);
+        $ObjAdd->Cerrar($con,$R);
     }
     public function fmr_buscar_empleado()
     {
@@ -119,10 +119,10 @@ class cat_empleado extends poolConnection
         
              $objData = new poolConnection();
              $con=$objData->Conexion();
-             $objData->BaseDatos();
+             $objData->BaseDatos($con);
              $sql="Select vNombre,vRFC,eZonaPago,vCargo,Adscripcion,Ubicacion,Domicilio from sa_empleado where Id_NumEmpleado='$id'";
-             $Rset=$objData->Query($sql);
-             while($fila=  mysql_fetch_array($Rset))
+             $Rset=$objData->Query($con,$sql);
+             while($fila=  mysqli_fetch_array($Rset))
              {
                  $vNombre=$fila[vNombre];
                  $vRFC=$fila[vRFC];
@@ -132,8 +132,7 @@ class cat_empleado extends poolConnection
                  $Ubicacion=$fila[Ubicacion];
                  $Domicilio=$fila[Domicilio];
              }
-             mysql_free_result($Rset);
-             $objData->Cerrar($con);
+             $objData->Cerrar($con,$Rset);
         
              $frm="<form id='frmEmpleadoEditar' name='frmEmpleadoEditar' method='post'>
                     <table>
@@ -203,9 +202,9 @@ class cat_empleado extends poolConnection
         $sql="update sa_empleado set vNombre='$empleado',vRFC='$rfc',eZonaPago='$zonapago',vCargo='$cargo',Adscripcion='$Adscripcion',Ubicacion='$Ubicacion',Domicilio='$Domicilio' where Id_NumEmpleado='$id'";
         $objUpdate = new poolConnection();
         $con=$objUpdate->Conexion();
-        $objUpdate->BaseDatos();
-        $objUpdate->Query($sql);
-        $objUpdate->Cerrar($con);
+        $objUpdate->BaseDatos($con);
+        $R=$objUpdate->Query($con,$sql);
+        $objUpdate->Cerrar($con,$R);
         return $sql;
     }
     function frm_buscador_borrar()
@@ -246,10 +245,10 @@ class cat_empleado extends poolConnection
                                             <tbody>";
                           $objBuscar = new poolConnection();
                           $con=$objBuscar->Conexion();
-                          $objBuscar->BaseDatos();
+                          $objBuscar->BaseDatos($con);
                           $sql="Select Id_NumEmpleado,vNombre,vRFC,eZonaPago,vCargo from sa_empleado  where vNombre like '%$texto%'";
-                          $RSet=$objBuscar->Query($sql);
-                          while($fila=  mysql_fetch_array($RSet))
+                          $RSet=$objBuscar->Query($con,$sql);
+                          while($fila=  mysqli_fetch_array($RSet))
                           {
                               $i++;
                               $FliexGrid.="
@@ -263,8 +262,7 @@ class cat_empleado extends poolConnection
                                                 </tr>
                                             ";
                           }
-                          mysql_free_result($RSet);
-                          $objBuscar->Cerrar($con);
+                          $objBuscar->Cerrar($con,$RSet);
                           $FliexGrid.="       </tbody>
                                                                         </table><script>$('.flexme1').flexigrid({
                                             title: '',
@@ -293,10 +291,10 @@ class cat_empleado extends poolConnection
  {
      $objBorrar = new poolConnection();
      $con=$objBorrar->Conexion();
-     $objBorrar->BaseDatos();
+     $objBorrar->BaseDatos($con);
      $sql="Delete from sa_empleado Where Id_NumEmpleado='$id'";
-     $objBorrar->Query($sql);
-     $objBorrar->Cerrar($con);
+     $R=$objBorrar->Query($con,$sql);
+     $objBorrar->Cerrar($con,$R);
      
  }
  public function frm_consultar_empleado()
@@ -335,10 +333,10 @@ class cat_empleado extends poolConnection
                                             <tbody>";
                           $objBuscar = new poolConnection();
                           $con=$objBuscar->Conexion();
-                          $objBuscar->BaseDatos();
+                          $objBuscar->BaseDatos($con);
                           $sql="Select Id_NumEmpleado,vNombre,vRFC,eZonaPago,vCargo from sa_empleado  where vNombre like '%$texto%'";
-                          $RSet=$objBuscar->Query($sql);
-                          while($fila=  mysql_fetch_array($RSet))
+                          $RSet=$objBuscar->Query($con,$sql);
+                          while($fila=  mysqli_fetch_array($RSet))
                           {
                               $i++;
                               $FliexGrid.="
@@ -350,8 +348,7 @@ class cat_empleado extends poolConnection
                                                     <td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$fila[vCargo]</td>
                                                </tr>";
                           }
-                          mysql_free_result($RSet);
-                          $objBuscar->Cerrar($con);
+                          $objBuscar->Cerrar($con,$RSet);
                           $FliexGrid.="       </tbody>
                                                                         </table><script>$('.flexme1').flexigrid({
                                             title: '',

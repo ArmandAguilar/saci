@@ -16,15 +16,14 @@ class Cat_Proveedor {
     {
             $objCboGiro = new poolConnection();
            $con=$objCboGiro->Conexion();
-           $objCboGiro->BaseDatos();
+           $objCboGiro->BaseDatos($con);
            $sql="SELECT * FROM sa_giro order by vDescripcionGR";
-           $RSet=$objCboGiro->Query($sql);
-           while($fila=  mysql_fetch_array($RSet))
+           $RSet=$objCboGiro->Query($con,$sql);
+           while($fila=  mysqli_fetch_array($RSet))
            {
                $cboGiro .= "<option value='$fila[Id_Giro]'>$fila[vDescripcionGR]</option>";
            }
-           mysql_free_result($RSet);
-           $objCboGiro->Cerrar($con);
+           $objCboGiro->Cerrar($con,$RSet);
         $frm="<form  id='frmAddProvedor' name='frmAddProvedor' mathod='post'><center>
         <br><br>
             <div id=\"tabs\" class=\"tabs-bottom\" style=\"width: 800px;\">
@@ -208,9 +207,9 @@ class Cat_Proveedor {
               )";
         $ObjAdd = new poolConnection();
         $con=$ObjAdd->Conexion();
-        $ObjAdd->BaseDatos();
-        $ObjAdd->Query($sql);
-        $ObjAdd->Cerrar($con);
+        $ObjAdd->BaseDatos($con);
+        $R=$ObjAdd->Query($con,$sql);
+        $ObjAdd->Cerrar($con,$R);
         return $sql;
     } 
     public function fmr_buscar_proveedor()
@@ -249,7 +248,7 @@ class Cat_Proveedor {
         
                     $objData = new poolConnection();
                     $con=$objData->Conexion();
-                    $objData->BaseDatos();
+                    $objData->BaseDatos($con);
                     $sql2="Select Id_Proveedor,
                         Id_Giro,
                         vNombre,
@@ -268,7 +267,7 @@ class Cat_Proveedor {
                         bNacional,
                         vTelFax 
                         from sa_proveedor where Id='$id'";
-                    $Rset=$objData->Query($sql2);
+                    $Rset=$objData->Query($con,$sql2);
                     while($fila=  mysql_fetch_array($Rset))
                     {
                         $Id_Proveedor=$fila[Id_Proveedor];
@@ -291,16 +290,15 @@ class Cat_Proveedor {
                         $bNacional=$fila[bNacional];
                         $vTelFax=$fila[vTelFax];
                     }
-                    mysql_free_result($Rset);
-                    $objData->Cerrar($con);
+                    $objData->Cerrar($con,$Rset);
         
 
                    $objCboGiro = new poolConnection();
                    $con=$objCboGiro->Conexion();
-                   $objCboGiro->BaseDatos();
+                   $objCboGiro->BaseDatos($con);
                    $sql="SELECT * FROM sa_giro order by vDescripcionGR";
-                   $RSet=$objCboGiro->Query($sql);
-                   while($fila=  mysql_fetch_array($RSet))
+                   $RSet=$objCboGiro->Query($con,$sql);
+                   while($fila=  mysqli_fetch_array($RSet))
                    {
                       if($Id_Giro==$fila[Id_Giro])
                       {
@@ -313,8 +311,7 @@ class Cat_Proveedor {
                       }
                        
                    }
-                   mysql_free_result($RSet);
-                   $objCboGiro->Cerrar($con);
+                   $objCboGiro->Cerrar($con,$RSet);
                             $frm="<form  id='frmEditProvedor' name='frmEditProvedor' mathod='post'><center>
                             <br><br>
                                 <div id=\"tabs\" class=\"tabs-bottom\" style=\"width: 800px;\">
@@ -500,9 +497,9 @@ class Cat_Proveedor {
         
        $objUpdate = new poolConnection();
         $con=$objUpdate->Conexion();
-        $objUpdate->BaseDatos();
-        $objUpdate->Query($sql);
-        $objUpdate->Cerrar($con);
+        $objUpdate->BaseDatos($con);
+        $R=$objUpdate->Query($con,$sql);
+        $objUpdate->Cerrar($con,$R);
         return $sql;
     }
      function frm_buscador_borrar()
@@ -542,10 +539,10 @@ class Cat_Proveedor {
                   
                           $objBuscar = new poolConnection();
                           $con=$objBuscar->Conexion();
-                          $objBuscar->BaseDatos();
+                          $objBuscar->BaseDatos($con);
                           $sql="Select Id,Id_Proveedor,Id_Giro,vNombre,vResponsable,vCalle,vNumero,Colonia,vPoblacion,vCP,cRFC,cPadronFedProv,cCedulaEmpadr,cCamaraComercio,cCanacintra,cCamaraRamo,vTelefono1,vTelefono2,bNacional,vTelFax from sa_proveedor where vNombre like '%$texto%'";
-                          $RSet=$objBuscar->Query($sql);
-                          while($fila=  mysql_fetch_array($RSet))
+                          $RSet=$objBuscar->Query($con,$sql);
+                          while($fila=  mysqli_fetch_array($RSet))
                           {
                               $i++;
                               $FliexGrid.="
@@ -565,8 +562,7 @@ class Cat_Proveedor {
                                                 </tr>
                                             ";
                           }
-                          mysql_free_result($RSet);
-                          $objBuscar->Cerrar($con);
+                          $objBuscar->Cerrar($con,$RSet);
                           $FliexGrid.="       </tbody>
                                                                         </table><script>$('.flexme1').flexigrid({
                                             title: '',
@@ -603,10 +599,10 @@ class Cat_Proveedor {
  {
      $objBorrar = new poolConnection();
      $con=$objBorrar->Conexion();
-     $objBorrar->BaseDatos();
+     $objBorrar->BaseDatos($con);
      $sql="Delete from sa_proveedor Where Id='$id'";
-     $objBorrar->Query($sql);
-     $objBorrar->Cerrar($con);
+     $R=$objBorrar->Query($con,$sql);
+     $objBorrar->Cerrar($con,$R);
      
  }
   public function frm_consultar_proveedor()
@@ -646,10 +642,10 @@ class Cat_Proveedor {
                   
                           $objBuscar = new poolConnection();
                           $con=$objBuscar->Conexion();
-                          $objBuscar->BaseDatos();
+                          $objBuscar->BaseDatos($con);
                           $sql="Select Id,Id_Proveedor,Id_Giro,vNombre,vResponsable,vCalle,vNumero,Colonia,vPoblacion,vCP,cRFC,cPadronFedProv,cCedulaEmpadr,cCamaraComercio,cCanacintra,cCamaraRamo,vTelefono1,vTelefono2,bNacional,vTelFax from sa_proveedor where vNombre like '%$texto%'";
-                          $RSet=$objBuscar->Query($sql);
-                          while($fila=  mysql_fetch_array($RSet))
+                          $RSet=$objBuscar->Query($con,$sql);
+                          while($fila=  mysqli_fetch_array($RSet))
                           {
                               $i++;
                               $FliexGrid.="
@@ -668,8 +664,7 @@ class Cat_Proveedor {
                                                 </tr>
                                             ";
                           }
-                          mysql_free_result($RSet);
-                          $objBuscar->Cerrar($con);
+                          $objBuscar->Cerrar($con,$RSet);
                           $FliexGrid.="       </tbody>
                                                                         </table><script>$('.flexme1').flexigrid({
                                             title: '',

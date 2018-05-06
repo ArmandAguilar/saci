@@ -92,10 +92,10 @@ class Cat_TipoMovimiento {
         
         $ObjAdd = new poolConnection();
         $con=$ObjAdd->Conexion();
-        $ObjAdd->BaseDatos();
+        $ObjAdd->BaseDatos($con);
         $sql="insert into sa_tipomovimiento values('0','$Id_TipoMovimiento','$vDescripcion','$bEntrada','$bBaja','$cTipoAlmacen','$bSalida','$bEstadoMov')";
-        $ObjAdd->Query($sql);
-        $ObjAdd->Cerrar($con);
+        $R=$ObjAdd->Query($con,$sql);
+        $ObjAdd->Cerrar($con,$R);
     }
   public function fmr_buscar_tmov()
     {
@@ -132,10 +132,10 @@ class Cat_TipoMovimiento {
  
              $objData = new poolConnection();
              $con=$objData->Conexion();
-             $objData->BaseDatos();
+             $objData->BaseDatos($con);
              $sql="SELECT Id,Id_TipoMovimiento,vDescripcion,bEntrada,bBaja,cTipoAlmacen,bSalida,bEstadoMov FROM sa_tipomovimiento WHERE Id='$id'";        
-             $Rset=$objData->Query($sql);
-             while($fila=mysql_fetch_array($Rset))
+             $Rset=$objData->Query($con,$sql);
+             while($fila=mysqli_fetch_array($Rset))
              {
                  $Id_TipoMovimiento=$fila[Id_TipoMovimiento];
                  $vDescripcion=$fila[vDescripcion];
@@ -145,8 +145,7 @@ class Cat_TipoMovimiento {
                  $bSalida=$fila[bSalida];
                  $bEstadoMov=$fila[bEstadoMov];
              }
-             mysql_free_result($Rset);
-             $objData->Cerrar($con);
+             $objData->Cerrar($con,$Rset);
              $Entrada="";
              $Baja="";
              $Salida="";
@@ -264,9 +263,9 @@ class Cat_TipoMovimiento {
             ";
         $objUpdate = new poolConnection();
         $con=$objUpdate->Conexion();
-        $objUpdate->BaseDatos();
-        $objUpdate->Query($sql);
-        $objUpdate->Cerrar($con);
+        $objUpdate->BaseDatos($con);
+        $R=$objUpdate->Query($con,$sql);
+        $objUpdate->Cerrar($con,$R);
         return $sql;
     }
  function frm_buscador_borrar()
@@ -306,10 +305,10 @@ class Cat_TipoMovimiento {
                   
                           $objBuscar = new poolConnection();
                           $con=$objBuscar->Conexion();
-                          $objBuscar->BaseDatos();
+                          $objBuscar->BaseDatos($con);
                           $sql="SELECT Id,Id_TipoMovimiento,vDescripcion,bEntrada,bBaja,cTipoAlmacen,bSalida,bEstadoMov FROM sa_tipomovimiento WHERE vDescripcion like  '%$texto%' ";
-                          $RSet=$objBuscar->Query($sql);
-                          while($fila=  mysql_fetch_array($RSet))
+                          $RSet=$objBuscar->Query($con,$sql);
+                          while($fila=  mysqli_fetch_array($RSet))
                           {
                               $i++;
                               $FliexGrid.="
@@ -324,8 +323,7 @@ class Cat_TipoMovimiento {
                                                        </tr>
                                             ";
                           }
-                          mysql_free_result($RSet);
-                          $objBuscar->Cerrar($con);
+                          $objBuscar->Cerrar($con,$RSet);
                           $FliexGrid.="       </tbody>
                                                                         </table><script>$('.flexme1').flexigrid({
                                             title: '',
@@ -356,10 +354,10 @@ class Cat_TipoMovimiento {
  {
      $objBorrar = new poolConnection();
      $con=$objBorrar->Conexion();
-     $objBorrar->BaseDatos();
+     $objBorrar->BaseDatos($con);
      $sql="Delete from sa_tipomovimiento Where Id='$id'";
-     $objBorrar->Query($sql);
-     $objBorrar->Cerrar($con);
+     $R=$objBorrar->Query($con,$sql);
+     $objBorrar->Cerrar($con,$R);
      
  }
  public function frm_consultar_tmov()
@@ -399,10 +397,10 @@ class Cat_TipoMovimiento {
                   
                           $objBuscar = new poolConnection();
                           $con=$objBuscar->Conexion();
-                          $objBuscar->BaseDatos();
+                          $objBuscar->BaseDatos($con);
                           $sql="SELECT Id,Id_TipoMovimiento,vDescripcion,bEntrada,bBaja,cTipoAlmacen,bSalida,bEstadoMov FROM sa_tipomovimiento WHERE vDescripcion like  '%$texto%' ";
-                          $RSet=$objBuscar->Query($sql);
-                          while($fila=  mysql_fetch_array($RSet))
+                          $RSet=$objBuscar->Query($con,$sql);
+                          while($fila=  mysqli_fetch_array($RSet))
                           {
                               $i++;
                               $FliexGrid.="
@@ -416,8 +414,7 @@ class Cat_TipoMovimiento {
                                                </tr>
                                             ";
                           }
-                          mysql_free_result($RSet);
-                          $objBuscar->Cerrar($con);
+                          $objBuscar->Cerrar($con,$RSet);
                           $FliexGrid.="       </tbody>
                                                                         </table><script>$('.flexme1').flexigrid({
                                             title: '',

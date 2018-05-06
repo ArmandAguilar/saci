@@ -54,10 +54,10 @@ class Cat_UnidadMedida {
         $Umedidad=$AData->UMedida;
         $ObjAdd = new poolConnection();
         $con=$ObjAdd->Conexion();
-        $ObjAdd->BaseDatos();
+        $ObjAdd->BaseDatos($con);
         $sql="insert into sa_umedida values('0','$Umedidad')";
-        $ObjAdd->Query($sql);
-        $ObjAdd->Cerrar($con);
+        $R=$ObjAdd->Query($con,$sql);
+        $ObjAdd->Cerrar($con,$R);
     } 
    public function fmr_buscar_Umedidad()
     {
@@ -95,16 +95,15 @@ class Cat_UnidadMedida {
         
              $objData = new poolConnection();
              $con=$objData->Conexion();
-             $objData->BaseDatos();
+             $objData->BaseDatos($con);
              $sql="Select Id_UMedida,vDescripcion from sa_umedida where Id_UMedida='$id'";
-             $Rset=$objData->Query($sql);
-             while($fila=  mysql_fetch_array($Rset))
+             $Rset=$objData->Query($con,$sql);
+             while($fila=  mysqli_fetch_array($Rset))
              {
                  $Id_UMedida=$fila[Id_UMedida];
                  $vDescripcion=$fila[vDescripcion];
              }
-             mysql_free_result($Rset);
-             $objData->Cerrar($con);
+             $objData->Cerrar($con,$Rset);
         
              $frm="<form id='frmUmedidaEditar' name='frmUmedidaEditar' method='post'>
                     <table>
@@ -144,9 +143,9 @@ class Cat_UnidadMedida {
         $sql="update sa_umedida set vDescripcion='$Umedidad' where Id_UMedida='$id'";
         $objUpdate = new poolConnection();
         $con=$objUpdate->Conexion();
-        $objUpdate->BaseDatos();
-        $objUpdate->Query($sql);
-        $objUpdate->Cerrar($con);
+        $objUpdate->BaseDatos($con);
+        $R=$objUpdate->Query($con,$sql);
+        $objUpdate->Cerrar($con,$R);
         return $sql;
     }
    function frm_buscador_borrar()
@@ -187,10 +186,10 @@ class Cat_UnidadMedida {
 
         $objBuscar = new poolConnection();
         $con=$objBuscar->Conexion();
-        $objBuscar->BaseDatos();
+        $objBuscar->BaseDatos($con);
         $sql="Select Id_UMedida,vDescripcion from sa_umedida where vDescripcion like '%$texto%'";
-        $RSet=$objBuscar->Query($sql);
-        while($fila=  mysql_fetch_array($RSet))
+        $RSet=$objBuscar->Query($con,$sql);
+        while($fila =  mysqli_fetch_array($RSet))
         {
             $i++;
             $FliexGrid.="
@@ -201,8 +200,7 @@ class Cat_UnidadMedida {
                               </tr>
                           ";
         }
-        mysql_free_result($RSet);
-        $objBuscar->Cerrar($con);
+        $objBuscar->Cerrar($con,$RSet);
         $FliexGrid.="       </tbody>
                                                       </table><script>$('.flexme1').flexigrid({
                           title: '',
@@ -227,10 +225,10 @@ public function borrar_Umedidad($id)
  {
      $objBorrar = new poolConnection();
      $con=$objBorrar->Conexion();
-     $objBorrar->BaseDatos();
+     $objBorrar->BaseDatos($con);
      $sql="Delete from sa_umedida Where Id_UMedida='$id'";
-     $objBorrar->Query($sql);
-     $objBorrar->Cerrar($con);
+     $R=$objBorrar->Query($con,$sql);
+     $objBorrar->Cerrar($con,$R);
      
  }
  public function frm_consultar_Umedidad()
@@ -270,10 +268,10 @@ public function borrar_Umedidad($id)
 
         $objBuscar = new poolConnection();
         $con=$objBuscar->Conexion();
-        $objBuscar->BaseDatos();
+        $objBuscar->BaseDatos($con);
         $sql="Select Id_UMedida,vDescripcion from sa_umedida where vDescripcion like '%$texto%'";
-        $RSet=$objBuscar->Query($sql);
-        while($fila=  mysql_fetch_array($RSet))
+        $RSet=$objBuscar->Query($con,$sql);
+        while($fila=  mysqli_fetch_array($RSet))
         {
             $i++;
             $FliexGrid.="
@@ -283,8 +281,7 @@ public function borrar_Umedidad($id)
                               </tr>
                           ";
         }
-        mysql_free_result($RSet);
-        $objBuscar->Cerrar($con);
+        $objBuscar->Cerrar($con,$RSet);
         $FliexGrid.="       </tbody>
                                                       </table><script>$('.flexme1').flexigrid({
                           title: '',

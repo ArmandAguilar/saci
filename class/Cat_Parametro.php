@@ -61,10 +61,10 @@ class Cat_Parametro {
         $valor = $AData->Valor;
         $ObjAdd = new poolConnection();
         $con=$ObjAdd->Conexion();
-        $ObjAdd->BaseDatos();
+        $ObjAdd->BaseDatos($con);
         $sql="insert into sa_parametro values('0','$Clave','$parametro','$valor')";
-        $ObjAdd->Query($sql);
-        $ObjAdd->Cerrar($con);
+        $R=$ObjAdd->Query($con,$sql);
+        $ObjAdd->Cerrar($con,$R);
     } 
 public function fmr_buscar_parametro()
     {
@@ -103,18 +103,17 @@ public function frm_editar_parametro($id)
  
              $objData = new poolConnection();
              $con=$objData->Conexion();
-             $objData->BaseDatos();
+             $objData->BaseDatos($con);
              $sql="Select Id,Id_Parametro,sDescripcion,sValor from sa_parametro where Id='$id'";
-             $Rset=$objData->Query($sql);
-             while($fila=  mysql_fetch_array($Rset))
+             $Rset=$objData->Query($con,$sql);
+             while($fila=  mysqli_fetch_array($Rset))
              {
                  $Id=$fila[Id];
                  $Id_Parametro=$fila[Id_Parametro];
                  $sDescripcion=$fila[sDescripcion];
                  $sValor=$fila[sValor];
              }
-             mysql_free_result($Rset);
-             $objData->Cerrar($con);
+             $objData->Cerrar($con,$Rset);
         
             $frm="<form  id='frmEditParametro' name='frmEditParametro' mathod='post'><br><fieldset>
                 
@@ -164,9 +163,9 @@ public function frm_editar_parametro($id)
         $sql="update sa_parametro set Id_Parametro='$Clave',sDescripcion='$des',sValor='$val' where Id='$id'";
         $objUpdate = new poolConnection();
         $con=$objUpdate->Conexion();
-        $objUpdate->BaseDatos();
-        $objUpdate->Query($sql);
-        $objUpdate->Cerrar($con);
+        $objUpdate->BaseDatos($con);
+        $R=$objUpdate->Query($con,$sql);
+        $objUpdate->Cerrar($con,$R);
         return $sql;
     }
  function frm_buscador_borrar()
@@ -208,8 +207,8 @@ public function frm_editar_parametro($id)
         $con=$objBuscar->Conexion();
         $objBuscar->BaseDatos();
         $sql="Select Id_Parametro,sDescripcion,sValor from sa_parametro where sDescripcion like '%$_POST[$texto]%'";
-        $RSet=$objBuscar->Query($sql);
-        while($fila=  mysql_fetch_array($RSet))
+        $RSet=$objBuscar->Query($con,$sql);
+        while($fila=  mysqli_fetch_array($RSet))
         {
             $i++;
             $FliexGrid.="
@@ -221,8 +220,7 @@ public function frm_editar_parametro($id)
                               </tr>
                           ";
         }
-        mysql_free_result($RSet);
-        $objBuscar->Cerrar($con);
+        $objBuscar->Cerrar($con,$RSet);
         $FliexGrid.="       </tbody>
                                                       </table><script>$('.flexme1').flexigrid({
                           title: '',
@@ -250,10 +248,10 @@ public function frm_editar_parametro($id)
  {
      $objBorrar = new poolConnection();
      $con=$objBorrar->Conexion();
-     $objBorrar->BaseDatos();
+     $objBorrar->BaseDatos($con);
      $sql="Delete from sa_parametro Where Id_Parametro='$id'";
-     $objBorrar->Query($sql);
-     $objBorrar->Cerrar($con);
+     $R=$objBorrar->Query($con,$sql);
+     $objBorrar->Cerrar($con,$R);
      
  }
 public function frm_consultar_parametro()
@@ -293,10 +291,10 @@ public function frm_consultar_parametro()
        
         $objBuscar = new poolConnection();
         $con=$objBuscar->Conexion();
-        $objBuscar->BaseDatos();
+        $objBuscar->BaseDatos($con);
         $sql="Select Id_Parametro,sDescripcion,sValor from sa_parametro where sDescripcion like '%$_POST[$texto]%'";
-        $RSet=$objBuscar->Query($sql);
-        while($fila=  mysql_fetch_array($RSet))
+        $RSet=$objBuscar->Query($con,$sql);
+        while($fila=  mysqli_fetch_array($RSet))
         {
             $i++;
             $FliexGrid.="
@@ -307,8 +305,7 @@ public function frm_consultar_parametro()
                               </tr>
                           ";
         }
-        mysql_free_result($RSet);
-        $objBuscar->Cerrar($con);
+        $objBuscar->Cerrar($con,$RSet);
         $FliexGrid.="       </tbody>
                                                       </table><script>$('.flexme1').flexigrid({
                           title: '',

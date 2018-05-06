@@ -58,10 +58,10 @@ class Cat_TipoBienInventariable {
         $tbi=$AData->TBI;
         $ObjAdd = new poolConnection();
         $con=$ObjAdd->Conexion();
-        $ObjAdd->BaseDatos();
+        $ObjAdd->BaseDatos($con);
         $sql="insert into sa_tipobieninventariable values('0','$Clave','$tbi')";
-        $ObjAdd->Query($sql);
-        $ObjAdd->Cerrar($con);
+        $R=$ObjAdd->Query($con,$sql);
+        $ObjAdd->Cerrar($con,$R);
     } 
  public function fmr_buscar_tbi()
     {
@@ -100,17 +100,16 @@ class Cat_TipoBienInventariable {
  
              $objData = new poolConnection();
              $con=$objData->Conexion();
-             $objData->BaseDatos();
+             $objData->BaseDatos($con);
              $sql="Select Id,Id_TipoBien,vDescripcion from sa_tipobieninventariable where Id='$id'";
-             $Rset=$objData->Query($sql);
-             while($fila=  mysql_fetch_array($Rset))
+             $Rset=$objData->Query($con,$sql);
+             while($fila=  mysqli_fetch_array($Rset))
              {
                  $Id=$fila[Id];
                  $Id_TipoBien=$fila[Id_TipoBien];
                  $vDescripcion=$fila[vDescripcion];
              }
-             mysql_free_result($Rset);
-             $objData->Cerrar($con);
+             $objData->Cerrar($con,$Rset);
         
              $frm="<form id='frmEditar' name='frmEditar' method='post'>
                     <table>
@@ -155,9 +154,9 @@ class Cat_TipoBienInventariable {
         $sql="update sa_tipobieninventariable set Id_TipoBien='$Clave',vDescripcion='$tbi' where Id='$id'";
         $objUpdate = new poolConnection();
         $con=$objUpdate->Conexion();
-        $objUpdate->BaseDatos();
-        $objUpdate->Query($sql);
-        $objUpdate->Cerrar($con);
+        $objUpdate->BaseDatos($con);
+        $R=$objUpdate->Query($con,$sql);
+        $objUpdate->Cerrar($con,$R);
         return $sql;
     } 
     
@@ -200,10 +199,10 @@ class Cat_TipoBienInventariable {
         
                           $objBuscar = new poolConnection();
                           $con=$objBuscar->Conexion();
-                          $objBuscar->BaseDatos();
+                          $objBuscar->BaseDatos($con);
                           $sql="Select Id,Id_TipoBien,vDescripcion from sa_tipobieninventariable where vDescripcion like '%$_POST[txtTBI]%'";
-                          $RSet=$objBuscar->Query($sql);
-                          while($fila=  mysql_fetch_array($RSet))
+                          $RSet=$objBuscar->Query($con,$sql);
+                          while($fila=  mysqli_fetch_array($RSet))
                           {
                               $i++;
                               $FliexGrid.="
@@ -214,8 +213,7 @@ class Cat_TipoBienInventariable {
                                                 </tr>
                                             ";
                           }
-                          mysql_free_result($RSet);
-                          $objBuscar->Cerrar($con);
+                          $objBuscar->Cerrar($con,$RSet);
                           $FliexGrid.="       </tbody>
                                                                         </table><script>$('.flexme1').flexigrid({
                                             title: '',
@@ -242,10 +240,10 @@ class Cat_TipoBienInventariable {
  {
      $objBorrar = new poolConnection();
      $con=$objBorrar->Conexion();
-     $objBorrar->BaseDatos();
+     $objBorrar->BaseDatos($con);
      $sql="Delete from sa_tipobieninventariable Where Id='$id'";
-     $objBorrar->Query($sql);
-     $objBorrar->Cerrar($con);
+     $R=$objBorrar->Query($con,$sql);
+     $objBorrar->Cerrar($con,$R);
      
  }
  public function frm_consultar_tbi()
@@ -287,10 +285,10 @@ class Cat_TipoBienInventariable {
         
                           $objBuscar = new poolConnection();
                           $con=$objBuscar->Conexion();
-                          $objBuscar->BaseDatos();
+                          $objBuscar->BaseDatos($con);
                           $sql="Select Id_TipoBien,vDescripcion from sa_tipobieninventariable where vDescripcion like '%$_POST[txtTBI]%'";
-                          $RSet=$objBuscar->Query($sql);
-                          while($fila=  mysql_fetch_array($RSet))
+                          $RSet=$objBuscar->Query($con,$sql);
+                          while($fila=  mysqli_fetch_array($RSet))
                           {
                               $i++;
                               $FliexGrid.="
@@ -300,8 +298,7 @@ class Cat_TipoBienInventariable {
                                                 </tr>
                                             ";
                           }
-                          mysql_free_result($RSet);
-                          $objBuscar->Cerrar($con);
+                          $objBuscar->Cerrar($con,$RSet);
                           $FliexGrid.="       </tbody>
                                                                         </table><script>$('.flexme1').flexigrid({
                                             title: '',

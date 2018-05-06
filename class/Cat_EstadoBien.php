@@ -57,10 +57,10 @@ class Cat_EstadoBien {
         $tbi=$AData->TBI;
         $ObjAdd = new poolConnection();
         $con=$ObjAdd->Conexion();
-        $ObjAdd->BaseDatos();
+        $ObjAdd->BaseDatos($con);
         $sql="insert into sa_estadobien values('0','$Clave','$tbi')";
-        $ObjAdd->Query($sql);
-        $ObjAdd->Cerrar($con);
+        $R=$ObjAdd->Query($con,$sql);
+        $ObjAdd->Cerrar($con,$R);
     } 
  public function fmr_buscar_tb()
     {
@@ -99,17 +99,16 @@ class Cat_EstadoBien {
  
              $objData = new poolConnection();
              $con=$objData->Conexion();
-             $objData->BaseDatos();
+             $objData->BaseDatos($con);
              $sql="Select Id,Id_EdoBien,vDescripcion from sa_estadobien where Id='$id'";
-             $Rset=$objData->Query($sql);
-             while($fila=  mysql_fetch_array($Rset))
+             $Rset=$objData->Query($con,$sql);
+             while($fila=  mysqli_fetch_array($Rset))
              {
                  $Id=$fila[Id];
                  $Id_TipoBien=$fila[Id_EdoBien];
                  $vDescripcion=$fila[vDescripcion];
              }
-             mysql_free_result($Rset);
-             $objData->Cerrar($con);
+             $objData->Cerrar($con,$Rset);
         
              $frm="<form id='frmEditar' name='frmEditar' method='post'>
                     <table>
@@ -154,9 +153,9 @@ class Cat_EstadoBien {
         $sql="update sa_estadobien set Id_EdoBien='$Clave',vDescripcion='$tbi' where Id='$id'";
         $objUpdate = new poolConnection();
         $con=$objUpdate->Conexion();
-        $objUpdate->BaseDatos();
-        $objUpdate->Query($sql);
-        $objUpdate->Cerrar($con);
+        $objUpdate->BaseDatos($con);
+        $R=$objUpdate->Query($con,$sql);
+        $objUpdate->Cerrar($con,$R);
         return $sql;
     } 
     
@@ -199,10 +198,10 @@ class Cat_EstadoBien {
         
                           $objBuscar = new poolConnection();
                           $con=$objBuscar->Conexion();
-                          $objBuscar->BaseDatos();
+                          $objBuscar->BaseDatos($con);
                           $sql="Select Id,Id_EdoBien,vDescripcion from sa_estadobien where vDescripcion like '%$_POST[txtTBI]%'";
-                          $RSet=$objBuscar->Query($sql);
-                          while($fila=  mysql_fetch_array($RSet))
+                          $RSet=$objBuscar->Query($con,$sql);
+                          while($fila=  mysqli_fetch_array($RSet))
                           {
                               $i++;
                               $FliexGrid.="
@@ -213,8 +212,7 @@ class Cat_EstadoBien {
                                                 </tr>
                                             ";
                           }
-                          mysql_free_result($RSet);
-                          $objBuscar->Cerrar($con);
+                          $objBuscar->Cerrar($con,$RSet);
                           $FliexGrid.="       </tbody>
                                                                         </table><script>$('.flexme1').flexigrid({
                                             title: '',
@@ -241,10 +239,10 @@ class Cat_EstadoBien {
  {
      $objBorrar = new poolConnection();
      $con=$objBorrar->Conexion();
-     $objBorrar->BaseDatos();
+     $objBorrar->BaseDatos($con);
      $sql="Delete from sa_estadobien Where Id='$id'";
-     $objBorrar->Query($sql);
-     $objBorrar->Cerrar($con);
+     $R=$objBorrar->Query($con,$sql);
+     $objBorrar->Cerrar($con,$R);
      
  }
  public function frm_consultar_tb()
@@ -286,10 +284,10 @@ class Cat_EstadoBien {
         
                           $objBuscar = new poolConnection();
                           $con=$objBuscar->Conexion();
-                          $objBuscar->BaseDatos();
+                          $objBuscar->BaseDatos($con);
                           $sql="Select Id_EdoBien,vDescripcion from sa_estadobien where vDescripcion like '%$texto%'";
-                          $RSet=$objBuscar->Query($sql);
-                          while($fila= mysql_fetch_array($RSet))
+                          $RSet=$objBuscar->Query($con,$sql);
+                          while($fila= mysqli_fetch_array($RSet))
                           {
                               $i++;
                               $FliexGrid.="
@@ -299,8 +297,7 @@ class Cat_EstadoBien {
                                                 </tr>
                                             ";
                           }
-                          mysql_free_result($RSet);
-                          $objBuscar->Cerrar($con);
+                          $objBuscar->Cerrar($con,$RSet);
                           $FliexGrid.="       </tbody>
                                                                         </table><script>$('.flexme1').flexigrid({
                                             title: '',

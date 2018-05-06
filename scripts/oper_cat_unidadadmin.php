@@ -46,10 +46,10 @@
         
                           $objBuscar = new poolConnection();
                           $con=$objBuscar->Conexion();
-                          $objBuscar->BaseDatos();
+                          $objBuscar->BaseDatos($con);
                           $sql="SELECT Id,Id_Unidad,Id_ResponsableArea,Id_Zonas,vDescripcion From sa_unidadadmva where vDescripcion like  '%$_POST[txt]%'";
-                          $RSet=$objBuscar->Query($sql);
-                          while($fila=  mysql_fetch_array($RSet))
+                          $RSet=$objBuscar->Query($con,$sql);
+                          while($fila = mysqli_fetch_array($RSet))
                           {
                               $i++;
                               $FliexGrid.="
@@ -64,8 +64,7 @@
                                                 </tr>
                                             ";
                           }
-                          mysql_free_result($RSet);
-                          $objBuscar->Cerrar($con);
+                          $objBuscar->Cerrar($con,$RSet);
                           $FliexGrid.="       </tbody>
                                                                         </table><script>$('.flexme1').flexigrid({
                                             title: '',
