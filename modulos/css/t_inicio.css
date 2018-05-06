@@ -1,0 +1,5 @@
+@charset "utf-8";
+.inicio {
+	background-image: url(../interfaz_modulos/t_inicio.png);
+	background-repeat: no-repeat;
+}

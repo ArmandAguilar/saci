@@ -1,0 +1,193 @@
+@charset "utf-8";
+.txt {
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 12px;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	color: #FFF;
+	text-decoration: none;
+	font-size:12px
+	}
+
+.txt_contenido {
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 12px;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-align:justify;
+	color: #6A6C75;
+	text-decoration: none;
+	}
+	
+	.txt_titulo_secciones {
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 16px;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-align:left;
+	color: #FFF;
+	text-decoration: none;
+	}
+	
+	
+	.txt_titulo_secciones_padd {
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 16px;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-align:left;
+	color: #FFF;
+	text-decoration: none;
+	padding:10px;
+	}
+	
+	
+	.txt_contenido_color2 {
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 12px;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-align:justify;
+	color: #161616;
+	text-decoration: none;
+	}
+	
+	.txt_contenido_botones_bloq {
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 12px;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-align:rigth;
+	color: #161616;
+	text-decoration: none;
+	cursor: default;
+	text-decoration: blink;
+	
+	}
+	
+	
+	.txt_user_name {
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 12px;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-align:rigth;
+	color: #FFF;
+	text-decoration: none;
+	cursor: default;
+	text-decoration: blink;
+	
+	}
+	
+	
+	
+	.txt_contenido_padding {
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 12px;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-align:justify;
+	color: #6A6C75;
+	text-decoration: none;
+	padding-top: 15px;
+	padding:15px;
+	}	
+	
+	.txt_contenido_bold {
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 12px;
+	font-style: bold;
+	font-weight: bold;
+	font-variant: boldl;
+	text-align:justify;
+	color: #6A6C75;
+	text-decoration: none;
+	}
+	
+		.txt_contenido_italic {
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 12px;
+	font-style: italic;
+	font-weight: italic;
+	font-variant: italic;
+	text-align:justify;
+	color: #6A6C75;
+	text-decoration: none;
+	}
+	
+		.txt_contenido_italic_bold {
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 12px;
+	font-style: italic;
+	font-style: bold;
+	font-weight: bold;
+	font-variant: bold;
+	text-align:justify;
+	color: #6A6C75;
+	text-decoration: none;
+	}
+	
+	.txt_titulos_bold {
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 14px;
+	font-style: bold;
+	font-weight: bold;
+	font-variant: bold;
+	text-align:justify;
+	color: #6A6C75;
+	text-decoration: none;
+	}
+	
+	
+	.txt_titulos_bold_menu {
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 24px;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-align:left;
+	color: #6A6C75;
+	text-decoration: none;
+	}
+
+.Ayuda_text_help {
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 16px;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-align:left;
+	color: #666;
+	
+	}
+	
+	.Ayuda_enlaces {
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 16px;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-align:left;
+	color: #666;
+	list-style:disc;
+	
+
+	}
+	
+	.titulos-bar{
+	padding:15px;
+	font-family:Tahoma, Geneva, sans-serif;
+	font-size:16px;
+	text-align:left;
+	background-color:#788287;
+	color: #FFF;
+	}
+	

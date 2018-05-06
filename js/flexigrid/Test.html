@@ -1,0 +1,56 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="/amtemplete/admin/js/flexigrid/css/flexigrid/flexigrid.css">
+    <script type="text/javascript" src="/amtemplete/admin/js/flexigrid/lib/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/amtemplete/admin/js/flexigrid/flexigrid.js"></script>
+    <style>
+        body
+		{
+		
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 11px;
+		
+		}
+    </style>
+  </head>
+  <body>
+      <table class="flexme1" >
+            
+        <tbody>
+                 <tr>
+                     <td style="font-family: Arial, Helvetica, sans-serif;font-size: 11px;"><input style="font-family: Arial, Helvetica, sans-serif;font-size: 11px;" type="text" value="0" size="2">This is data 1</td>
+                     <td style="font-family: Arial, Helvetica, sans-serif;font-size: 11px;">[Editar]&nbsp;&nbsp;[Eliminar]&nbsp;&nbsp;[Ver]</td>
+                </tr>
+              
+        </tbody>
+    </table>
+    <br />
+<script type="text/javascript">
+        $('.flexme1').flexigrid({
+          title: 'Publicacion Actuales',
+          colModel : [
+			{display: 'Publicacion', name : 'Publicacion', width :350, sortable :false, align: 'left'},
+			{display: 'Accion', name : 'Accion', width :150, sortable :false, align: 'left'},
+                        
+		    ],
+          buttons : [
+			{name: 'Guardar Posicion'},
+			{separator: true}
+		     ],
+          width: 530,
+	  height: 200
+        }
+          
+         );
+</script>
+
+
+  </body>
+</html>

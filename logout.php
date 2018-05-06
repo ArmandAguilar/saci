@@ -1,0 +1,15 @@
+<?php
+ini_set('session.auto_start','on');
+session_start();
+session_destroy();
+?>
+<html>
+    <head>
+        <title></title>
+    </head>
+    <body>
+        <script>
+             window.location.href='index.php';
+        </script>
+    </body>
+</html>

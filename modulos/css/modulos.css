@@ -1,0 +1,15 @@
+@charset "utf-8";
+.modulos {
+	background-image: url(../interfaz_modulos/titulos_bar.jpg);
+	background-repeat: repeat-x;
+}
+
+
+#CONTENT{
+	position:relative;
+	width: 980px;
+	margin: 0 auto;
+	margin-top: -0px;
+	padding-left: 20px;
+	padding-top: 10px;	
+}

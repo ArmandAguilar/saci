@@ -1,0 +1,25 @@
+@charset "utf-8";
+
+@font-face {
+    font-family: "LaoUI";
+    src: url(../fuentes/LaoUI.ttf) format("truetype");
+	
+}
+
+@font-face {
+    font-family: "LaoUI_alt";
+    src: url(../fuentes/LaoUI.eot) format("EmbeddedOpenType");
+	
+}
+
+@font-face {
+    font-family: "LaoUIb";
+    src: url(../fuentes/LaoUIb.ttf) format("truetype");
+	
+}
+
+@font-face {
+    font-family: "LaoUIb_alt";
+    src: url(../fuentes/LaoUbI.eot) format("EmbeddedOpenType");
+	
+}

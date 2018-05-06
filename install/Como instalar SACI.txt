@@ -1,0 +1,38 @@
+Instalacion Temporal
+
+Requerimientos
+
+A)Servidor Apacahe 2.0 o Superior
+B)Mysql 5.0 o superior
+C)PHP Version 5.3.27 ver pdf
+
+
+1.- Copiar el directorio SACI en httpdoc del servidor Apache, tener los privilegios de 0775 si esta en un servidor Linux.
+
+2.- Instalar la base de datos mysql en sel servidor mysql 
+Nota : la base de datos esta en el scirpt (instal/BD/saci.sql)
+
+3.- Cambiar la configuracion del archivo de conexion y rutas del servidor ejemplo:
+
+     Localhost : Servidor generalmente es localhost
+     Usuario : Root
+     Contraseña : xxxx
+     $con =mysql_connect("localhost","Usuario","Password");
+     
+    Base De Datos : SACI2013
+    $Base = mysql_select_db("NombreDeBaseDeDatos");
+
+4.- Entrar con el usuario Root y empesar a Configurar Catalogos  y Usuarios.
+
+   Usuario : Root
+   Password : bemasterMX2012
+
+
+   
+
+
+
+
+
+
+

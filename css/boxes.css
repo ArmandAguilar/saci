@@ -1,0 +1,168 @@
+@charset "utf-8";
+.boxes {
+	
+	width: 375px;
+	max-width: 375px;
+	height: 33px;
+	max-height:33;
+	background-color:transparent;
+	border:hidden;
+	font:Tahoma, Geneva, sans-serif;
+	font-size:14px;
+	color:#000;
+}
+
+.boxes_login {
+	
+	width: 375px;
+	max-width: 375px;
+	height: 33px;
+	max-height:33;
+	resize:none;
+	background-color:transparent;
+	border:hidden;
+	font:Tahoma, Geneva, sans-serif;
+	font-size:16px;
+	color:#000;
+}
+
+.boxes_form1 {
+	
+	width: 375px;
+	max-width: 375px;
+	height: 33px;
+	max-height:33;
+	resize:none;
+	background-color:transparent;
+	border-color: #CCC;
+	border-style: solid;
+	font:Tahoma, Geneva, sans-serif;
+	font-size:16px;
+	color:#000;
+}
+.boxes_form50px {
+	
+	width: 50px;
+	max-width: 50px;
+	height: 33px;
+	max-height:33;
+	resize:none;
+	background-color:transparent;
+	border-color: #CCC;
+	border-style: solid;
+	font:Tahoma, Geneva, sans-serif;
+	font-size:16px;
+	color:#000;
+}
+.boxes_form100px {
+	
+	width: 100px;
+	max-width: 100px;
+	height: 33px;
+	max-height:33;
+	resize:none;
+	background-color:transparent;
+	border-color: #CCC;
+	border-style: solid;
+	font:Tahoma, Geneva, sans-serif;
+	font-size:16px;
+	color:#000;
+}
+.boxes_form150px {
+	
+	width: 150px;
+	max-width: 150px;
+	height: 33px;
+	max-height:33;
+	resize:none;
+	background-color:transparent;
+	border-color: #CCC;
+	border-style: solid;
+	font:Tahoma, Geneva, sans-serif;
+	font-size:16px;
+	color:#000;
+}
+.boxes_form200px {
+	
+	width: 200px;
+	max-width: 200px;
+	height: 33px;
+	max-height:33;
+	resize:none;
+	background-color:transparent;
+	border-color: #CCC;
+	border-style: solid;
+	font:Tahoma, Geneva, sans-serif;
+	font-size:16px;
+	color:#000;
+}
+.boxes_form300px {
+	
+	width: 300px;
+	max-width: 300px;
+	height: 33px;
+	max-height:33;
+	resize:none;
+	background-color:transparent;
+	border-color: #CCC;
+	border-style: solid;
+	font:Tahoma, Geneva, sans-serif;
+	font-size:16px;
+	color:#000;
+}
+.boxes_form400px {
+	
+	width: 400px;
+	max-width: 400px;
+	height: 33px;
+	max-height:33;
+	resize:none;
+	background-color:transparent;
+	border-color: #CCC;
+	border-style: solid;
+	font:Tahoma, Geneva, sans-serif;
+	font-size:16px;
+	color:#000;
+}
+.boxes_form500px {
+	
+	width: 500px;
+	max-width: 500px;
+	height: 33px;
+	max-height:33;
+	resize:none;
+	background-color:transparent;
+	border-color: #CCC;
+	border-style: solid;
+	font:Tahoma, Geneva, sans-serif;
+	font-size:16px;
+	color:#000;
+}
+.boxes_form600px {
+	
+	width: 600px;
+	max-width: 600px;
+	height: 33px;
+	max-height:33;
+	resize:none;
+	background-color:transparent;
+	border-color: #CCC;
+	border-style: solid;
+	font:Tahoma, Geneva, sans-serif;
+	font-size:16px;
+	color:#000;
+}
+.boxes_txtarea{
+	
+	width: 800px;
+	max-width: 800px;
+	height: 50px;
+	max-height:50;
+	resize:none;
+	background-color:transparent;
+	border-color: #CCC;
+	border-style: solid;
+	font:Tahoma, Geneva, sans-serif;
+	font-size:16px;
+	color:#000;
+}
