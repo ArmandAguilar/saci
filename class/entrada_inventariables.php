@@ -5,12 +5,12 @@ class Entrada_Inventariables extends poolConnection{
     public function ObtenerTiposMovimiento() {
         $objConexion = new poolConnection();
         $con = $objConexion->Conexion();
-        $objConexion->BaseDatos();
+        $objConexion->BaseDatos($con);
 
         $StrConsulta = "SELECT * FROM sa_tipomovimiento tm ORDER BY tm.Id";
-        $TTiposMovimiento = $objConexion->Query($StrConsulta);
+        $TTiposMovimiento = $objConexion->Query($con,$StrConsulta);
         $Contador = 0;
-        if (mysql_num_rows($TTiposMovimiento) > 0) {
+        if (mysqli_num_rows($TTiposMovimiento) > 0) {
             while ($TipoMovimiento = mysql_fetch_array($TTiposMovimiento)) {
                 $Respuesta[$Contador]->ID = $TipoMovimiento["Id_TipoMovimiento"];
                 $Respuesta[$Contador]->Descripcion = $TipoMovimiento["Id_TipoMovimiento"].' - '.$TipoMovimiento["vDescripcion"];
@@ -23,12 +23,12 @@ class Entrada_Inventariables extends poolConnection{
     public function ObtenerEstdosBien() {
         $objConexion = new poolConnection();
         $con = $objConexion->Conexion();
-        $objConexion->BaseDatos();
+        $objConexion->BaseDatos($con);
 
         $StrConsulta = "SELECT * FROM sa_estadobien eb ORDER BY eb.Id_EdoBien";
-        $TTiposMovimiento = $objConexion->Query($StrConsulta);
+        $TTiposMovimiento = $objConexion->Query($con,$StrConsulta);
         $Contador = 0;
-        if (mysql_num_rows($TTiposMovimiento) > 0) {
+        if (mysqli_num_rows($TTiposMovimiento) > 0) {
             while ($TipoMovimiento = mysql_fetch_array($TTiposMovimiento)) {
                 $Respuesta[$Contador]->ID = $TipoMovimiento["Id_EdoBien"];
                 $Respuesta[$Contador]->Descripcion = $TipoMovimiento["Id_EdoBien"].' - '.$TipoMovimiento["vDescripcion"];
@@ -41,13 +41,13 @@ class Entrada_Inventariables extends poolConnection{
     public function ObtenerCABMS() {
         $objConexion = new poolConnection();
         $con = $objConexion->Conexion();
-        $objConexion->BaseDatos();
+        $objConexion->BaseDatos($con);
 
         $StrConsulta = "SELECT * FROM sa_cabms c ORDER BY c.id";
-        $CABMS = $objConexion->Query($StrConsulta);
+        $CABMS = $objConexion->Query($con,$StrConsulta);
         $Contador = 0;
-        if (mysql_num_rows($CABMS) > 0) {
-            while ($Articulo = mysql_fetch_array($CABMS)) {
+        if (mysqli_num_rows($CABMS) > 0) {
+            while ($Articulo = mysqli_fetch_array($CABMS)) {
                 $Respuesta[$Contador]->ID = $Articulo["Id_CABMS"];
                 $Respuesta[$Contador]->Descripcion = $Articulo["Id_CABMS"].' - '.$Articulo["vDescripcionCABMS"];
                 $Contador++;
@@ -123,12 +123,12 @@ class Entrada_Inventariables extends poolConnection{
         if ($StrConsulta != "") {
             $objConexion = new poolConnection();
             $con = $objConexion->Conexion();
-            $objConexion->BaseDatos();
+            $objConexion->BaseDatos($con);
             
-            $TPedidos = $objConexion->Query($StrConsulta);
+            $TPedidos = $objConexion->Query($con,$StrConsulta);
             $Contador = 0;            
-            if (mysql_num_rows($TPedidos) > 0) {
-                while ($Pedido = mysql_fetch_array($TPedidos)) {
+            if (mysqli_num_rows($TPedidos) > 0) {
+                while ($Pedido = mysqli_fetch_array($TPedidos)) {
                     //$Respuesta->rows[$Contador]["cell"] = Array($Pedido["id_pedido"], utf8_encode($Pedido["vnombre"]), $Pedido["dfecharegistro"]);
                     $Respuesta->Pedidos[$Contador]->idpedido = $Pedido["id_pedido"];
                     $Respuesta->Pedidos[$Contador]->proveedor = $Pedido["vnombre"];
@@ -168,12 +168,12 @@ class Entrada_Inventariables extends poolConnection{
         if ($StrConsulta != "") {
             $objConexion = new poolConnection();
             $con = $objConexion->Conexion();
-            $objConexion->BaseDatos();
+            $objConexion->BaseDatos($con);
             
-            $TEmpleados = $objConexion->Query($StrConsulta);
+            $TEmpleados = $objConexion->Query($con,$StrConsulta);
             $Contador = 0;            
-            if (mysql_num_rows($TEmpleados) > 0) {
-                while ($Empleado = mysql_fetch_array($TEmpleados)) {
+            if (mysqli_num_rows($TEmpleados) > 0) {
+                while ($Empleado = mysqli_fetch_array($TEmpleados)) {
                     $Respuesta->Empleados[$Contador]->rfc = $Empleado["vRFC"];
                     $Respuesta->Empleados[$Contador]->nombre = $Empleado["vNombre"];
                     $Respuesta->Empleados[$Contador]->cargo = $Empleado["vCargo"];
@@ -213,12 +213,12 @@ class Entrada_Inventariables extends poolConnection{
             ";
         $objConexion = new poolConnection();
         $con = $objConexion->Conexion();
-        $objConexion->BaseDatos();
+        $objConexion->BaseDatos($con);
 
         $TDetallePedido = $objConexion->Query($StrConsulta);
         $Contador = 0;
-        if (mysql_num_rows($TDetallePedido) > 0) {
-            while ($Detalle = mysql_fetch_array($TDetallePedido)) {
+        if (mysqli_num_rows($TDetallePedido) > 0) {
+            while ($Detalle = mysqli_fetch_array($TDetallePedido)) {
                 $Respuesta->Detalle[$Contador]->idpartida = $Detalle["idpartida"];
                 $Respuesta->Detalle[$Contador]->idcabms = $Detalle["idcabms"];
                 //$Respuesta->Detalle[$Contador]->idclaveAC = $Detalle["idclaveAC"];

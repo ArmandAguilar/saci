@@ -15,10 +15,10 @@ class Reporte_ConSin extends poolConnection
 				sa_parametro.Id_Parametro= '7' and
 				sa_existenciasconsumible.Id_CABMS='$CABMS'";
 				$obj =  new poolConnection();
-				$obj->Conexion();
-				$obj->BaseDatos();
-				$Rset=$obj->Query($sql);
-				while($fila = mysql_fetch_array($Rset))
+				$con=$obj->Conexion();
+				$obj->BaseDatos($con);
+				$Rset=$obj->Query($con,$sql);
+				while($fila = mysqli_fetch_array($Rset))
 				{
 					$stockmin=$fila[StockMin];
 				}
@@ -43,10 +43,10 @@ class Reporte_ConSin extends poolConnection
 			sa_parametro.Id_Parametro= '6' and
 			sa_existenciasconsumible.Id_CABMS='$CABMS'";
 		$obj =  new poolConnection();
-		$obj->Conexion();
-		$obj->BaseDatos();
-		$Rset=$obj->Query($sql);
-		while($fila = mysql_fetch_array($Rset))
+		$con = $obj->Conexion();
+		$obj->BaseDatos($con);
+		$Rset=$obj->Query($con,$sql);
+		while($fila = mysqli_fetch_array($Rset))
 		{
 			$stockmax=$fila[StockMax];
 		}
@@ -75,10 +75,10 @@ class Reporte_ConSin extends poolConnection
 				sa_movconsumo.Id_TipoMovimiento =  '2502'";
 		
 		$obj =  new poolConnection();
-		$obj->Conexion();
-		$obj->BaseDatos();
-		$Rset=$obj->Query($sql);
-		while($fila = mysql_fetch_array($Rset))
+		$con=$obj->Conexion();
+		$obj->BaseDatos($con);
+		$Rset=$obj->Query($con,$sql);
+		while($fila = mysqli_fetch_array($Rset))
 		{
 		    $exixtenciainicial=$fila[ExixtenciaInicial];
 		}
@@ -106,10 +106,10 @@ class Reporte_ConSin extends poolConnection
 				sa_movconsumo.dFechaRegistro";
 					
 		$obj =  new poolConnection();
-		$obj->Conexion();
-		$obj->BaseDatos();
-		$Rset=$obj->Query($sql);
-		while($fila = mysql_fetch_array($Rset))
+		$con=$obj->Conexion();
+		$obj->BaseDatos($con);
+		$Rset=$obj->Query($con,$sql);
+		while($fila = mysqli_fetch_array($Rset))
 		{
 		$Moventrada=$fila[Moventrada];
 		}
@@ -137,10 +137,10 @@ class Reporte_ConSin extends poolConnection
 				sa_movconsumo.dFechaRegistro>='$Fecha1' and sa_movconsumo.dFechaRegistro<='$Fecha2'";
 	
 		$obj =  new poolConnection();
-		$obj->Conexion();
-		$obj->BaseDatos();
+		$con=$obj->Conexion();
+		$obj->BaseDatos($con);
 		$Rset=$obj->Query($sql);
-		while($fila = mysql_fetch_array($Rset))
+		while($fila = mysqli_fetch_array($Rset))
 		{
 		$AcomSalida=$fila[AcomSalida];
 		}
@@ -172,10 +172,10 @@ class Reporte_ConSin extends poolConnection
 				sa_movconsumo.dFechaRegistro>='$Fecha1' and sa_movconsumo.dFechaRegistro<='$Fecha2'";
 		
 		$obj =  new poolConnection();
-		$obj->Conexion();
-		$obj->BaseDatos();
-		$Rset=$obj->Query($sql);
-		while($fila = mysql_fetch_array($Rset))
+		$con=$obj->Conexion();
+		$obj->BaseDatos($con);
+		$Rset=$obj->Query($con,$sql);
+		while($fila = mysqli_fetch_array($Rset))
 		{
 			$eExistenciaIniMovto=$fila[eExistenciaIniMovto];
 		    $mCostoPromedioIniMovto=$fila[mCostoPromedioIniMovto]; 
@@ -240,7 +240,7 @@ class Reporte_ConSin extends poolConnection
 		        $ArrayFechaB = split("/",$FechaB);
 				$objGrid = new poolConnection();
 							$con=$objGrid->Conexion();
-							$objGrid->BaseDatos();
+							$objGrid->BaseDatos($con);
 							$sql="Select
 								sa_cabms.Id_CABMS,
 								sa_cabms.vDescripcionCABMS,
@@ -254,8 +254,8 @@ class Reporte_ConSin extends poolConnection
 								sa_movconsumo.Id_CABMS = sa_cabms.Id_CABMS and
 								sa_movconsumo.dFechaRegistro>='$ArrayFechaA[2]/$ArrayFechaA[0]/$ArrayFechaA[1]' and sa_movconsumo.dFechaRegistro<='$ArrayFechaB[2]/$ArrayFechaB[0]/$ArrayFechaB[1]' and
 								sa_cabms.Id_UMedida = sa_umedida.Id_UMedida";
-							$RSet=$objGrid->Query($sql);
-							while($fila=mysql_fetch_array($RSet))
+							$RSet=$objGrid->Query($con,$sql);
+							while($fila=mysqli_fetch_array($RSet))
 							{
 							        $info->Fecha1="$ArrayFechaA[2]/$ArrayFechaA[0]/$ArrayFechaA[1]";
 							        $info->Fecha2="$ArrayFechaB[2]/$ArrayFechaB[0]/$ArrayFechaB[1]";
@@ -280,8 +280,7 @@ class Reporte_ConSin extends poolConnection
 									</tr>";
 				
 							}
-							mysql_free_result($RSet);
-							$objGrid->Cerrar($con);
+							$objGrid->Cerrar($con,$RSet);
 				
 							$FliexGrid = "<br><br>
 							<center><table class=\"flexme1\">
@@ -336,7 +335,7 @@ class Reporte_ConSin extends poolConnection
 			$ArrayFechaB = split("/",$FechaB);
 			$objGrid = new poolConnection();
 			$con=$objGrid->Conexion();
-			$objGrid->BaseDatos();
+			$objGrid->BaseDatos($con);
 			$sql="Select
 			sa_cabms.Id_CABMS,
 			sa_cabms.vDescripcionCABMS,
@@ -350,8 +349,8 @@ class Reporte_ConSin extends poolConnection
 			sa_movconsumo.Id_CABMS = sa_cabms.Id_CABMS and
 			sa_movconsumo.dFechaRegistro>='$ArrayFechaA[2]/$ArrayFechaA[0]/$ArrayFechaA[1]' and sa_movconsumo.dFechaRegistro<='$ArrayFechaB[2]/$ArrayFechaB[0]/$ArrayFechaB[1]' and
 			sa_cabms.Id_UMedida = sa_umedida.Id_UMedida";
-			$RSet=$objGrid->Query($sql);
-			while($fila=mysql_fetch_array($RSet))
+			$RSet=$objGrid->Query($con,$sql);
+			while($fila=mysqli_fetch_array($RSet))
 			{
 			$info->Fecha1="$ArrayFechaA[2]/$ArrayFechaA[0]/$ArrayFechaA[1]";
 			$info->Fecha2="$ArrayFechaB[2]/$ArrayFechaB[0]/$ArrayFechaB[1]";
@@ -374,8 +373,7 @@ class Reporte_ConSin extends poolConnection
 			</tr>";
 		
 			}
-			mysql_free_result($RSet);
-			$objGrid->Cerrar($con);
+			$objGrid->Cerrar($con,$RSet);
 		
 			$FliexGrid = "<br><br>
 			<center><table class=\"flexme1\">
@@ -430,7 +428,7 @@ class Reporte_ConSin extends poolConnection
 					
 					$objDatosPDF = new poolConnection();
 					$con=$objDatosPDF -> Conexion();
-					$objDatosPDF -> BaseDatos();
+					$objDatosPDF -> BaseDatos($con);
 						
 					$StrConsulta="Select
 								sa_cabms.Id_CABMS,
@@ -446,9 +444,9 @@ class Reporte_ConSin extends poolConnection
 								sa_movconsumo.dFechaRegistro>='$ArrayFechaA[2]/$ArrayFechaA[0]/$ArrayFechaA[1]' and sa_movconsumo.dFechaRegistro<='$ArrayFechaB[2]/$ArrayFechaB[0]/$ArrayFechaB[1]' and
 								sa_cabms.Id_UMedida = sa_umedida.Id_UMedida";
 				
-					$RSet = $objDatosPDF ->Query($StrConsulta);
+					$RSet = $objDatosPDF ->Query($con,$StrConsulta);
 					$Catalogo = array();
-					while ($Row = mysql_fetch_array($RSet))
+					while ($Row = mysqli_fetch_array($RSet))
 					{
 						
 						$info->Fecha1="$ArrayFechaA[2]/$ArrayFechaA[0]/$ArrayFechaA[1]";
@@ -474,8 +472,7 @@ class Reporte_ConSin extends poolConnection
 							$AS
 							);
 					}
-					mysql_free_result($RSet);
-					$objDatosPDF->Cerrar($con);
+					$objDatosPDF->Cerrar($con,$RSet);
 					return $Catalogo;
 		}
 		function print_pdf_sin($AData)
@@ -488,7 +485,7 @@ class Reporte_ConSin extends poolConnection
 				
 			$objDatosPDF = new poolConnection();
 			$con=$objDatosPDF -> Conexion();
-			$objDatosPDF -> BaseDatos();
+			$objDatosPDF -> BaseDatos($con);
 		
 			$StrConsulta="Select
 			sa_cabms.Id_CABMS,
@@ -504,9 +501,9 @@ class Reporte_ConSin extends poolConnection
 			sa_movconsumo.dFechaRegistro>='$ArrayFechaA[2]/$ArrayFechaA[0]/$ArrayFechaA[1]' and sa_movconsumo.dFechaRegistro<='$ArrayFechaB[2]/$ArrayFechaB[0]/$ArrayFechaB[1]' and
 			sa_cabms.Id_UMedida = sa_umedida.Id_UMedida";
 		
-			$RSet = $objDatosPDF ->Query($StrConsulta);
+			$RSet = $objDatosPDF ->Query($con,$StrConsulta);
 			$Catalogo = array();
-			while ($Row = mysql_fetch_array($RSet))
+			while ($Row = mysqli_fetch_array($RSet))
 			{
 		
 			$info->Fecha1="$ArrayFechaA[2]/$ArrayFechaA[0]/$ArrayFechaA[1]";
@@ -530,8 +527,7 @@ class Reporte_ConSin extends poolConnection
 			$AS
 			);
 			}
-			mysql_free_result($RSet);
-			$objDatosPDF->Cerrar($con);
+			$objDatosPDF->Cerrar($con,$RSet);
 			return $Catalogo;
 			}
 }

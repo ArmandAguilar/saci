@@ -51,15 +51,15 @@ class Reporte_Manejo_Almacen extends poolConnection {
         //echo $StrConsulta."<p/>";
         $objConexion = new poolConnection();
         $con = $objConexion->Conexion();
-        $objConexion->BaseDatos();
-        $TReporte = $objConexion->Query($StrConsulta);        
+        $objConexion->BaseDatos($con);
+        $TReporte = $objConexion->Query($con,$StrConsulta);
         $Contador = 0;
-        if (mysql_num_rows($TReporte) > 0) {
+        if (mysqli_num_rows($TReporte) > 0) {
             $AgregarTodos = false;
             if ($xValor == "Todos") {
                     $AgregarTodos = true;
                 }
-            while ($Registro = mysql_fetch_array($TReporte)) {
+            while ($Registro = mysqli_fetch_array($TReporte)) {
                 if (($AgregarTodos) || ($Registro["Valor"] == $xValor)) {
                     $Respuesta[$Contador]->ClaveArticulo = $Registro["ClaveArticulo"];
                     $Respuesta[$Contador]->ClaveInternaArticulo = $Registro["ClaveInternaArticulo"];

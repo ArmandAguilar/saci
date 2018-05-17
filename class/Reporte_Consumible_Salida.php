@@ -21,7 +21,7 @@ class Reporte_Consumible_Salida
 					<tbody>";
 					$objGrid = new poolConnection();
 					$con=$objGrid->Conexion();
-					$objGrid->BaseDatos();
+					$objGrid->BaseDatos($con);
 					     $sql="Select
 			                        sa_movconsumo.dFechaRegistro,
 			                        sa_movconsumo.nFolio, 
@@ -46,10 +46,10 @@ class Reporte_Consumible_Salida
 			                        AND  sa_tipomovimiento.bEstadoMov = 1
 			                        AND  sa_movconsumo.Id_CABMS  = sa_cabms.Id_CABMS
 			                        AND  sa_movconsumo.Id_Unidad  = sa_unidadadmva.Id_Unidad";
-					$RSet=$objGrid->Query($sql);
+					$RSet=$objGrid->Query($con,$sql);
 						
 					$i=0;
-					while($fila=mysql_fetch_array($RSet))
+					while($fila=mysqli_fetch_array($RSet))
 					{
 						$i++;
 							
@@ -69,8 +69,7 @@ class Reporte_Consumible_Salida
 						</tr>";
 						
 						}
-						mysql_free_result($RSet);
-						$objGrid->Cerrar($con);
+						$objGrid->Cerrar($con,$RSet);
 				
 						
 						
@@ -122,7 +121,7 @@ class Reporte_Consumible_Salida
 		 		    $fechafinal = $AData->fechafinal;
 					$objDatosPDF = new poolConnection();
 					$con=$objDatosPDF -> Conexion();
-					$objDatosPDF -> BaseDatos();
+					$objDatosPDF -> BaseDatos($con);
 						
 					$StrConsulta="Select
 			                        sa_movconsumo.dFechaRegistro,
@@ -149,9 +148,9 @@ class Reporte_Consumible_Salida
 			                        AND  sa_movconsumo.Id_CABMS  = sa_cabms.Id_CABMS
 			                        AND  sa_movconsumo.Id_Unidad  = sa_unidadadmva.Id_Unidad";
 			
-					$RSet = $objDatosPDF ->Query($StrConsulta);
+					$RSet = $objDatosPDF ->Query($con,$StrConsulta);
 					$Catalogo = array();
-					while ($Row = mysql_fetch_array($RSet)){
+					while ($Row = mysqli_fetch_array($RSet)){
 			
 					$Catalogo[] = array(
 					$Row["dFechaRegistro"],
@@ -167,9 +166,8 @@ class Reporte_Consumible_Salida
 					$Row["CABMS"]
 					);
 					}
-						
-					mysql_free_result($RSet);
-					$objDatosPDF->Cerrar($con);
+
+					$objDatosPDF->Cerrar($con,$RSet);
 					return $Catalogo;
 			}
 

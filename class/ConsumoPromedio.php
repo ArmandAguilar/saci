@@ -37,17 +37,17 @@ class ConsumoPromedio {
         //Ejecutamos Dias a Procesa y verificamos si se puede ejecutar el proceo
         $obj= new poolConnection();
         $con=$obj->Conexion();
-        $obj->BaseDatos();
-        $RSet = $obj->Query($Sql);
-        while($row = mysql_fetch_array($RSet))
+        $obj->BaseDatos($con);
+        $RSet = $obj->Query($con,$Sql);
+        $i=0;
+        while($row = mysqli_fetch_array($RSet))
         {
            $i++; 
            $NoDiasProcesar++; 
            $Existe="Si";
 
         }
-        mysql_free_result($RSet);
-        $obj->Cerrar($con);
+        $obj->Cerrar($con,$RSet);
 
         /*
          * 
@@ -69,17 +69,17 @@ class ConsumoPromedio {
 		         order by Id_CveARTCABMS, Id_CveInternaAC";
             $objArrays =  new poolConnection();
             $con=$objArrays->Conexion();
-            $objArrays->BaseDatos();
-            $RsetA=$objArrays->Query($SqlMov);
-            while ($rows = mysql_fetch_array($RsetA))
+            $objArrays->BaseDatos($con);
+            $RsetA=$objArrays->Query($con,$SqlMov);
+            $i=0;
+            while ($rows = mysqli_fetch_array($RsetA))
                 {
                    $i++;
                    $ArrayCveARTCABMS[$i]=$rows[Id_CveARTCABMS];
                    $ArrayCveInternaAC[$i]=$rows[Id_CveInternaAC];
                    $ArrayTotal[$i]=$rows[TCantidad];
                 }
-            mysql_free_result($RsetA);
-            $objArrays->Cerrar($con);
+            $objArrays->Cerrar($con),$RsetA;
             
             foreach($ArrayCveARTCABMS as $key => $value)
                 {
@@ -96,10 +96,10 @@ class ConsumoPromedio {
                          $sqlUpdate="update sa_existenciasconsumible set eConsumoPromedio='$Resultado';
                                 where Id_CveARTCABMS='$ArrayCveARTCABMS[$key]' and  Id_CveInternaAC='$ArrayCveInternaAC[$key]'";
                          $objUpdate = new poolConnection();
-                         $objUpdate->Conexion();
-                         $objUpdate->BaseDatos();
-                         $objUpdate->Query($sqlUpdate);
-                         $objUpdate->Cerrar($con);
+                         $con=$objUpdate->Conexion();
+                         $objUpdate->BaseDatos($con);
+                         $R=$objUpdate->Query($con,$sqlUpdate);
+                         $objUpdate->Cerrar($con,$R);
                      }
                 }
             

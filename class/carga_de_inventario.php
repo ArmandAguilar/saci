@@ -5,13 +5,13 @@ class Carga_Inventario extends poolConnection{
     public function ObtenerCABMS() {
         $objConexion = new poolConnection();
         $con = $objConexion->Conexion();
-        $objConexion->BaseDatos();
+        $objConexion->BaseDatos($con);
 
         $StrConsulta = "SELECT * FROM sa_cabms c ORDER BY c.vDescripcionCABMS";
-        $TCABMS = $objConexion->Query($StrConsulta);
+        $TCABMS = $objConexion->Query($con,$StrConsulta);
         $Contador = 0;
-        if (mysql_num_rows($TCABMS) > 0) {
-            while ($Articulo = mysql_fetch_array($TCABMS)) {
+        if (mysqli_num_rows($TCABMS) > 0) {
+            while ($Articulo = mysqli_fetch_array($TCABMS)) {
                 $Respuesta[$Contador]->ID = $Articulo["Id_CABMS"];
                 $Respuesta[$Contador]->Descripcion = $Articulo["vDescripcionCABMS"];
                 $Contador++;
@@ -23,13 +23,13 @@ class Carga_Inventario extends poolConnection{
     public function ObtenerCABMSConsumibles() {
         $objConexion = new poolConnection();
         $con = $objConexion->Conexion();
-        $objConexion->BaseDatos();
+        $objConexion->BaseDatos($con);
 
         $StrConsulta = "SELECT * FROM sa_cabmsconsumible cc ORDER BY cc.vDescripcion";
-        $TCABMS = $objConexion->Query($StrConsulta);
+        $TCABMS = $objConexion->Query($con,$StrConsulta);
         $Contador = 0;
-        if (mysql_num_rows($TCABMS) > 0) {
-            while ($Articulo = mysql_fetch_array($TCABMS)) {
+        if (mysqli_num_rows($TCABMS) > 0) {
+            while ($Articulo = mysqli_fetch_array($TCABMS)) {
                 $Respuesta[$Contador]->ID = $Articulo["Id"];
                 $Respuesta[$Contador]->Descripcion = $Articulo["vDescripcion"];
                 $Contador++;
@@ -41,7 +41,7 @@ class Carga_Inventario extends poolConnection{
     public function ObtenerExistenciaConsumibles($xIDCABMS) {
         $objConexion = new poolConnection();
         $con = $objConexion->Conexion();
-        $objConexion->BaseDatos();
+        $objConexion->BaseDatos($con);
 
         $StrConsulta = "
             SELECT
@@ -58,10 +58,10 @@ class Carga_Inventario extends poolConnection{
             ORDER BY 
                 ec.dFechaRegistro
         ";
-        $TCABMS = $objConexion->Query($StrConsulta);
+        $TCABMS = $objConexion->Query($con,$StrConsulta);
         $Contador = 0;
-        if (mysql_num_rows($TCABMS) > 0) {
-            while ($Articulo = mysql_fetch_array($TCABMS)) {
+        if (mysqli_num_rows($TCABMS) > 0) {
+            while ($Articulo = mysqli_fetch_array($TCABMS)) {
                 $Respuesta[$Contador]->id = $Articulo["Id"];
                 $Respuesta[$Contador]->idcabms = $Articulo["Id_CABMS"];
                 $Respuesta[$Contador]->descripcion = $Articulo["vDescripcionCABMS"];
@@ -80,7 +80,7 @@ class Carga_Inventario extends poolConnection{
     public function InsertarExistenciaConsumible($xIDCABMS, $xDisponible, $xApartado, $xCosto){        
         $objConexion = new poolConnection();
         $con = $objConexion->Conexion();
-        $objConexion->BaseDatos();
+        $objConexion->BaseDatos($con);
         $FechaActual = date('Y-m-d',time());
         $StrConsulta = "
             INSERT INTO sa_existenciasconsumible(Id, Id_CABMS, eCantidadExistenciaDisponible, eCantidadExistenciaApartada, 
@@ -88,15 +88,15 @@ class Carga_Inventario extends poolConnection{
             VALUES(null, '$xIDCABMS', $xDisponible, $xApartado, $xCosto, '$FechaActual', '$FechaActual', 0)
         ";
         //echo $StrConsulta."<br/>";
-        $Resultado = $objConexion->Query($StrConsulta);
-        $Registrado = mysql_affected_rows();
+        $Resultado = $objConexion->Query($con,$StrConsulta);
+        $Registrado = mysqli_affected_rows();
         return $Registrado;
     }
     
     public function ModificarExistenciaConsumible($xID, $xDisponible, $xApartado, $xCosto){        
         $objConexion = new poolConnection();
         $con = $objConexion->Conexion();
-        $objConexion->BaseDatos();
+        $objConexion->BaseDatos($con);
         $FechaActual = date('Y-m-d',time());
         $StrConsulta = "
             UPDATE sa_existenciasconsumible SET 
@@ -108,8 +108,8 @@ class Carga_Inventario extends poolConnection{
                 Id=$xID
         ";
         //echo $StrConsulta."<br/>";
-        $Resultado = $objConexion->Query($StrConsulta);
-        $Modificado = mysql_affected_rows();
+        $Resultado = $objConexion->Query($con,$StrConsulta);
+        $Modificado = mysqli_affected_rows();
         return $Modificado;
     }
 }

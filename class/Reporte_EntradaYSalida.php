@@ -22,6 +22,7 @@ public function  Generar_Reporte($AData)
            $FechaA2 = split("/",$fecha2);
           $F1 = "$FechaA1[2]/$FechaA1[0]/$FechaA1[1]"; 
           $F2 = "$FechaA2[2]/$FechaA2[0]/$FechaA2[1]";
+     $where = "";
            if(!empty($fecha1))
            {
            	  
@@ -36,7 +37,7 @@ public function  Generar_Reporte($AData)
             
 			$objGrid = new poolConnection();
 			$con=$objGrid->Conexion();
-			$objGrid->BaseDatos();
+			$objGrid->BaseDatos($con);
 			$sql="SELECT  
 					sa_movinventario.dFechaMovRegistro,
 					sa_movinventario.vDoctoOficial,
@@ -55,9 +56,9 @@ public function  Generar_Reporte($AData)
 					sa_movinventario.Id_TipoMovimiento	= '1500' and
 					sa_movinventario.Id_Unidad='$Unidad' and
 					$whereFinal";
-			$RSet=$objGrid->Query($sql);
+			$RSet=$objGrid->Query($con,$sql);
 			$i=0;
-		    while($fila=mysql_fetch_array($RSet))
+		    while($fila=mysqli_fetch_array($RSet))
 			{
 			$i++;
 			
@@ -72,8 +73,7 @@ public function  Generar_Reporte($AData)
 			</tr>";
                         
 			}
-			mysql_free_result($RSet);
-			$objGrid->Cerrar($con);
+			$objGrid->Cerrar($con,$RSet);
                         
                         $FliexGrid = "<br><br>
                                      <center><table class=\"flexme1\">
@@ -123,6 +123,7 @@ public function  Generar_Reporte($AData)
            $FechaA2 = split("/",$fecha2);
           $F1 = "$FechaA1[2]/$FechaA1[0]/$FechaA1[1]"; 
           $F2 = "$FechaA2[2]/$FechaA2[0]/$FechaA2[1]";
+     $where = "";
            if(!empty($fecha1))
            {
            	  
@@ -136,7 +137,7 @@ public function  Generar_Reporte($AData)
             $whereFinal = substr($where, 0, -4);
 			 	$objDatosPDF = new poolConnection();
 			 	$con=$objDatosPDF -> Conexion();
-			 	$objDatosPDF -> BaseDatos();
+			 	$objDatosPDF -> BaseDatos($con);
 			 	
 			 	$StrConsulta="SELECT  
 					sa_movinventario.dFechaMovRegistro,
@@ -156,9 +157,9 @@ public function  Generar_Reporte($AData)
 					sa_movinventario.Id_TipoMovimiento	= '1500' and
 					sa_movinventario.Id_Unidad='$Unidad' and
 					$whereFinal";
-			 	$RSet = $objDatosPDF ->Query($StrConsulta);
+			 	$RSet = $objDatosPDF ->Query($con,$StrConsulta);
 			 	$Catalogo = array();
-			 	while ($Row = mysql_fetch_array($RSet)){
+			 	while ($Row = mysqli_fetch_array($RSet)){
 			 		if(!empty($Row[Total]))
 			 		{
 			 			$Total=$Row["Total"];
@@ -175,9 +176,8 @@ public function  Generar_Reporte($AData)
 			 				$Total
 			 		);
 			 	}
-			 	
-			 	mysql_free_result($RSet);
-			 	$objDatosPDF->Cerrar($con);
+
+			 	$objDatosPDF->Cerrar($con,$RSet);
 			 	return $Catalogo;
  }
  

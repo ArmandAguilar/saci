@@ -14,12 +14,12 @@ class Reporte_Catalogos extends poolConnection{
     public function ObtenerJSONCatalogoEmpleados($page, $limit, $sidx, $sord){        
         $objMenu = new poolConnection();
         $con=$objMenu -> Conexion();
-        $objMenu -> BaseDatos();
+        $objMenu -> BaseDatos($con);
         if(!$sidx) $sidx =1;
         
         $StrConsulta = "SELECT COUNT(*) AS count FROM sa_empleado";
-        $ResultadoTotal = $objMenu->Query($StrConsulta);
-        $row = mysql_fetch_array($ResultadoTotal);
+        $ResultadoTotal = $objMenu->Query($con,$StrConsulta);
+        $row = mysqli_fetch_array($ResultadoTotal);
         $count = $row['count'];
         
         if( $count > 0 ) {
@@ -31,12 +31,12 @@ class Reporte_Catalogos extends poolConnection{
         $start = $limit*$page - $limit; // do not put $limit*($page - 1)
         
         $StrConsulta = "SELECT * FROM sa_empleado ORDER BY Id_NumEmpleado LIMIT ".$start." , ".$limit;
-        $TEmpleados = $objMenu ->Query($StrConsulta);
+        $TEmpleados = $objMenu ->Query($con,$StrConsulta);
         $Respuesta->page = $page;
         $Respuesta->total = $total_pages;
         $Respuesta->records = $count;
         $Contador = 0;
-        while ($Empleado = mysql_fetch_array($TEmpleados)){
+        while ($Empleado = mysqli_fetch_array($TEmpleados)){
             $Respuesta->rows[$Contador]["id"] = $Empleado["Id_NumEmpleado"];
             $Respuesta->rows[$Contador]["cell"] = array($Empleado["Id_NumEmpleado"], $Empleado["vNombre"], $Empleado["vRFC"], $Empleado["eZonaPago"], $Empleado["eZonaPagoAnterior"], $Empleado["vCargo"], $Empleado["bEstadoEmpleado"]);
             $Contador++;
@@ -47,12 +47,12 @@ class Reporte_Catalogos extends poolConnection{
     public function ObtenerArregloCatalogoEmpleados(){        
         $objMenu = new poolConnection();
         $con=$objMenu -> Conexion();
-        $objMenu -> BaseDatos();
+        $objMenu -> BaseDatos($con);
         
         $StrConsulta = "SELECT * FROM sa_empleado ORDER BY Id_NumEmpleado";
-        $TEmpleados = $objMenu ->Query($StrConsulta);
+        $TEmpleados = $objMenu ->Query($con,$StrConsulta);
         $Catalogo = array();
-        while ($Empleado = mysql_fetch_array($TEmpleados)){
+        while ($Empleado = mysqli_fetch_array($TEmpleados)){
             $Catalogo[] = array($Empleado["Id_NumEmpleado"], $Empleado["vNombre"], $Empleado["vRFC"], $Empleado["eZonaPago"], $Empleado["eZonaPagoAnterior"], $Empleado["vCargo"], $Empleado["bEstadoEmpleado"]);
         }
         return $Catalogo;
@@ -61,12 +61,12 @@ class Reporte_Catalogos extends poolConnection{
     public function ObtenerJSONCatalogoCABMS($page, $limit, $sidx, $sord){        
         $objMenu = new poolConnection();
         $con=$objMenu -> Conexion();
-        $objMenu -> BaseDatos();
+        $objMenu -> BaseDatos($con);
         if(!$sidx) $sidx =1;
         
         $StrConsulta = "SELECT COUNT(*) AS count FROM sa_cabms";
-        $ResultadoTotal = $objMenu->Query($StrConsulta);
-        $row = mysql_fetch_array($ResultadoTotal);
+        $ResultadoTotal = $objMenu->Query($con,$StrConsulta);
+        $row = mysqli_fetch_array($ResultadoTotal);
         $count = $row['count'];
         
         if( $count > 0 ) {
@@ -78,12 +78,12 @@ class Reporte_Catalogos extends poolConnection{
         $start = $limit*$page - $limit; // do not put $limit*($page - 1)
         
         $StrConsulta = "SELECT * FROM sa_cabms ORDER BY Id_CABMS LIMIT ".$start." , ".$limit;
-        $TCABMS = $objMenu ->Query($StrConsulta);
+        $TCABMS = $objMenu ->Query($con,$StrConsulta);
         $Respuesta->page = $page;
         $Respuesta->total = $total_pages;
         $Respuesta->records = $count;
         $Contador = 0;
-        while ($CABMS = mysql_fetch_array($TCABMS)){
+        while ($CABMS = mysqli_fetch_array($TCABMS)){
             $Respuesta->rows[$Contador]["id"] = $CABMS["Id"];
             $Respuesta->rows[$Contador]["cell"] = array($CABMS["Id"], $CABMS["Id_CABMS"], $CABMS["Id_UMedida"], $CABMS["vDescripcionCABMS"], $CABMS["cTipoAlmacen"], $CABMS["nConsecutivoInv"], $CABMS["ePartidaPresupuestal"]);
             $Contador++;
@@ -94,12 +94,12 @@ class Reporte_Catalogos extends poolConnection{
     public function ObtenerArregloCatalogoCABMS(){        
         $objMenu = new poolConnection();
         $con=$objMenu -> Conexion();
-        $objMenu -> BaseDatos();
+        $objMenu -> BaseDatos($con);
         
         $StrConsulta = "SELECT * FROM sa_cabms ORDER BY Id";
-        $TCABMS = $objMenu ->Query($StrConsulta);
+        $TCABMS = $objMenu ->Query($con,$StrConsulta);
         $Catalogo = array();
-        while ($CABMS = mysql_fetch_array($TCABMS)){
+        while ($CABMS = mysqli_fetch_array($TCABMS)){
             $Catalogo[] = array($CABMS["Id"], $CABMS["Id_CABMS"], $CABMS["Id_UMedida"], $CABMS["vDescripcionCABMS"], $CABMS["cTipoAlmacen"], $CABMS["nConsecutivoInv"], $CABMS["ePartidaPresupuestal"]);
         }
         return $Catalogo;
@@ -108,12 +108,12 @@ class Reporte_Catalogos extends poolConnection{
     public function ObtenerJSONCatalogoGiros($page, $limit, $sidx, $sord){        
         $objMenu = new poolConnection();
         $con=$objMenu -> Conexion();
-        $objMenu -> BaseDatos();
+        $objMenu -> BaseDatos($con);
         if(!$sidx) $sidx =1;
         
         $StrConsulta = "SELECT COUNT(*) AS count FROM sa_giro";
-        $ResultadoTotal = $objMenu->Query($StrConsulta);
-        $row = mysql_fetch_array($ResultadoTotal);
+        $ResultadoTotal = $objMenu->Query($con,$StrConsulta);
+        $row = mysqli_fetch_array($ResultadoTotal);
         $count = $row['count'];
         
         if( $count > 0 ) {
@@ -125,12 +125,12 @@ class Reporte_Catalogos extends poolConnection{
         $start = $limit*$page - $limit; // do not put $limit*($page - 1)
         
         $StrConsulta = "SELECT * FROM sa_giro ORDER BY Id_Giro LIMIT ".$start." , ".$limit;
-        $TGiros = $objMenu ->Query($StrConsulta);
+        $TGiros = $objMenu ->Query($con,$StrConsulta);
         $Respuesta->page = $page;
         $Respuesta->total = $total_pages;
         $Respuesta->records = $count;
         $Contador = 0;
-        while ($Giro = mysql_fetch_array($TGiros)){
+        while ($Giro = mysqli_fetch_array($TGiros)){
             $Respuesta->rows[$Contador]["id"] = $Giro["Id_Giro"];
             $Respuesta->rows[$Contador]["cell"] = array($Giro["Id_Giro"], $Giro["vDescripcionGR"]);
             $Contador++;
@@ -144,9 +144,9 @@ class Reporte_Catalogos extends poolConnection{
         $objMenu -> BaseDatos();
         
         $StrConsulta = "SELECT * FROM sa_giro ORDER BY Id_Giro";
-        $TGiros = $objMenu ->Query($StrConsulta);
+        $TGiros = $objMenu ->Query($con,$StrConsulta);
         $Catalogo = array();
-        while ($Giro = mysql_fetch_array($TGiros)){
+        while ($Giro = mysqli_fetch_array($TGiros)){
             $Catalogo[] = array($Giro["Id_Giro"], $Giro["vDescripcionGR"]);
         }
         return $Catalogo;
@@ -159,8 +159,8 @@ class Reporte_Catalogos extends poolConnection{
         if(!$sidx) $sidx =1;
         
         $StrConsulta = "SELECT COUNT(*) AS count FROM sa_umedida";
-        $ResultadoTotal = $objMenu->Query($StrConsulta);
-        $row = mysql_fetch_array($ResultadoTotal);
+        $ResultadoTotal = $objMenu->Query($con,$StrConsulta);
+        $row = mysqli_fetch_array($ResultadoTotal);
         $count = $row['count'];
         
         if( $count > 0 ) {
@@ -172,12 +172,12 @@ class Reporte_Catalogos extends poolConnection{
         $start = $limit*$page - $limit; // do not put $limit*($page - 1)
         
         $StrConsulta = "SELECT * FROM sa_umedida ORDER BY Id_UMedida LIMIT ".$start." , ".$limit;
-        $TUnidadesMedida= $objMenu ->Query($StrConsulta);
+        $TUnidadesMedida= $objMenu ->Query($con,$StrConsulta);
         $Respuesta->page = $page;
         $Respuesta->total = $total_pages;
         $Respuesta->records = $count;
         $Contador = 0;
-        while ($UnidadMedida = mysql_fetch_array($TUnidadesMedida)){
+        while ($UnidadMedida = mysqli_fetch_array($TUnidadesMedida)){
             $Respuesta->rows[$Contador]["id"] = $UnidadMedida["Id_UMedida"];
             $Respuesta->rows[$Contador]["cell"] = array($UnidadMedida["Id_UMedida"], $UnidadMedida["vDescripcion"]);
             $Contador++;
@@ -202,12 +202,12 @@ class Reporte_Catalogos extends poolConnection{
     public function ObtenerJSONCatalogoProveedores($page, $limit, $sidx, $sord){        
         $objMenu = new poolConnection();
         $con=$objMenu -> Conexion();
-        $objMenu -> BaseDatos();
+        $objMenu -> BaseDatos($con);
         if(!$sidx) $sidx =1;
         
         $StrConsulta = "SELECT COUNT(*) AS count FROM sa_proveedor";
-        $ResultadoTotal = $objMenu->Query($StrConsulta);
-        $row = mysql_fetch_array($ResultadoTotal);
+        $ResultadoTotal = $objMenu->Query($con,$StrConsulta);
+        $row = mysqli_fetch_array($ResultadoTotal);
         $count = $row['count'];
         
         if( $count > 0 ) {
@@ -219,12 +219,12 @@ class Reporte_Catalogos extends poolConnection{
         $start = $limit*$page - $limit; // do not put $limit*($page - 1)
         
         $StrConsulta = "SELECT * FROM sa_proveedor ORDER BY Id_Proveedor LIMIT ".$start." , ".$limit;
-        $TProveedor= $objMenu ->Query($StrConsulta);
+        $TProveedor= $objMenu ->Query($con,$StrConsulta);
         $Respuesta->page = $page;
         $Respuesta->total = $total_pages;
         $Respuesta->records = $count;
         $Contador = 0;
-        while ($Proveedor = mysql_fetch_array($TProveedor)){
+        while ($Proveedor = mysqli_fetch_array($TProveedor)){
             $Respuesta->rows[$Contador]["id"] = $Proveedor["Id_UMedida"];
             $Respuesta->rows[$Contador]["cell"] = array($Proveedor["Id_Proveedor"], $Proveedor["Id_Giro"], $Proveedor["vNombre"], $Proveedor["vResponsable"], $Proveedor["vCalle"], $Proveedor["vNumero"], $Proveedor["Colonia"], $Proveedor["vPoblacion"], $Proveedor["vCP"], $Proveedor["cRFC"], $Proveedor["cPadronFedProv"], $Proveedor["cCedulaEmpadr"], $Proveedor["cCamaraComercio"], $Proveedor["cCanacintra"], $Proveedor["cCamaraRamo"], $Proveedor["vTelefono1"], $Proveedor["vTelefono2"], $Proveedor["bNacional"], $Proveedor["vTelFax"]);
             $Contador++;
@@ -235,12 +235,12 @@ class Reporte_Catalogos extends poolConnection{
     public function ObtenerArregloCatalogoProveedores(){        
         $objMenu = new poolConnection();
         $con=$objMenu -> Conexion();
-        $objMenu -> BaseDatos();
+        $objMenu -> BaseDatos($con);
         
         $StrConsulta = "SELECT * FROM sa_proveedor ORDER BY Id_Proveedor";
-        $TProveedor = $objMenu ->Query($StrConsulta);
+        $TProveedor = $objMenu ->Query($con,$StrConsulta);
         $Catalogo = array();
-        while ($Proveedor = mysql_fetch_array($TProveedor)){
+        while ($Proveedor = mysqli_fetch_array($TProveedor)){
             $Catalogo[] = array($Proveedor["Id_Proveedor"], $Proveedor["Id_Giro"], $Proveedor["vNombre"], $Proveedor["vResponsable"], $Proveedor["vCalle"], $Proveedor["vNumero"], $Proveedor["Colonia"], $Proveedor["vPoblacion"], $Proveedor["vCP"], $Proveedor["cRFC"], $Proveedor["cPadronFedProv"], $Proveedor["cCedulaEmpadr"], $Proveedor["cCamaraComercio"], $Proveedor["cCanacintra"], $Proveedor["cCamaraRamo"], $Proveedor["vTelefono1"], $Proveedor["vTelefono2"], $Proveedor["bNacional"], $Proveedor["vTelFax"]);
         }
         return $Catalogo;
@@ -250,12 +250,12 @@ class Reporte_Catalogos extends poolConnection{
     public function ObtenerArregloCatalogoUnidadAdministrativa(){        
         $objMenu = new poolConnection();
         $con=$objMenu -> Conexion();
-        $objMenu -> BaseDatos();
+        $objMenu -> BaseDatos($con);
         
         $StrConsulta = "SELECT * FROM sa_unidadadmva ORDER BY Id";
-        $Rset = $objMenu ->Query($StrConsulta);
+        $Rset = $objMenu ->Query($con,$StrConsulta);
         $Catalogo = array();
-        while ($row = mysql_fetch_array($Rset)){
+        while ($row = mysqli_fetch_array($Rset)){
             $Catalogo[] = array(
                                 $row["Id"],	
                                 $row["Id_Unidad"],
@@ -280,12 +280,12 @@ class Reporte_Catalogos extends poolConnection{
     public function ObtenerArregloCatalogoTipoMovimiento(){        
         $objMenu = new poolConnection();
         $con=$objMenu -> Conexion();
-        $objMenu -> BaseDatos();
+        $objMenu -> BaseDatos($con);
         
         $StrConsulta = "SELECT * FROM sa_tipomovimiento ORDER BY Id";
-        $Rset = $objMenu ->Query($StrConsulta);
+        $Rset = $objMenu ->Query($con,$StrConsulta);
         $Catalogo = array();
-        while ($row = mysql_fetch_array($Rset)){
+        while ($row = mysqli_fetch_array($Rset)){
             $Catalogo[] = array(
                                 $row["Id"],
                                 $row["Id_TipoMovimiento"],
@@ -302,12 +302,12 @@ class Reporte_Catalogos extends poolConnection{
    public function ObtenerArregloCatalogoParametro(){        
         $objMenu = new poolConnection();
         $con=$objMenu -> Conexion();
-        $objMenu -> BaseDatos();
+        $objMenu -> BaseDatos($con);
         
         $StrConsulta = "SELECT * FROM sa_parametro ORDER BY Id_Parametro";
-        $Rset = $objMenu ->Query($StrConsulta);
+        $Rset = $objMenu ->Query($con,$StrConsulta);
         $Catalogo = array();
-        while ($row = mysql_fetch_array($Rset)){
+        while ($row = mysqli_fetch_array($Rset)){
             $Catalogo[] = array(
                                 $row["Id_Parametro"],
                                 $row["sDescripcion"],
@@ -319,12 +319,12 @@ class Reporte_Catalogos extends poolConnection{
     public function ObtenerArregloCatalogoEdoBien(){        
         $objMenu = new poolConnection();
         $con=$objMenu -> Conexion();
-        $objMenu -> BaseDatos();
+        $objMenu -> BaseDatos($con);
         
         $StrConsulta = "SELECT * FROM sa_estadobien ORDER BY Id_EdoBien";
-        $Rset = $objMenu ->Query($StrConsulta);
+        $Rset = $objMenu ->Query($con,$StrConsulta);
         $Catalogo = array();
-        while ($row = mysql_fetch_array($Rset)){
+        while ($row = mysqli_fetch_array($Rset)){
             $Catalogo[] = array(
                                 $row["Id_EdoBien"],			
                                 $row["vDescripcion"]
@@ -335,12 +335,12 @@ class Reporte_Catalogos extends poolConnection{
     public function ObtenerArregloCatalogoTipoBien(){        
         $objMenu = new poolConnection();
         $con=$objMenu -> Conexion();
-        $objMenu -> BaseDatos();
+        $objMenu -> BaseDatos($con);
         
         $StrConsulta = "SELECT * FROM sa_tipobieninventariable ORDER BY Id";
-        $Rset = $objMenu ->Query($StrConsulta);
+        $Rset = $objMenu ->Query($con,$StrConsulta);
         $Catalogo = array();
-        while ($row = mysql_fetch_array($Rset)){
+        while ($row = mysqli_fetch_array($Rset)){
             $Catalogo[] = array(
                                 $row["Id_TipoBien"],
                                 $row["vDescripcion"]
@@ -351,12 +351,12 @@ class Reporte_Catalogos extends poolConnection{
    public function ObtenerArregloCatalogoFactorPronostico(){        
         $objMenu = new poolConnection();
         $con=$objMenu -> Conexion();
-        $objMenu -> BaseDatos();
+        $objMenu -> BaseDatos($con);
         
         $StrConsulta = "SELECT * FROM  sa_factorpronostico ORDER BY Id";
-        $Rset = $objMenu ->Query($StrConsulta);
+        $Rset = $objMenu ->Query($con,$StrConsulta);
         $Catalogo = array();
-        while ($row = mysql_fetch_array($Rset)){
+        while ($row = mysqli_fetch_array($Rset)){
             $Catalogo[] = array(
                                 $row["Id"],
                                 $row["eAnio"],
@@ -369,12 +369,12 @@ class Reporte_Catalogos extends poolConnection{
     public function ObtenerJSONCatalogoUnidadAdmin($page, $limit, $sidx, $sord){        
         $objMenu = new poolConnection();
         $con=$objMenu -> Conexion();
-        $objMenu -> BaseDatos();
+        $objMenu -> BaseDatos($con);
         if(!$sidx) $sidx =1;
         
         $StrConsulta = "SELECT COUNT(*) AS count FROM sa_unidadadmva";
-        $ResultadoTotal = $objMenu->Query($StrConsulta);
-        $row = mysql_fetch_array($ResultadoTotal);
+        $ResultadoTotal = $objMenu->Query($con,$StrConsulta);
+        $row = mysqli_fetch_array($ResultadoTotal);
         $count = $row['count'];
         
         if( $count > 0 ) {
@@ -386,12 +386,12 @@ class Reporte_Catalogos extends poolConnection{
         $start = $limit*$page - $limit; // do not put $limit*($page - 1)
         
         $StrConsulta = "SELECT * FROM sa_unidadadmva ORDER BY Id LIMIT ".$start." , ".$limit;
-        $TProveedor= $objMenu ->Query($StrConsulta);
+        $TProveedor= $objMenu ->Query($con,$StrConsulta);
         $Respuesta->page = $page;
         $Respuesta->total = $total_pages;
         $Respuesta->records = $count;
         $Contador = 0;
-        while ($rowF = mysql_fetch_array($TProveedor)){
+        while ($rowF = mysqli_fetch_array($TProveedor)){
             $Respuesta->rows[$Contador]["id"] = $row["Id"];
             $Respuesta->rows[$Contador]["cell"] = array($rowF["Id"],	
                                                         $rowF["Id_Unidad"],	
@@ -418,12 +418,12 @@ class Reporte_Catalogos extends poolConnection{
     public function ObtenerJSONCatalogoTipoMovimiento($page, $limit, $sidx, $sord){        
         $objMenu = new poolConnection();
         $con=$objMenu -> Conexion();
-        $objMenu -> BaseDatos();
+        $objMenu -> BaseDatos($con);
         if(!$sidx) $sidx =1;
         
         $StrConsulta = "SELECT COUNT(*) AS count FROM sa_tipomovimiento";
-        $ResultadoTotal = $objMenu->Query($StrConsulta);
-        $row = mysql_fetch_array($ResultadoTotal);
+        $ResultadoTotal = $objMenu->Query($con,$StrConsulta);
+        $row = mysqli_fetch_array($ResultadoTotal);
         $count = $row['count'];
         
         if( $count > 0 ) {
@@ -435,12 +435,12 @@ class Reporte_Catalogos extends poolConnection{
         $start = $limit*$page - $limit; // do not put $limit*($page - 1)
         
         $StrConsulta = "SELECT * FROM sa_tipomovimiento ORDER BY Id LIMIT ".$start." , ".$limit;
-        $TProveedor= $objMenu ->Query($StrConsulta);
+        $TProveedor= $objMenu ->Query($con,$StrConsulta);
         $Respuesta->page = $page;
         $Respuesta->total = $total_pages;
         $Respuesta->records = $count;
         $Contador = 0;
-        while ($row = mysql_fetch_array($TProveedor)){
+        while ($row = mysqli_fetch_array($TProveedor)){
             $Respuesta->rows[$Contador]["id"] = $row["Id"];
             $Respuesta->rows[$Contador]["cell"] = array($row["Id"],
                                                         $row["Id_TipoMovimiento"],
@@ -458,12 +458,12 @@ class Reporte_Catalogos extends poolConnection{
     public function ObtenerJSONCatalogoParametro($page, $limit, $sidx, $sord){        
         $objMenu = new poolConnection();
         $con=$objMenu -> Conexion();
-        $objMenu -> BaseDatos();
+        $objMenu -> BaseDatos($con);
         if(!$sidx) $sidx =1;
         
         $StrConsulta = "SELECT COUNT(*) AS count FROM sa_parametro";
-        $ResultadoTotal = $objMenu->Query($StrConsulta);
-        $row = mysql_fetch_array($ResultadoTotal);
+        $ResultadoTotal = $objMenu->Query($con,$StrConsulta);
+        $row = mysqli_fetch_array($ResultadoTotal);
         $count = $row['count'];
         
         if( $count > 0 ) {
@@ -475,12 +475,12 @@ class Reporte_Catalogos extends poolConnection{
         $start = $limit*$page - $limit; // do not put $limit*($page - 1)
         
         $StrConsulta = "SELECT * FROM sa_parametro ORDER BY Id_Parametro LIMIT ".$start." , ".$limit;
-        $TProveedor= $objMenu ->Query($StrConsulta);
+        $TProveedor= $objMenu ->Query($con,$StrConsulta);
         $Respuesta->page = $page;
         $Respuesta->total = $total_pages;
         $Respuesta->records = $count;
         $Contador = 0;
-        while ($row = mysql_fetch_array($TProveedor)){
+        while ($row = mysqli_fetch_array($TProveedor)){
             $Respuesta->rows[$Contador]["id"] = $row["Id_Parametro"];
             $Respuesta->rows[$Contador]["cell"] = array($row["Id_Parametro"],
                                                         $row["sDescripcion"],
@@ -493,12 +493,12 @@ class Reporte_Catalogos extends poolConnection{
      public function ObtenerJSONCatalogoEstadoBien($page, $limit, $sidx, $sord){        
         $objMenu = new poolConnection();
         $con=$objMenu -> Conexion();
-        $objMenu -> BaseDatos();
+        $objMenu -> BaseDatos($con);
         if(!$sidx) $sidx =1;
         
         $StrConsulta = "SELECT COUNT(*) AS count FROM sa_estadobien";
-        $ResultadoTotal = $objMenu->Query($StrConsulta);
-        $row = mysql_fetch_array($ResultadoTotal);
+        $ResultadoTotal = $objMenu->Query($con,$StrConsulta);
+        $row = mysqli_fetch_array($ResultadoTotal);
         $count = $row['count'];
         
         if( $count > 0 ) {
@@ -510,12 +510,12 @@ class Reporte_Catalogos extends poolConnection{
         $start = $limit*$page - $limit; // do not put $limit*($page - 1)
         
         $StrConsulta = "SELECT * FROM sa_estadobien ORDER BY Id_EdoBien LIMIT ".$start." , ".$limit;
-        $TProveedor= $objMenu ->Query($StrConsulta);
+        $TProveedor= $objMenu ->Query($con,$StrConsulta);
         $Respuesta->page = $page;
         $Respuesta->total = $total_pages;
         $Respuesta->records = $count;
         $Contador = 0;
-        while ($row = mysql_fetch_array($TProveedor)){
+        while ($row = mysqli_fetch_array($TProveedor)){
             $Respuesta->rows[$Contador]["id"] = $row["Id_EdoBien"];
             $Respuesta->rows[$Contador]["cell"] = array($row["Id_EdoBien"],			
                                                         $row["vDescripcion"]
@@ -527,12 +527,12 @@ class Reporte_Catalogos extends poolConnection{
     public function ObtenerJSONCatalogoTipoBien($page, $limit, $sidx, $sord){        
         $objMenu = new poolConnection();
         $con=$objMenu -> Conexion();
-        $objMenu -> BaseDatos();
+        $objMenu -> BaseDatos($con);
         if(!$sidx) $sidx =1;
         
         $StrConsulta = "SELECT COUNT(*) AS count FROM sa_tipobieninventariable";
-        $ResultadoTotal = $objMenu->Query($StrConsulta);
-        $row = mysql_fetch_array($ResultadoTotal);
+        $ResultadoTotal = $objMenu->Query($con,$StrConsulta);
+        $row = mysqli_fetch_array($ResultadoTotal);
         $count = $row['count'];
         
         if( $count > 0 ) {
@@ -544,12 +544,12 @@ class Reporte_Catalogos extends poolConnection{
         $start = $limit*$page - $limit; // do not put $limit*($page - 1)
         
         $StrConsulta = "SELECT * FROM sa_tipobieninventariable ORDER BY Id_TipoBien LIMIT ".$start." , ".$limit;
-        $TProveedor= $objMenu ->Query($StrConsulta);
+        $TProveedor= $objMenu ->Query($con,$StrConsulta);
         $Respuesta->page = $page;
         $Respuesta->total = $total_pages;
         $Respuesta->records = $count;
         $Contador = 0;
-        while ($row = mysql_fetch_array($TProveedor)){
+        while ($row = mysqli_fetch_array($TProveedor)){
             $Respuesta->rows[$Contador]["id"] = $row["Id_TipoBien"];
             $Respuesta->rows[$Contador]["cell"] = array($row["Id_TipoBien"],
                                                         $row["vDescripcion"]
@@ -561,12 +561,12 @@ class Reporte_Catalogos extends poolConnection{
       public function ObtenerJSONCatalogoFactorPronostico($page, $limit, $sidx, $sord){        
         $objMenu = new poolConnection();
         $con=$objMenu -> Conexion();
-        $objMenu -> BaseDatos();
+        $objMenu -> BaseDatos($con);
         if(!$sidx) $sidx =1;
         
         $StrConsulta = "SELECT COUNT(*) AS count FROM sa_factorpronostico";
-        $ResultadoTotal = $objMenu->Query($StrConsulta);
-        $row = mysql_fetch_array($ResultadoTotal);
+        $ResultadoTotal = $objMenu->Query($con,$StrConsulta);
+        $row = mysqli_fetch_array($ResultadoTotal);
         $count = $row['count'];
         
         if( $count > 0 ) {
@@ -578,12 +578,12 @@ class Reporte_Catalogos extends poolConnection{
         $start = $limit*$page - $limit; // do not put $limit*($page - 1)
         
         $StrConsulta = "SELECT * FROM sa_factorpronostico ORDER BY Id LIMIT ".$start." , ".$limit;
-        $TProveedor= $objMenu ->Query($StrConsulta);
+        $TProveedor= $objMenu ->Query($con,$StrConsulta);
         $Respuesta->page = $page;
         $Respuesta->total = $total_pages;
         $Respuesta->records = $count;
         $Contador = 0;
-        while ($row = mysql_fetch_array($TProveedor)){
+        while ($row = mysqli_fetch_array($TProveedor)){
             $Respuesta->rows[$Contador]["id"] = $row["Id"];
             $Respuesta->rows[$Contador]["cell"] = array($row["Id"],
                                                         $row["eAnio"],
@@ -597,12 +597,12 @@ class Reporte_Catalogos extends poolConnection{
     public function ObtenerJSONCatalogoCABMSConsumible($page, $limit, $sidx, $sord){        
         $objMenu = new poolConnection();
         $con=$objMenu -> Conexion();
-        $objMenu -> BaseDatos();
+        $objMenu -> BaseDatos($con);
         if(!$sidx) $sidx =1;
         
         $StrConsulta = "SELECT COUNT(*) AS count FROM sa_cabmsconsumible";
-        $ResultadoTotal = $objMenu->Query($StrConsulta);
-        $row = mysql_fetch_array($ResultadoTotal);
+        $ResultadoTotal = $objMenu->Query($con,$StrConsulta);
+        $row = mysqli_fetch_array($ResultadoTotal);
         $count = $row['count'];
         
         if( $count > 0 ) {
@@ -614,12 +614,12 @@ class Reporte_Catalogos extends poolConnection{
         $start = $limit*$page - $limit; // do not put $limit*($page - 1)
         
         $StrConsulta = "SELECT * FROM sa_cabmsconsumible ORDER BY Id LIMIT ".$start." , ".$limit;
-        $TCABMS = $objMenu ->Query($StrConsulta);
+        $TCABMS = $objMenu ->Query($con,$StrConsulta);
         $Respuesta->page = $page;
         $Respuesta->total = $total_pages;
         $Respuesta->records = $count;
         $Contador = 0;
-        while ($CABMS = mysql_fetch_array($TCABMS)){
+        while ($CABMS = mysqli_fetch_array($TCABMS)){
             $Respuesta->rows[$Contador]["id"] = $CABMS["Id_CveInternaAC"];
             $Respuesta->rows[$Contador]["cell"] = array(
                                                         $CABMS["Id_CveInternaAC"],
@@ -637,12 +637,12 @@ class Reporte_Catalogos extends poolConnection{
     public function ObtenerArregloCatalogoCABMSConsumible(){        
         $objMenu = new poolConnection();
         $con=$objMenu -> Conexion();
-        $objMenu -> BaseDatos();
+        $objMenu -> BaseDatos($con);
         
         $StrConsulta = "SELECT * FROM sa_cabmsconsumible ORDER BY Id";
-        $TCABMS = $objMenu ->Query($StrConsulta);
+        $TCABMS = $objMenu ->Query($con,$StrConsulta);
         $Catalogo = array();
-        while ($CABMS = mysql_fetch_array($TCABMS)){
+        while ($CABMS = mysqli_fetch_array($TCABMS)){
             $Catalogo[] = array($CABMS["Id_CveInternaAC"], $CABMS["Id_CveARTCABMS"], $CABMS["vDescripcion"], $CABMS["Id_CABMS"], $CABMS["Id_UMedida"], $CABMS["ePartidaPresupuestal"]);
         }
         return $Catalogo;

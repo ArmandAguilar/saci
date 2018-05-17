@@ -6,7 +6,7 @@ class Reporte_Consumibles_E
         $ArrayFinal = split("/",$AData->FechaFinal);
         $FechaInicio="$ArrayInicio[2]/$ArrayInicio[0]/$ArrayInicio[1]";
         $FechaFinal="$ArrayFinal[2]/$ArrayFinal[0]/$ArrayFinal[1]";
-        $where .=" ";
+        $where =" ";
 
         if(!empty($AData->FechaInicial) && !empty($AData->FechaFinal)) {
             $where .=" sa_movconsumo.dFechaRegistro >='$FechaInicio' and sa_movconsumo.dFechaRegistro <='$FechaFinal' and "; 
@@ -23,7 +23,7 @@ class Reporte_Consumibles_E
 
         $objG = new poolConnection();
         $con= $objG -> Conexion();
-        $objG->BaseDatos();
+        $objG->BaseDatos($con);
 
         $StrConsulta = "
             Select
@@ -54,7 +54,7 @@ class Reporte_Consumibles_E
                 sa_tipomovimiento.bEntrada =  '1' and
                 sa_tipomovimiento.bEstadoMov =  '1'
                 and sa_proveedor.Id_Proveedor=sa_pedido.Id_PRoveedor";
-        $TResultado = $objG ->Query($StrConsulta);
+        $TResultado = $objG ->Query($con,$StrConsulta);
         return $TResultado;
     }    
 }

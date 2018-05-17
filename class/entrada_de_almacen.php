@@ -5,13 +5,13 @@ class Entrada_de_Almacen extends poolConnection{
     public function ObtenerTiposMovimiento() {
         $objConexion = new poolConnection();
         $con = $objConexion->Conexion();
-        $objConexion->BaseDatos();
+        $objConexion->BaseDatos($con);
 
         $StrConsulta = "SELECT * FROM sa_tipomovimiento tm ORDER BY tm.Id";
-        $TTiposMovimiento = $objConexion->Query($StrConsulta);
+        $TTiposMovimiento = $objConexion->Query($con,$StrConsulta);
         $Contador = 0;
-        if (mysql_num_rows($TTiposMovimiento) > 0) {
-            while ($TipoMovimiento = mysql_fetch_array($TTiposMovimiento)) {
+        if (mysqli_num_rows($TTiposMovimiento) > 0) {
+            while ($TipoMovimiento = mysqli_fetch_array($TTiposMovimiento)) {
                 $Respuesta[$Contador]->ID = $TipoMovimiento["Id_TipoMovimiento"];
                 $Respuesta[$Contador]->Descripcion = $TipoMovimiento["Id_TipoMovimiento"].' - '.$TipoMovimiento["vDescripcion"];
                 $Contador++;
@@ -87,12 +87,12 @@ class Entrada_de_Almacen extends poolConnection{
         if ($StrConsulta != "") {
             $objConexion = new poolConnection();
             $con = $objConexion->Conexion();
-            $objConexion->BaseDatos();
+            $objConexion->BaseDatos($con);
             
-            $TPedidos = $objConexion->Query($StrConsulta);
+            $TPedidos = $objConexion->Query($con,$StrConsulta);
             $Contador = 0;            
-            if (mysql_num_rows($TPedidos) > 0) {
-                while ($Pedido = mysql_fetch_array($TPedidos)) {
+            if (mysqli_num_rows($TPedidos) > 0) {
+                while ($Pedido = mysqli_fetch_array($TPedidos)) {
                     //$Respuesta->rows[$Contador]["cell"] = Array($Pedido["id_pedido"], utf8_encode($Pedido["vnombre"]), $Pedido["dfecharegistro"]);
                     $Respuesta->Pedidos[$Contador]->idpedido = $Pedido["id_pedido"];
                     $Respuesta->Pedidos[$Contador]->proveedor = $Pedido["vnombre"];
@@ -152,11 +152,11 @@ class Entrada_de_Almacen extends poolConnection{
             ";
         $objConexion = new poolConnection();
         $con = $objConexion->Conexion();
-        $objConexion->BaseDatos();
+        $objConexion->BaseDatos($con);
 
-        $TDetallePedido = $objConexion->Query($StrConsulta);
+        $TDetallePedido = $objConexion->Query($con,$StrConsulta);
         $Contador = 0;
-        if (mysql_num_rows($TDetallePedido) > 0) {
+        if (mysqli_num_rows($TDetallePedido) > 0) {
             while ($Detalle = mysql_fetch_array($TDetallePedido)) {
                 $Respuesta->Detalle[$Contador]->idcabms = $Detalle["idcabms"];
                 $Respuesta->Detalle[$Contador]->idclaveAC = $Detalle["idclaveAC"];
@@ -211,15 +211,15 @@ class Entrada_de_Almacen extends poolConnection{
         ///echo $StrConsulta."<p/>";
         $objConexion = new poolConnection();
         $con = $objConexion->Conexion();
-        $objConexion->BaseDatos();
+        $objConexion->BaseDatos($con);
         
-        $TblPrecios = $objConexion->Query($StrConsulta);
+        $TblPrecios = $objConexion->Query($con,$StrConsulta);
         
         $PrecioUnitario = 0;
         $PrecioIVA = 0;
         $Existencia = 0;
-        if (mysql_num_rows($TblPrecios) > 0) {
-            $Precios = mysql_fetch_array($TblPrecios);
+        if (mysqli_num_rows($TblPrecios) > 0) {
+            $Precios = mysqli_fetch_array($TblPrecios);
             $PrecioUnitario = $Precios["precio"];
             $PrecioIVA = $Precios["iva"];
             $ExistenciaDisponible = $Precios["existenciainimovto"];
@@ -242,10 +242,10 @@ class Entrada_de_Almacen extends poolConnection{
                 )
             ";
             ///echo $StrConsulta."<p/>";
-            $objConexion->Query("SET AUTOCOMMIT=0");
-            $objConexion->Query("START TRANSACTION");
+            $objConexion->Query($con,"SET AUTOCOMMIT=0");
+            $objConexion->Query($con,"START TRANSACTION");
             
-            $Resultado = $objConexion->Query($StrConsulta);
+            $Resultado = $objConexion->Query($con,$StrConsulta);
             if (!$Resultado) {
                 //$objConexion->Query("ROLLBACK");
                 $Modificado = 0;
@@ -262,8 +262,8 @@ class Entrada_de_Almacen extends poolConnection{
                       AND id_cveinternaac=".$IDClaveInternaAC."
                 ";
                 ///echo $StrConsulta."<p/>";
-                $Resultado = $objConexion->Query($StrConsulta);
-                $Existe = mysql_fetch_array($Resultado);
+                $Resultado = $objConexion->Query($con,$StrConsulta);
+                $Existe = mysqli_fetch_array($Resultado);
                 ///echo "Existe MovDirecto) ".$Existe["existe"]."<p/>";
                 if ($Existe["existe"] == "0") {
                     $StrConsulta = "
@@ -287,7 +287,7 @@ class Entrada_de_Almacen extends poolConnection{
                     ";
                 }
                 ///echo $StrConsulta."<p/>";
-                $Resultado = $objConexion->Query($StrConsulta);
+                $Resultado = $objConexion->Query($con,$StrConsulta);
                 if (!$Resultado) {
                     //$objConexion->Query("ROLLBACK");
                     $Modificado = 0;
@@ -314,8 +314,8 @@ class Entrada_de_Almacen extends poolConnection{
             ";
             ///echo $StrConsulta."<p/>";
             $Reporte = "";
-            $Resultado = $objConexion->Query($StrConsulta);
-            $Existe = mysql_fetch_array($Resultado);
+            $Resultado = $objConexion->Query($con,$StrConsulta);
+            $Existe = mysqli_fetch_array($Resultado);
             ///echo "Existe EXISTENCIASCONSUMIBLE) ".$Existe["existe"]."<p/>";
             if ($Existe["existe"] == "0") {
                 $StrConsulta = "
@@ -340,7 +340,7 @@ class Entrada_de_Almacen extends poolConnection{
                 ";
             }
             ///echo $StrConsulta."<p/>";
-            $Resultado = $objConexion->Query($StrConsulta);
+            $Resultado = $objConexion->Query($con,$StrConsulta);
             if (!$Resultado) {
                 //$objConexion->Query("ROLLBACK");
                 $Modificado = 0;
@@ -364,7 +364,7 @@ class Entrada_de_Almacen extends poolConnection{
                     )
                 ";
                 ///echo $StrConsulta."<p/>";
-                $Resultado = $objConexion->Query($StrConsulta);
+                $Resultado = $objConexion->Query($con,$StrConsulta);
                 if (!$Resultado) {
                     //$objConexion->Query("ROLLBACK");
                     $Modificado = 0;
@@ -382,7 +382,7 @@ class Entrada_de_Almacen extends poolConnection{
                     AND id_partida = ".$xIDPartida."
             ";
             ///echo $StrConsulta."<p/>";
-            $Resultado = $objConexion->Query($StrConsulta);
+            $Resultado = $objConexion->Query($con,$StrConsulta);
             if (!$Resultado) {
                 //$objConexion->Query("ROLLBACK");
                 ///echo $StrConsulta."<p/>";
@@ -399,8 +399,8 @@ class Entrada_de_Almacen extends poolConnection{
                         AND id_cveinternaAC=".$IDClaveInternaAC."
                 ";
                 ///echo $StrConsulta."<p/>";
-                $Resultado = $objConexion->Query($StrConsulta);
-                $Existe = mysql_fetch_array($Resultado);
+                $Resultado = $objConexion->Query($con,$StrConsulta);
+                $Existe = mysqli_fetch_array($Resultado);
                 ///echo "Existe LOCARTICULOS) ".$Existe["existe"]."<p/>";
                 if ($Existe["existe"] == "0") {
                     $StrConsulta = "

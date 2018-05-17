@@ -16,11 +16,11 @@ class Reporte_DesglosePedido extends poolConnection
      public function getProveedor($id)
     {
         $objProveedor = new poolConnection();
-        $objProveedor->Conexion();
-        $objProveedor->BaseDatos();
+        $con=$objProveedor->Conexion();
+        $objProveedor->BaseDatos($con);
         $sqlp="select vNombre from sa_proveedor where Id_Proveedor='$id'";
-        $RSetPro=$objProveedor->Query($sqlp);
-        while($fila = mysql_fetch_array($RSetPro))
+        $RSetPro=$objProveedor->Query($con,$sqlp);
+        while($fila = mysqli_fetch_array($RSetPro))
         {
             $NProveedor = $fila[vNombre];
         }
@@ -34,6 +34,7 @@ class Reporte_DesglosePedido extends poolConnection
         $ACLicitacion=$AData->Licitacion;
         $ACRequisicion=$AData->Requisicion;
         #Preparamos ware
+        $where = "";
         if($ACFolio=="Si")
         {
             $where.="Id_Pedido like '%$Patron%' or "; 
@@ -52,17 +53,17 @@ class Reporte_DesglosePedido extends poolConnection
         
         $objGridPedido = new poolConnection();
         $con=$objGridPedido->Conexion();
-        $objGridPedido->BaseDatos();
+        $objGridPedido->BaseDatos($con);
         $sql="SELECT Id_Pedido, 
                      vNoRequisicion,
                      vNoLicitacion,
                      Id_Proveedor,
                      dFechaPedido
                      FROM sa_pedido Where $where";
-        $RSet=$objGridPedido->Query($sql);
+        $RSet=$objGridPedido->Query($con,$sql);
         $FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
                                          <tbody>";
-        while($fila=mysql_fetch_array($RSet))
+        while($fila=mysqli_fetch_array($RSet))
         {
             $i++;
             $proveedor = $objNomProveedor->getProveedor($fila[Id_Proveedor]);
@@ -76,8 +77,7 @@ class Reporte_DesglosePedido extends poolConnection
                                   <td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$fila[dFechaPedido]</td>    
                               </tr>";
         }
-        mysql_free_result($RSet);
-        $objGridPedido->Cerrar($con);
+        $objGridPedido->Cerrar($con,$RSet);
         $FliexGrid.="       </tbody>
                                                       </table><script>$('.flexme1').flexigrid({
                           title: '',
@@ -112,6 +112,7 @@ class Reporte_DesglosePedido extends poolConnection
         $ACLicitacion=$AData->Licitacion;
         $ACRequisicion=$AData->Requisicion;
         #Preparamos ware
+        $where = "";
         if($ACFolio=="Si")
         {
             $where.="Id_Pedido like '%$Patron%' or "; 
@@ -130,17 +131,17 @@ class Reporte_DesglosePedido extends poolConnection
         
         $objGridPedido = new poolConnection();
         $con=$objGridPedido->Conexion();
-        $objGridPedido->BaseDatos();
+        $objGridPedido->BaseDatos($con);
         $sql="SELECT Id_Pedido, 
                      vNoRequisicion,
                      vNoLicitacion,
                      Id_Proveedor,
                      dFechaPedido
                      FROM sa_pedido Where $where";
-        $RSet=$objGridPedido->Query($sql);
+        $RSet=$objGridPedido->Query($con,$sql);
         $FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
                                          <tbody>";
-        while($fila=mysql_fetch_array($RSet))
+        while($fila=mysqli_fetch_array($RSet))
         {
             $i++;
             $proveedor = $objNomProveedor->getProveedor($fila[Id_Proveedor]);
@@ -154,8 +155,7 @@ class Reporte_DesglosePedido extends poolConnection
                                   <td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$fila[dFechaPedido]</td>    
                               </tr>";
         }
-        mysql_free_result($RSet);
-        $objGridPedido->Cerrar($con);
+        $objGridPedido->Cerrar($con,$RSet);
         $FliexGrid.="       </tbody>
                                                       </table><script>$('.flexme1').flexigrid({
                           title: '',
@@ -206,7 +206,7 @@ class Reporte_DesglosePedido extends poolConnection
                 }
               
 
-      $where .=" ";
+      $where =" ";
                    if(!empty($cTipoAlmacen))
                     {
                        $where .=" sa_detallepedido.cTipoAlmacen='$cTipoAlmacen' and";   
@@ -252,7 +252,7 @@ class Reporte_DesglosePedido extends poolConnection
       
         $objDatosPDF = new poolConnection();
         $con=$objDatosPDF -> Conexion();
-        $objDatosPDF -> BaseDatos();
+        $objDatosPDF -> BaseDatos($con);
         
         $StrConsulta = "SELECT 
                                         sa_detallepedido.Id_Pedido As Pedido,
@@ -278,9 +278,9 @@ class Reporte_DesglosePedido extends poolConnection
                                         sa_unidadadmva.Id_Unidad =sa_pedido.Id_UnidadAdmonDes and
                                         sa_pedido.Id_Proveedor = sa_proveedor.Id_Proveedor  and
                                         sa_detallepedido.Id_UMedida=sa_umedida.Id_UMedida";
-       $RSet = $objDatosPDF ->Query($StrConsulta);
+       $RSet = $objDatosPDF ->Query($con,$StrConsulta);
         $Catalogo = array();
-        while ($Row = mysql_fetch_array($RSet)){
+        while ($Row = mysqli_fetch_array($RSet)){
             
           $Catalogo[] = array($Row["Pedido"], 
                                 $Row["Licitacion"],
@@ -294,8 +294,8 @@ class Reporte_DesglosePedido extends poolConnection
                                 );
         }
         
-        mysql_free_result($RSet);
-        $objDatosPDF->Cerrar($con);
+
+        $objDatosPDF->Cerrar($con,$RSet);
         //$Catalogo[] = array( $whereFinal);
         return $Catalogo;
   

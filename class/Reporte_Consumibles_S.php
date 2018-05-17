@@ -6,7 +6,7 @@ class Reporte_Consumibles_S
         $ArrayFinal = split("/",$AData->FechaFinal);
         $FechaInicio="$ArrayInicio[2]/$ArrayInicio[0]/$ArrayInicio[1]";
         $FechaFinal="$ArrayFinal[2]/$ArrayFinal[0]/$ArrayFinal[1]";
-        $where .=" ";
+        $where =" ";
 
         if(!empty($AData->FechaInicial) && !empty($AData->FechaFinal)) {
             $where .=" and sa_movconsumo.dFechaRegistro >='$FechaInicio' and sa_movconsumo.dFechaRegistro <='$FechaFinal'"; 
@@ -22,8 +22,8 @@ class Reporte_Consumibles_S
         //$whereFinal = substr($where, 0, -4);
         $whereFinal = $where;
         $objG = new poolConnection();
-        $con= $objG -> Conexion();
-        $objG->BaseDatos();
+        $con = $objG -> Conexion();
+        $objG->BaseDatos($con);
         
         $StrConsulta = "
             Select
@@ -58,7 +58,7 @@ class Reporte_Consumibles_S
         
         //$StrConsulta = "SELECT * FROM sa_movconsumo LIMIT 100";
         //echo $StrConsulta."<br/>";
-        $TResultado = $objG->Query($StrConsulta);
+        $TResultado = $objG->Query($con,$StrConsulta);
         return $TResultado;
     }    
 }

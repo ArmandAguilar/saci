@@ -17,15 +17,15 @@ class Reporte_CapasidadAlmacen extends poolConnection{
  public function vMaximo($CAMBS)
  {
     $obj = new poolConnection();
-    $obj->Conexion();
-    $obj->BaseDatos();
+    $con=$obj->Conexion();
+    $obj->BaseDatos($con);
     $sql="select (9 * sa_existenciasconsumible.eConsumoPromedio) as Max
           from
           sa_existenciasconsumible
           where
             sa_existenciasconsumible.Id_CABMS='$CAMBS'";
-    $RSet=$obj->Query($sql);
-    while ($row = mysql_fetch_array($RSet))
+    $RSet=$obj->Query($con,$sql);
+    while ($row = mysqli_fetch_array($RSet))
            {
               $Max = $row[Max];
            }
@@ -34,15 +34,15 @@ class Reporte_CapasidadAlmacen extends poolConnection{
 public function vMinimo($CAMBS)
 {
     $obj = new poolConnection();
-    $obj->Conexion();
-    $obj->BaseDatos();
+    $con=$obj->Conexion();
+    $obj->BaseDatos($con);
     $sql="select (3 * sa_existenciasconsumible.eConsumoPromedio) as Min
           from
           sa_existenciasconsumible
           where
             sa_existenciasconsumible.Id_CABMS='$CAMBS'";
-    $RSet=$obj->Query($sql);
-    while ($row = mysql_fetch_array($RSet))
+    $RSet=$obj->Query($con,$sql);
+    while ($row = mysqli_fetch_array($RSet))
            {
               $Min = $row[Min];
            }
@@ -61,7 +61,7 @@ public function Capasidad($Existencias)
                         
 			$objGrid = new poolConnection();
 			$con=$objGrid->Conexion();
-			$objGrid->BaseDatos();
+			$objGrid->BaseDatos($con);
 			$sql="Select
                             DISTINCT(sa_existenciasconsumible.Id_CABMS),
                             sa_cabms.vDescripcionCABMS,
@@ -75,10 +75,10 @@ public function Capasidad($Existencias)
                             where
                             sa_existenciasconsumible.Id_CABMS = sa_cabms.Id_CABMS and
                             sa_cabms.Id_UMedida = sa_umedida.Id_UMedida";
-			$RSet=$objGrid->Query($sql);
+			$RSet=$objGrid->Query($con,$sql);
 			
                      $Capasidad = "Normal";   
-		    while($fila=mysql_fetch_array($RSet))
+		    while($fila=mysqli_fetch_array($RSet))
 			{
 			
 			            $vMax=$this->vMaximo($fila[Id_CABMS]);
@@ -110,8 +110,7 @@ public function Capasidad($Existencias)
                                        
                        
 			}
-			mysql_free_result($RSet);
-			$objGrid->Cerrar($con);
+			$objGrid->Cerrar($con,$RSet);
                         
                         $FliexGrid = "<br><br><center><table class=\"flexme1\">
 			<tbody>$FliexGrid2";
@@ -158,7 +157,7 @@ public function Capasidad($Existencias)
  
  	$objDatosPDF = new poolConnection();
  	$con=$objDatosPDF -> Conexion();
- 	$objDatosPDF -> BaseDatos();
+ 	$objDatosPDF -> BaseDatos($con);
  		
  	$StrConsulta="Select
                             DISTINCT(sa_existenciasconsumible.Id_CABMS),
@@ -174,10 +173,10 @@ public function Capasidad($Existencias)
                             sa_existenciasconsumible.Id_CABMS = sa_cabms.Id_CABMS and
                             sa_cabms.Id_UMedida = sa_umedida.Id_UMedida";
  
- 	$RSet = $objDatosPDF ->Query($StrConsulta);
+ 	$RSet = $objDatosPDF ->Query($con,$StrConsulta);
  	$Catalogo = array();
  	$i=0;
- 	while ($Row = mysql_fetch_array($RSet))
+ 	while ($Row = mysqli_fetch_array($RSet))
  	{
  			
  		$i++;
@@ -207,9 +206,8 @@ public function Capasidad($Existencias)
 		 		);
  		}
  	}
- 		
- 	mysql_free_result($RSet);
- 	$objDatosPDF->Cerrar($con);
+
+ 	$objDatosPDF->Cerrar($con,$RSet);
  	return $Catalogo;
  }
 }

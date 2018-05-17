@@ -18,7 +18,7 @@ class DA1 extends poolConnection{
         $FechaFinal = $AData->FechaFinal;
         $Cambs = $AData->Id_Cambs;
         $objExistencias =  new poolConnection();
-        $objExistencias ->Conexion();
+        $con=$objExistencias ->Conexion();
         $sql="select 
                 IFNULL(sum(eExistenciaIniMovto),0) As Existencias
                 from  
@@ -28,8 +28,8 @@ class DA1 extends poolConnection{
                 (sa_movconsumo.Id_TipoMovimiento like '01%' or sa_movconsumo.Id_TipoMovimiento = '2502') and
                  dFechaRegistro>='$FechaInicial' and  dFechaRegistro<='$FechaFinal'";
 
-        $RSet=$objExistencias->Query($sql);
-        while ($row = mysql_fetch_array($RSet))
+        $RSet=$objExistencias->Query($con,$sql);
+        while ($row = mysqli_fetch_array($RSet))
               {
                 $ExistenciaIni =$row[Existencias]; 
               }
@@ -42,7 +42,7 @@ class DA1 extends poolConnection{
         $FechaFinal = $AData->FechaFinal;
         $Cambs = $AData->Id_Cambs;
         $objExistencias =  new poolConnection();
-        $objExistencias ->Conexion();
+        $con=$objExistencias ->Conexion();
         $sql="select IFNULL(sum(eCantidad),0) As MovEnt
                 from   
                 sa_movconsumo
@@ -52,8 +52,8 @@ class DA1 extends poolConnection{
                 dFechaRegistro>='$FechaInicial' and
                 dFechaRegistro<='$FechaFinal'";
 
-        $RSet=$objExistencias->Query($sql);
-        while ($row = mysql_fetch_array($RSet))
+        $RSet=$objExistencias->Query($con,$sql);
+        while ($row = mysqli_fetch_array($RSet))
               {
                 $MovEntrada =$row[MovEnt]; 
               }
@@ -66,7 +66,7 @@ class DA1 extends poolConnection{
         $FechaFinal = $AData->FechaFinal;
         $Cambs = $AData->Id_Cambs;
         $objExistencias =  new poolConnection();
-        $objExistencias ->Conexion();
+        $con=$objExistencias ->Conexion();
         $sql="select IFNULL(sum(eCantidad),0) As MovSal
                 from   
                 sa_movconsumo
@@ -76,8 +76,8 @@ class DA1 extends poolConnection{
                 dFechaRegistro>='$FechaInicial' and
                 dFechaRegistro<='$FechaFinal'";
 
-        $RSet=$objExistencias->Query($sql);
-        while ($row = mysql_fetch_array($RSet))
+        $RSet=$objExistencias->Query($con,$sql);
+        while ($row = mysqli_fetch_array($RSet))
               {
                 $MovSalida =$row[MovSal]; 
               }
@@ -90,7 +90,7 @@ class DA1 extends poolConnection{
         $FechaFinal = $AData->FechaFinal;
         $Cambs = $AData->Id_Cambs;
         $objExistencias =  new poolConnection();
-        $objExistencias ->Conexion();
+        $con=$objExistencias ->Conexion();
         $sql="select IFNULL(sum(mCostoUnitario),0) As MovEntS
                 from   
                 sa_movconsumo
@@ -100,14 +100,14 @@ class DA1 extends poolConnection{
                 dFechaRegistro>='$FechaInicial' and
                 dFechaRegistro<='$FechaFinal'";
 
-        $RSet=$objExistencias->Query($sql);
-        while ($row = mysql_fetch_array($RSet))
+        $RSet=$objExistencias->Query($con,$sql);
+        while ($row = mysqli_fetch_array($RSet))
               {
                 $MovEntradaS =$row[MovEntS]; 
               }
         $MovSalidaS=0;
         $objExistencias1 =  new poolConnection();
-        $objExistencias1 ->Conexion();
+        $con=$objExistencias1 ->Conexion();
         $sql="select IFNULL(sum(mCostoUnitario),0) As MovSalS
                 from   
                 sa_movconsumo
@@ -117,8 +117,8 @@ class DA1 extends poolConnection{
                 dFechaRegistro>='$FechaInicial' and
                 dFechaRegistro<='$FechaFinal'";
 
-        $RSet=$objExistencias1->Query($sql);
-        while ($row = mysql_fetch_array($RSet))
+        $RSet=$objExistencias1->Query($con,$sql);
+        while ($row = mysqli_fetch_array($RSet))
               {
                 $MovSalidaS =$row[MovSalS]; 
               }
@@ -129,14 +129,14 @@ class DA1 extends poolConnection{
   public function Max_Min($Cambs)
   {
 		  	$obj =  new poolConnection();
-		  	$obj->Conexion();
+		  	$con=$obj->Conexion();
 		  	$obj->BaseDatos();
 		  	$sql="SELECT 
 					(Sum(eCantidad) * 0.9)    As Max,(Sum(eCantidad) * 0.3)    As Min
 					FROM be_saci.sa_movconsumo
 					Where Id_CABMS='$Cambs'";
-		  	$RSet=$obj->Query($sql);
-		  	while($fila = mysql_fetch_array($RSet))
+		  	$RSet=$obj->Query($con,$sql);
+		  	while($fila = mysqli_fetch_array($RSet))
 		  	{
 		  		$ArrayObj['Max']=$fila[Max];
 		  		$ArrayObj['Min']=$fila[Min];
@@ -151,7 +151,7 @@ public function  Generar_Reporte($AData)
                         
 			$objGrid = new poolConnection();
 			$con=$objGrid->Conexion();
-			$objGrid->BaseDatos();
+			$objGrid->BaseDatos($con);
 			$sql="Select
                             DISTINCT(sa_cabms.Id_CABMS),
                             sa_cabms.ePartidaPresupuestal,
@@ -169,11 +169,11 @@ public function  Generar_Reporte($AData)
                             sa_movconsumo.Id_Unidad = sa_unidadadmva.Id_Unidad and
                             sa_movconsumo.dFechaRegistro>='$FechaInicial' and  sa_movconsumo.dFechaRegistro<='$FechaFinal'
                             ";
-			$RSet=$objGrid->Query($sql);
+			$RSet=$objGrid->Query($con,$sql);
 			$FliexGrid = "<br><br><center><table class=\"flexme1\">
 			<tbody>";
                         $i=0;
-		    while($fila=mysql_fetch_array($RSet))
+		    while($fila=mysqli_fetch_array($RSet))
 			{
 			$i++;
                         $infos->FechaInicial=$FechaInicial;
@@ -199,8 +199,7 @@ public function  Generar_Reporte($AData)
                         <td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$ArrayMM[Min]</td>
 			</tr>";
 			}
-			mysql_free_result($RSet);
-			$objGrid->Cerrar($con);
+			$objGrid->Cerrar($con,$RSet);
 					$FliexGrid.="       </tbody>
 					</table><script>$('.flexme1').flexigrid({
 					title: '',
@@ -250,7 +249,7 @@ public function  Generar_Reporte($AData)
  	
  	$objDatosPDF = new poolConnection();
  	$con=$objDatosPDF -> Conexion();
- 	$objDatosPDF -> BaseDatos();
+ 	$objDatosPDF -> BaseDatos($con);
  		
  	$StrConsulta="Select
                             DISTINCT(sa_cabms.Id_CABMS),
@@ -269,10 +268,10 @@ public function  Generar_Reporte($AData)
                             sa_movconsumo.Id_Unidad = sa_unidadadmva.Id_Unidad and
                             sa_movconsumo.dFechaRegistro>='$FechaInicial' and  sa_movconsumo.dFechaRegistro<='$FechaFinal'";
  
- 	$RSet = $objDatosPDF ->Query($StrConsulta);
+ 	$RSet = $objDatosPDF ->Query($con,$StrConsulta);
  	$Catalogo = array();
  	$i=0;
- 	while ($Row = mysql_fetch_array($RSet)){
+ 	while ($Row = mysqli_fetch_array($RSet)){
  		
  		$i++;
  		$infos->FechaInicial=$FechaInicial;
@@ -297,9 +296,8 @@ public function  Generar_Reporte($AData)
  		$ArrayMM[Min]
  		);
  	}
- 		
- 	mysql_free_result($RSet);
- 			$objDatosPDF->Cerrar($con);
+
+ 			$objDatosPDF->Cerrar($con,$RSet);
  			 	return $Catalogo;
  }
 }

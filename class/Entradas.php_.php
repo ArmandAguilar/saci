@@ -8,10 +8,11 @@ class  Entradas extends poolConnection
 		
 		$CboMovimiento =  new poolConnection();
 		$con=$CboMovimiento->Conexion();
-		$CboMovimiento->BaseDatos();
+		$CboMovimiento->BaseDatos($con);
 		$sql="SELECT Id_TipoMovimiento,vDescripcion FROM sa_tipomovimiento order by Id";
-		$RSet=$CboMovimiento->Query($sql);
-		while($fila = mysql_fetch_array($RSet))
+		$RSet=$CboMovimiento->Query($con,$sql);
+        $CboMovimientoOption = "";
+		while($fila = mysqli_fetch_array($RSet))
 		{
 			switch($fila[Id_TipoMovimiento])
 			{
@@ -36,8 +37,7 @@ class  Entradas extends poolConnection
 					
 			}
 		}
-		mysql_free_result($RSet);
-		$CboMovimiento->Cerrar($con);
+		$CboMovimiento->Cerrar($con,$RSet);
 		
 			/*($TipoMovimiento->ID == 101) ||
 			($TipoMovimiento->ID == 104) ||
@@ -103,7 +103,7 @@ class  Entradas extends poolConnection
 		$Patron=$AData->Patron;
 		$ACFolio=$AData->Folio;
 		$ACRequisicion=$AData->Requisicion;
-		
+        $where = "";
 		#Preparamos ware
 		if($ACFolio=="Si")
 		{
@@ -125,12 +125,13 @@ class  Entradas extends poolConnection
 		
 		$objGridFacturas = new poolConnection();
 		$con=$objGridFacturas->Conexion();
-		$objGridFacturas->BaseDatos();
+		$objGridFacturas->BaseDatos($con);
 		
-		$RSet=$objGridFacturas->Query($sql);
+		$RSet=$objGridFacturas->Query($con,$sql);
 		$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 		<tbody>";
-		while($fila=mysql_fetch_array($RSet))
+		$i = 0;
+		while($fila=mysqli_fetch_array($RSet))
 		{
 		$i++;
 		
@@ -142,8 +143,7 @@ class  Entradas extends poolConnection
 		<td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$fila[dFechaPedido]</td>
 		</tr>";
 		}
-		mysql_free_result($RSet);
-		$objGridFacturas->Cerrar($con);
+		$objGridFacturas->Cerrar($con,$RSet);
 		$FliexGrid.="       </tbody>
 		</table><script>$('.flexme1').flexigrid({
 		title: '',
@@ -185,12 +185,13 @@ class  Entradas extends poolConnection
 	 	
 	 	$objGridFacturas = new poolConnection();
 	 	$con=$objGridFacturas->Conexion();
-	 	$objGridFacturas->BaseDatos();
+	 	$objGridFacturas->BaseDatos($con);
 	 	
-	 	$RSet=$objGridFacturas->Query($sql);
+	 	$RSet=$objGridFacturas->Query($con,$sql);
 	 	$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 	 	<tbody>";
-	 	while($fila=mysql_fetch_array($RSet))
+	 	$i = 0;
+	 	while($fila=mysqli_fetch_array($RSet))
 	 	{
 	 	$i++;
 	 	$Precio =  number_format($fila[mPrecioUnitario],'2','.',','); 
@@ -206,8 +207,7 @@ class  Entradas extends poolConnection
 	 	<td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$ $Precio</td>
 	 	</tr>";
 	 	}
-	 	mysql_free_result($RSet);
-	 	$objGridFacturas->Cerrar($con);
+	 	$objGridFacturas->Cerrar($con,$RSet);
 	 			$FliexGrid.="       </tbody>
 	 			</table><script>$('.flexme1').flexigrid({
 	 					title: '',
@@ -235,7 +235,7 @@ class  Entradas extends poolConnection
 	 }
   public function Detalles()
   {
-  	
+      $frmDetalles = "";
   	$frmDetalles .="
   	<div id=\"DivTabs\">
   			<div id=\"tabs\">

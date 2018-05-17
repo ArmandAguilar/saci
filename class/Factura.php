@@ -14,18 +14,17 @@ class Factura {
     
     public function frm_factura()
     {
-                        
+                            $cboProveedor = "";
                            $objProveedor = new poolConnection();
                            $con=$objProveedor->Conexion();
-                           $objProveedor->BaseDatos();
+                           $objProveedor->BaseDatos($con);
                            $sql="SELECT Id,Id_Proveedor,vNombre FROM sa_proveedor order by vNombre";
-                           $RSet=$objProveedor->Query($sql);
-                           while($fila=  mysql_fetch_array($RSet))
+                           $RSet=$objProveedor->Query($con,$sql);
+                           while($fila=  mysqli_fetch_array($RSet))
                            {
                                $cboProveedor .= "<option value='$fila[Id_Proveedor]'>$fila[vNombre]</option>";
                            }
-                           mysql_free_result($RSet);
-                           $objProveedor->Cerrar($con);
+                           $objProveedor->Cerrar($con,$RSet);
                    $Y=date(Y);
                     $frm="<form name=\"frmFactura\" id=\"frmFactura\" action=\"\" method=\"post\">
                     <fieldset>
@@ -120,9 +119,7 @@ class Factura {
     }
     public function Buscar_pedido($AData)
     {
-
-        
-
+        $where = "";
         $Patron=$AData->Patron;
         $ACFolio=$AData->Folio;
         $ACLicitacion=$AData->Licitacion;
@@ -146,17 +143,18 @@ class Factura {
         
         $objGridPedido = new poolConnection();
         $con=$objGridPedido->Conexion();
-        $objGridPedido->BaseDatos();
+        $objGridPedido->BaseDatos($con);
         $sql="SELECT Id_Pedido, 
                      vNoRequisicion,
                      vNoLicitacion,
                      Id_Proveedor,
                      dFechaPedido
                      FROM sa_pedido Where $where";
-        $RSet=$objGridPedido->Query($sql);
+        $RSet=$objGridPedido->Query($con,$sql);
         $FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
                                          <tbody>";
-        while($fila=mysql_fetch_array($RSet))
+        $i = 0;
+        while($fila=mysqli_fetch_array($RSet))
         {
             $i++;
             $proveedor = $objNomProveedor->getProveedor($fila[Id_Proveedor]);
@@ -170,8 +168,7 @@ class Factura {
                                   <td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$fila[dFechaPedido]</td>    
                               </tr>";
         }
-        mysql_free_result($RSet);
-        $objGridPedido->Cerrar($con);
+        $objGridPedido->Cerrar($con,$RSet);
         $FliexGrid.="       </tbody>
                                                       </table><script>$('.flexme1').flexigrid({
                           title: '',
@@ -202,11 +199,11 @@ class Factura {
     public function getProveedor($id)
     {
         $objProveedor = new poolConnection();
-        $objProveedor->Conexion();
-        $objProveedor->BaseDatos();
+        $con = $objProveedor->Conexion();
+        $objProveedor->BaseDatos($con);
         $sqlp="select vNombre from sa_proveedor where Id_Proveedor='$id'";
-        $RSetPro=$objProveedor->Query($sqlp);
-        while($fila = mysql_fetch_array($RSetPro))
+        $RSetPro=$objProveedor->Query($con,$sqlp);
+        while($fila = mysqli_fetch_array($RSetPro))
         {
             $NProveedor = $fila[vNombre];
         }
@@ -215,11 +212,11 @@ class Factura {
     public function getRequisiscionFactura($id)
     {
         $objRequisicion = new poolConnection();
-        $objRequisicion->Conexion();
+        $con=$objRequisicion->Conexion();
         $objRequisicion->BaseDatos();
         $sqlp="select vNoRequisicion from sa_pedido where Id_Pedido='$id'";
-        $RSetRe=$objRequisicion->Query($sqlp);
-        while($fila = mysql_fetch_array($RSetRe))
+        $RSetRe=$objRequisicion->Query($con,$sqlp);
+        while($fila = mysqli_fetch_array($RSetRe))
         {
             $NR = $fila[vNombre];
         }
@@ -246,7 +243,7 @@ class Factura {
 
         $objAdd=new poolConnection();
         $con=$objAdd->Conexion();
-        $objAdd->BaseDatos();
+        $objAdd->BaseDatos($con);
         $sql="INSERT INTO sa_contrarecibo values
                 ('0' ,
                     '$FolioCreado',
@@ -258,8 +255,8 @@ class Factura {
                     '$cEstado',
                     '0000-00-00',
                     '0000-00-00')";
-        $objAdd->Query($sql);
-        $objAdd->Cerrar($con);
+        $R=$objAdd->Query($con,$sql);
+        $objAdd->Cerrar($con),$R);
         return $sql;
     }
    public function fmr_buscar_factura()
@@ -302,6 +299,7 @@ class Factura {
     }
     public function buscar($AData)
     {
+        $where = "";
         $Patron=$AData->Patron;
         $ACFolio=$AData->Folio;
         $ACPedido=$AData->Pedido;
@@ -324,17 +322,18 @@ class Factura {
         
         $objGridFacturas = new poolConnection();
         $con=$objGridFacturas->Conexion();
-        $objGridFacturas->BaseDatos();
+        $objGridFacturas->BaseDatos($con);
         $sql="SELECT Id_Folio, 
                      Id_Pedido,
                      dFechaAlta,
                      vNoRemisionFactura,
                      mImporte
                      FROM sa_contrarecibo Where $where";
-        $RSet=$objGridFacturas->Query($sql);
+        $RSet=$objGridFacturas->Query($con,$sql);
         $FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
                                          <tbody>";
-        while($fila=mysql_fetch_array($RSet))
+        $i = 0;
+        while($fila=mysqli_fetch_array($RSet))
         {
             $i++;
             $importe = number_format($fila[mImporte],'2');
@@ -347,8 +346,7 @@ class Factura {
                                   <td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$ $importe</td>    
                               </tr>";
         }
-        mysql_free_result($RSet);
-        $objGridFacturas->Cerrar($con);
+        $objGridFacturas->Cerrar($con,$RSet);
         $FliexGrid.="       </tbody>
                                                       </table><script>$('.flexme1').flexigrid({
                           title: '',
@@ -377,10 +375,10 @@ class Factura {
      
                     $objDatos = new poolConnection();
                     $con=$objDatos->Conexion();
-                    $objDatos->BaseDatos();
+                    $objDatos->BaseDatos($con);
                     $sqlF="select Id_Pedido,mImporte,cEstado,vNoRemisionFactura,Id_Proveedor from sa_contrarecibo Where Id_Folio='$id'";
-                    $Rset=$objDatos->Query($sqlF);
-                    while($fila = mysql_fetch_array($Rset))
+                    $Rset=$objDatos->Query($con,$sqlF);
+                    while($fila = mysqli_fetch_array($Rset))
                     {
                         $Id_Pedido=$fila[Id_Pedido];
                         $cEstado=$fila[cEstado]; 
@@ -388,14 +386,15 @@ class Factura {
                         $IdProveedor = $fila[Id_Proveedor];
                         $importe = number_format($fila[mImporte], 2, '.', '');
                     }
-                    $objDatos->Cerrar($con);
+                    $objDatos->Cerrar($con,$Rset);
                     
                            $objProveedor = new poolConnection();
                            $con=$objProveedor->Conexion();
-                           $objProveedor->BaseDatos();
+                           $objProveedor->BaseDatos($con);
                            $sql="SELECT Id,vNombre FROM sa_proveedor order by vNombre";
-                           $RSet=$objProveedor->Query($sql);
-                           while($fila=  mysql_fetch_array($RSet))
+                           $RSet=$objProveedor->Query($con,$sql);
+                           $cboProveedor = "";
+                           while($fila=  mysqli_fetch_array($RSet))
                            {
                                if($IdProveedor==$fila[Id])
                                {
@@ -407,8 +406,7 @@ class Factura {
                                    }
                                
                            }
-                           mysql_free_result($RSet);
-                           $objProveedor->Cerrar($con);
+                           $objProveedor->Cerrar($con,$RSet);
                    
                     $frm="<form name=\"frmFacturaEdit\" id=\"frmFacturaEdit\" action=\"\" method=\"post\">
                     <fieldset>
@@ -508,9 +506,9 @@ class Factura {
             ";
         $objUpdate = new poolConnection();
         $con=$objUpdate->Conexion();
-        $objUpdate->BaseDatos();
-        $objUpdate->Query($sql);
-        $objUpdate->Cerrar($con);
+        $objUpdate->BaseDatos($con);
+        $R=$objUpdate->Query($con,$sql);
+        $objUpdate->Cerrar($con,$R);
         return $sql;
  }
  public function frm_buscar_borrar()
@@ -552,6 +550,7 @@ class Factura {
  }
 public function buscar_borrar($AData)
     {
+        $where = "";
         $Patron=$AData->Patron;
         $ACFolio=$AData->Folio;
         $ACPedido=$AData->Pedido;
@@ -574,17 +573,17 @@ public function buscar_borrar($AData)
         
         $objGridFacturas = new poolConnection();
         $con=$objGridFacturas->Conexion();
-        $objGridFacturas->BaseDatos();
+        $objGridFacturas->BaseDatos($con);
         $sql="SELECT Id_Folio, 
                      Id_Pedido,
                      dFechaAlta,
                      vNoRemisionFactura,
                      mImporte
                      FROM sa_contrarecibo Where $where order by Id_Folio";
-        $RSet=$objGridFacturas->Query($sql);
+        $RSet=$objGridFacturas->Query($con,$sql);
         $FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
                                          <tbody>";
-        while($fila=mysql_fetch_array($RSet))
+        while($fila=mysqli_fetch_array($RSet))
         {
             $i++;
             $importe = number_format($fila[mImporte],'2');
@@ -597,8 +596,7 @@ public function buscar_borrar($AData)
                                   <td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$ $importe</td>    
                               </tr>";
         }
-        mysql_free_result($RSet);
-        $objGridFacturas->Cerrar($con);
+        $objGridFacturas->Cerrar($con,$RSet);
         $FliexGrid.="       </tbody>
                                                       </table><script>$('.flexme1').flexigrid({
                           title: '',
@@ -626,10 +624,10 @@ public function borrar_factura($id)
  {
      $objBorrar = new poolConnection();
      $con=$objBorrar->Conexion();
-     $objBorrar->BaseDatos();
+     $objBorrar->BaseDatos($con);
      $sql="Delete from sa_contrarecibo Where Id_Folio='$id'";
-     $objBorrar->Query($sql);
-     $objBorrar->Cerrar($con);
+     $R=$objBorrar->Query($con,$sql);
+     $objBorrar->Cerrar($con,$R);
      return $sql;
      
  }
@@ -672,6 +670,7 @@ public function borrar_factura($id)
  }
  public function consultar($AData)
     {
+        $where = "";
         $Patron=$AData->Patron;
         $ACFolio=$AData->Folio;
         $ACPedido=$AData->Pedido;
@@ -694,17 +693,18 @@ public function borrar_factura($id)
         
         $objGridFacturas = new poolConnection();
         $con=$objGridFacturas->Conexion();
-        $objGridFacturas->BaseDatos();
+        $objGridFacturas->BaseDatos($con);
         $sql="SELECT Id_Folio, 
                      Id_Pedido,
                      dFechaAlta,
                      vNoRemisionFactura,
                      mImporte
                      FROM sa_contrarecibo Where $where order by Id_Folio";
-        $RSet=$objGridFacturas->Query($sql);
+        $RSet=$objGridFacturas->Query($con,$sql);
         $FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
                                          <tbody>";
-        while($fila=mysql_fetch_array($RSet))
+        $i = 0;
+        while($fila=mysqli_fetch_array($RSet))
         {
             $i++;
             $importe = number_format($fila[mImporte],'2');
@@ -717,8 +717,7 @@ public function borrar_factura($id)
                                   <td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$ $importe</td>    
                               </tr>";
         }
-        mysql_free_result($RSet);
-        $objGridFacturas->Cerrar($con);
+        $objGridFacturas->Cerrar($con,$RSet);
         $FliexGrid.="       </tbody>
                                                       </table><script>$('.flexme1').flexigrid({
                           title: '',

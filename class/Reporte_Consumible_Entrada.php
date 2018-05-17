@@ -21,7 +21,7 @@ class Reporte_Consumible_Entrada extends poolConnection
 					<tbody>";
 					$objGrid = new poolConnection();
 					$con=$objGrid->Conexion();
-					$objGrid->BaseDatos();
+					$objGrid->BaseDatos($con);
 					     $sql="Select
                         sa_movconsumo.Id_CABMS,
                         sa_movconsumo.dFechaMovRegistro, 
@@ -48,8 +48,8 @@ class Reporte_Consumible_Entrada extends poolConnection
                         sa_tipomovimiento.bEntrada =  '1' and
                         sa_tipomovimiento.bEstadoMov =  '1'  
                         and sa_proveedor.Id_Proveedor=sa_pedido.Id_Proveedor";
-					$RSet=$objGrid->Query($sql);
-					while($fila=mysql_fetch_array($RSet))
+					$RSet=$objGrid->Query($con,$sql);
+					while($fila=mysqli_fetch_array($RSet))
 					{
 						$FliexGrid.="
 						<tr>
@@ -67,8 +67,7 @@ class Reporte_Consumible_Entrada extends poolConnection
 						</tr>";
 						
 						}
-						mysql_free_result($RSet);
-						$objGrid->Cerrar($con);
+						$objGrid->Cerrar($con,$RSet);
 				
 						
 						
@@ -120,7 +119,7 @@ class Reporte_Consumible_Entrada extends poolConnection
 		 		    $fechafinal = $AData->fechafinal;
 					$objDatosPDF = new poolConnection();
 					$con=$objDatosPDF -> Conexion();
-					$objDatosPDF -> BaseDatos();
+					$objDatosPDF -> BaseDatos($con);
 						
 					$StrConsulta="Select
                         sa_movconsumo.Id_CABMS,
@@ -149,9 +148,9 @@ class Reporte_Consumible_Entrada extends poolConnection
                         sa_tipomovimiento.bEstadoMov =  '1'  
                         and sa_proveedor.Id_Proveedor=sa_pedido.Id_Proveedor";
 			
-					$RSet = $objDatosPDF ->Query($StrConsulta);
+					$RSet = $objDatosPDF ->Query($con,$StrConsulta);
 					$Catalogo = array();
-					while ($Row = mysql_fetch_array($RSet)){
+					while ($Row = mysqli_fetch_array($RSet)){
 			
 					$Catalogo[] = array(
 					$Row["Id_CABMS"],
@@ -166,9 +165,8 @@ class Reporte_Consumible_Entrada extends poolConnection
 					$Row["vNombre"]
 					);
 					}
-						
-					mysql_free_result($RSet);
-					$objDatosPDF->Cerrar($con);
+
+					$objDatosPDF->Cerrar($con,$RSet);
 					return $Catalogo;
 			}
 

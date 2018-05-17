@@ -18,7 +18,7 @@ class CargaInventario {
         $Patron=$AData->Patron;
         $ACClave=$AData->Clave;
         $ACDescripcion=$AData->Descripcion;
-        
+        $where = "";
         #Preparamos ware
         if($ACClave=="Si")
         {
@@ -36,10 +36,10 @@ class CargaInventario {
         $objBuscar = new poolConnection();
         $objBExistencias = new CargaInventario();
         $con=$objBuscar->Conexion();
-        $objBuscar->BaseDatos();
+        $objBuscar->BaseDatos($con);
         $sql="select vDescripcionCABMS,Id_CABMS  from sa_cabms  where $where order by vDescripcionCABMS";
-        $RSet=$objBuscar->Query($sql);
-        while ($row = mysql_fetch_array($RSet))
+        $RSet=$objBuscar->Query($con,$sql);
+        while ($row = mysqli_fetch_array($RSet))
             {
                  $i++;
                  $info->Id_CABMS=$row[Id_CABMS];
@@ -74,8 +74,7 @@ class CargaInventario {
                                   </tr>
                               ";
             }
-         mysql_free_result($RSet);  
-        $objBuscar->Cerrar($con);
+        $objBuscar->Cerrar($con,$RSet);
         $FliexGrid.="  </tbody>
                                  </table><script>$('.flexme2').flexigrid({
                                             title: '',
@@ -103,7 +102,7 @@ class CargaInventario {
         $Patron=$AData->Patron;
         $ACClave=$AData->Clave;
         $ACDescripcion=$AData->Descripcion;
-        
+        $where = "";
         #Preparamos ware
         if($ACClave=="Si")
         {
@@ -121,10 +120,10 @@ class CargaInventario {
         $objBuscar = new poolConnection();
         $objBExistencias = new CargaInventario();
         $con=$objBuscar->Conexion();
-        $objBuscar->BaseDatos();
+        $objBuscar->BaseDatos($con);
         $sql="select  vDescripcionCABMS,Id_CABMS  from sa_cabms  where $where order by vDescripcionCABMS";
-        $RSet=$objBuscar->Query($sql);
-        while ($row = mysql_fetch_array($RSet))
+        $RSet=$objBuscar->Query($con,$sql);
+        while ($row = mysqli_fetch_array($RSet))
             {
                  $i++;
                  
@@ -153,8 +152,7 @@ class CargaInventario {
                                   </tr>
                               ";
             }
-         mysql_free_result($RSet);  
-        $objBuscar->Cerrar($con);
+        $objBuscar->Cerrar($con,$RSet);
         $FliexGrid.="  </tbody>
                                  </table><script>$('.flexme2').flexigrid({
                                             title: '',
@@ -184,9 +182,9 @@ class CargaInventario {
             $sql = "Select eCantidadExistenciaDisponible,mCostoPromedioActual from sa_existenciasconsumible where Id_CABMS='$Id_CABMS' ";
             $objIds = new poolConnection();
             $con=$objIds->Conexion();
-            $objIds->BaseDatos();
-            $Rset=$objIds->Query($sql);
-            while($fila = mysql_fetch_array($Rset))
+            $objIds->BaseDatos($con);
+            $Rset=$objIds->Query($con,$sql);
+            while($fila = mysqli_fetch_array($Rset))
             {
                 $ArrayData[1]=$fila[eCantidadExistenciaDisponible];
                 $ArrayData[2]=$fila[mCostoPromedioActual];
@@ -199,11 +197,11 @@ class CargaInventario {
             if($BuscarMembrete=="YES")
             {
                 $objMembrete = new poolConnection();
-                $objMembrete->Conexion();
-                $objMembrete->BaseDatos();
+                $con=$objMembrete->Conexion();
+                $objMembrete->BaseDatos($con);
                 $sqlMembrete = "SELECT vDocumento FROM sa_movconsumo where Id_CABMS='$Id_CABMS'";
-                $RSetm=$objMembrete->Query($sqlMembrete);
-                while($fila = mysql_fetch_array($RSetm))
+                $RSetm=$objMembrete->Query($con,$sqlMembrete);
+                while($fila = mysqli_fetch_array($RSetm))
                 {
                     $Membrete = $fila[vDocumento];
                 }
@@ -218,12 +216,12 @@ class CargaInventario {
    {
        
        $Id_CABMS=$AData->Id_CABMS;
-       $con=$objArtApartados = new poolConnection();
-       $objArtApartados->Conexion();
-       $objArtApartados->BaseDatos();
+       $objArtApartados = new poolConnection();
+       $con=$objArtApartados->Conexion();
+       $objArtApartados->BaseDatos($con);
        $sql="SELECT Count(Id_Partida) As ArtAparatados FROM sa_detallepedido WHERE  Id_CABMS='$Id_CABMS'";
-       $RSet=$objArtApartados->Query($sql);
-       while($row = mysql_fetch_array($RSet))
+       $RSet=$objArtApartados->Query($con,$sql);
+       while($row = mysqli_fetch_array($RSet))
        {
              $Apartados = $row[ArtAparatados];
        }
@@ -246,10 +244,10 @@ class CargaInventario {
             
           $objInsertarGrid =  new poolConnection();
           $con=$objInsertarGrid->Conexion();
-          $objInsertarGrid->BaseDatos();
+          $objInsertarGrid->BaseDatos($con);
           $sqlInsret="insert into sa_grid values('0','$Id_CveARTCABMS','$Id_CveInternaAC','$IdCABMS','$VDescripcion','$ArtApartado','$ArtDisponibles','$CostoPromedio','$NoMarbete','$Session')";
-          $objInsertarGrid->Query($sqlInsret);
-          $objInsertarGrid->Cerrar($con);
+          $R=$objInsertarGrid->Query($con,$sqlInsret);
+          $objInsertarGrid->Cerrar($con,$R);
        
    }
    public function Grid($Session)
@@ -258,10 +256,10 @@ class CargaInventario {
                                             <tbody>";
                 $objBuscar = new poolConnection();
                 $con=$objBuscar->Conexion();
-                $objBuscar->BaseDatos();
+                $objBuscar->BaseDatos($con);
                 $sql="Select Id,Id_CveARTCABMS,Id_CveInternaAC,IdCABMS,VDescripcion,ArtApartado,ArtDisponibles,CostoPromedio,NoMarbete from sa_grid Where Session='$Session'";
-                $RSet=$objBuscar->Query($sql);
-                while($fila=mysql_fetch_array($RSet))
+                $RSet=$objBuscar->Query($con,$sql);
+                while($fila=mysqli_fetch_array($RSet))
                 {
                     $i++;
                     $FliexGrid.="
@@ -278,8 +276,7 @@ class CargaInventario {
                                       </tr>
                                   ";
                 }
-                mysql_free_result($RSet);
-                $objBuscar->Cerrar($con);
+                $objBuscar->Cerrar($con,$RSet);
                 $FliexGrid.="       </tbody>
                                                               </table><script>$('.flexme1').flexigrid({
                                   title: '',
@@ -309,10 +306,10 @@ class CargaInventario {
    {
       $objBorrar = new poolConnection();
       $con=$objBorrar->Conexion();
-      $objBorrar->BaseDatos();
+      $objBorrar->BaseDatos($con);
       $sql="Delete from sa_grid where Id='$id'";
-      $objBorrar->Query($sql);
-      $objBorrar->Cerrar($con);
+      $R=$objBorrar->Query($sql);
+      $objBorrar->Cerrar($con,$R);
    }
   function Agregar_existencia($AData)
   {
@@ -327,15 +324,14 @@ class CargaInventario {
       $Accion ="Insertar";
       $objVerficar =  new poolConnection();
       $con=$objVerficar->Conexion();
-      $objVerficar->BaseDatos();
+      $objVerficar->BaseDatos($con);
       $sqlv="Select Id from sa_existenciasconsumible where Id_CABMS='$Id_CABMS'";
-      $RSet=$objVerficar->Query($sqlv);
-      while($fila = mysql_fetch_array($RSet))
+      $RSet=$objVerficar->Query($con,$sqlv);
+      while($fila = mysqli_fetch_array($RSet))
       {
          $Accion ="Actualizar"; 
       }
-      mysql_free_result($RSet);
-      $objVerficar->Cerrar($con);
+      $objVerficar->Cerrar($con,$RSet);
       
       
       $D=date(d);
@@ -350,9 +346,9 @@ class CargaInventario {
                                          $sqlIDs = "Select Id from sa_existenciasconsumible where Id_CABMS='$Id_CABMS'";
                                          $objIds = new poolConnection();
                                          $con=$objIds->Conexion();
-                                         $objIds->BaseDatos();
-                                         $Rset=$objIds->Query($sqlIDs);
-                                         while($fila = mysql_fetch_array($Rset))
+                                         $objIds->BaseDatos($con);
+                                         $Rset=$objIds->Query($con,$sqlIDs);
+                                         while($fila = mysqli_fetch_array($Rset))
                                          {
                                             
                                              $ids = $fila[Id];
@@ -372,9 +368,9 @@ class CargaInventario {
                                          
                                          $objActualizar = new poolConnection();
                                          $con=$objActualizar->Conexion();
-                                         $objActualizar->BaseDatos();
-                                         $objActualizar->Query($sqlupdate);
-                                         $objActualizar->Cerrar($con);
+                                         $objActualizar->BaseDatos($con);
+                                         $R=$objActualizar->Query($con,$sqlupdate);
+                                         $objActualizar->Cerrar($con,$R);
                                          
                                          //Insertamos en Mov
                                         $Datos->Id_CABMS=$Id_CABMS;
@@ -401,9 +397,9 @@ class CargaInventario {
                                                 '0')";  
                                        $objInsertar = new poolConnection();
                                        $con=$objInsertar->Conexion();
-                                       $objInsertar->BaseDatos();
-                                       $objInsertar->Query($sql);
-                                       $objInsertar->Cerrar($con);
+                                       $objInsertar->BaseDatos($con);
+                                       $R=$objInsertar->Query($con,$sql);
+                                       $objInsertar->Cerrar($con,$R);
                                        
                                        /*insertamos movimiento */
                                        $Datos->Id_CABMS=$Id_CABMS;
@@ -423,9 +419,9 @@ class CargaInventario {
                     $sqlDelete = "Delete From sa_grid Where Session='$session'";
                     $objBorrar = new poolConnection();
                     $con=$objBorrar->Conexion();
-                    $objBorrar->BaseDatos();
-                    $objBorrar->Query($sqlDelete);
-                    $objBorrar->Cerrar($con);
+                    $objBorrar->BaseDatos($con);
+                    $R=$objBorrar->Query($con,$sqlDelete);
+                    $objBorrar->Cerrar($con,$R);
         return $Accion;            
   }
   public function InsertMov($AData)
@@ -449,7 +445,7 @@ class CargaInventario {
       $sValorP=0;
       /*$objsValor = new poolConnection();
       $con=$objsValor->Conexion();
-      $objsValor->BaseDatos();
+      $objsValor->BaseDatos($con);
       $SqlValor="Select";
       $RSet=$objsValor->Query($SqlValor);
       $sValorP= mysql_result($RSet,0);
@@ -473,9 +469,9 @@ class CargaInventario {
                '$mCostoPromedioIniMovto')";
       $objInsertarMov =  new poolConnection();
       $con=$objInsertarMov->Conexion();
-      $objInsertarMov->BaseDatos();
-      $objInsertarMov->Query($Sql);
-      $objInsertarMov->Cerrar($con);
+      $objInsertarMov->BaseDatos($con);
+      $R=$objInsertarMov->Query($con,$Sql);
+      $objInsertarMov->Cerrar($con,$R);
   }
   public function frm_agregar($a)
   {
@@ -636,7 +632,7 @@ class CargaInventario {
         $objBuscarDetalles = new poolConnection();
         $objtipoMovimiento = new CargaInventario();
         $con=$objBuscarDetalles->Conexion();
-        $objBuscarDetalles->BaseDatos();
+        $objBuscarDetalles->BaseDatos($con);
         $sql="SELECT 
             Id_CABMS,
             Id_Unidad,
@@ -651,8 +647,8 @@ class CargaInventario {
             eCantidadApartadaSalida,
             mCostoPromedioIniMovto
             FROM sa_movconsumo Where Id_CABMS='$Id_CABMS'";
-        $RSet=$objBuscarDetalles->Query($sql);
-        while ($row = mysql_fetch_array($RSet))
+        $RSet=$objBuscarDetalles->Query($con,$sql);
+        while ($row = mysqli_fetch_array($RSet))
             {
                  $mCostoUnitario=number_format($row[mCostoUnitario], 2, '.',',');
                  $mCostoPromedioIniMovto=number_format($row[mCostoPromedioIniMovto], 2, '.',',');
@@ -675,8 +671,7 @@ class CargaInventario {
                                   </tr>
                               ";
             }
-         mysql_free_result($RSet);  
-        $objBuscarDetalles->Cerrar($con);
+        $objBuscarDetalles->Cerrar($con,$RSet);
         $FliexGrid.="  </tbody>
                                  </table><script>$('.flexme1').flexigrid({
                                             title: '',
@@ -711,10 +706,11 @@ class CargaInventario {
   public function  Movimiento($id)
   {
       $objTipoMovimiento = new poolConnection();
-      $objTipoMovimiento->BaseDatos();
+      $con=$objTipoMovimiento->Conexion();
+      $objTipoMovimiento->BaseDatos($con);
       $sql="SELECT vDescripcion FROM sa_tipomovimiento Where Id_TipoMovimiento='$id'";
-      $Rset=$objTipoMovimiento->Query($sql);
-      return mysql_result($Rset, 0);
+      $Rset=$objTipoMovimiento->Query($con,$sql);
+      return mysqli_result($Rset, 0);
       //return $sql;
       
   }
@@ -722,10 +718,10 @@ class CargaInventario {
   {
 		  	$objBorrar = new poolConnection();
 		  	$con=$objBorrar->Conexion();
-		  	$objBorrar->BaseDatos();
+		  	$objBorrar->BaseDatos($con);
 		  	$sql="Delete from sa_grid where Session='$session'";
-		  	$objBorrar->Query($sql);
-		  	$objBorrar->Cerrar($con);
+		  	$R=$objBorrar->Query($con,$sql);
+		  	$objBorrar->Cerrar($con,$R);
   }
  
 }

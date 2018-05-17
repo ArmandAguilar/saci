@@ -17,7 +17,7 @@ class Reporte_HistoricoConsumo {
                         $Patron=$AData->Patron;
                         $Clave=$AData->Clave;
 			$Descripcion=$AData->Descripcion;
-			
+        $where = "";
 			#Preparamos ware
 			if($Clave=="Si")
 			{
@@ -34,18 +34,18 @@ class Reporte_HistoricoConsumo {
 			
 			$objGrid = new poolConnection();
 			$con=$objGrid->Conexion();
-			$objGrid->BaseDatos();
+			$objGrid->BaseDatos($con);
 			$sql="SELECT 
                                     sa_cabms.Id_CABMS,
                                     sa_cabms.vDescripcionCABMS
 	                      FROM 
                             sa_cabms
 			Where  $where";
-			$RSet=$objGrid->Query($sql);
+			$RSet=$objGrid->Query($con,$sql);
 			$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 			<tbody>";
                         $i=0;
-		    while($fila=mysql_fetch_array($RSet))
+		    while($fila=mysqli_fetch_array($RSet))
 			{
 			$i++;
 			
@@ -57,8 +57,7 @@ class Reporte_HistoricoConsumo {
 			
 			</tr>";
 			}
-			mysql_free_result($RSet);
-			$objGrid->Cerrar($con);
+			$objGrid->Cerrar($con,$RSet);
 					$FliexGrid.="       </tbody>
 					</table><script>$('.flexme1').flexigrid({
 					title: '',
@@ -86,7 +85,7 @@ public function  Generar_Reporte($AData)
            $fecha1 = $AData->fecha1;
            $fecha2 = $AData->fecha2;
            $cambs  = $AData->Cambs;
-           
+            $where = "";
            if(!empty($cambs))
            {
            	 $where .= "  ";
@@ -106,7 +105,7 @@ public function  Generar_Reporte($AData)
             $where .="((CH.eAnio BETWEEN '$FechaA1[2]' AND '$FechaA2[2]') or (CH.eMes BETWEEN '$FechaA1[0]' AND '$FechaA2[0]')) ";
 			$objGrid = new poolConnection();
 			$con=$objGrid->Conexion();
-			$objGrid->BaseDatos();
+			$objGrid->BaseDatos($con);
 			$sql="Select
 					CC.Id_CABMS,
 					CC.vDescripcionCABMS,
@@ -119,9 +118,9 @@ public function  Generar_Reporte($AData)
 					 
 					Where
 					(CH.Id_CABMS = CC.Id_CABMS and CC.Id_UMedida = UA.Id_UMedida and CH.Id_CABMS='$cambs') and $where ";
-			$RSet=$objGrid->Query($sql);
+			$RSet=$objGrid->Query($con,$sql);
 			$i=0;
-		    while($fila=mysql_fetch_array($RSet))
+		    while($fila=mysqli_fetch_array($RSet))
 			{
 			$i++;
 			
@@ -136,8 +135,7 @@ public function  Generar_Reporte($AData)
 			</tr>";
                         
 			}
-			mysql_free_result($RSet);
-			$objGrid->Cerrar($con);
+			$objGrid->Cerrar($con,$RSet);
                         
                         $FliexGrid = "<br><br>
                                      <center><table class=\"flexme1\">
@@ -185,7 +183,7 @@ public function  Generar_Reporte($AData)
 			 	$fecha1 = $AData->fecha1;
 			 	$fecha2 = $AData->fecha2;
 			 	$cambs  = $AData->Cambs;
-			 	 
+			 	$where = "";
 			 	if(!empty($cambs))
 			 	{
 			 		$where .= "  ";
@@ -209,7 +207,7 @@ public function  Generar_Reporte($AData)
  				$Total = 0;
 			 	$objDatosPDF = new poolConnection();
 			 	$con=$objDatosPDF -> Conexion();
-			 	$objDatosPDF -> BaseDatos();
+			 	$objDatosPDF -> BaseDatos($con);
 			 	
 			 	$StrConsulta="Select
 					CC.Id_CABMS,
@@ -224,9 +222,9 @@ public function  Generar_Reporte($AData)
 					Where
 					(CH.Id_CABMS = CC.Id_CABMS and CC.Id_UMedida = UA.Id_UMedida and CH.Id_CABMS='$cambs') and $where ";
 			 
-			 	$RSet = $objDatosPDF ->Query($StrConsulta);
+			 	$RSet = $objDatosPDF ->Query($con,$StrConsulta);
 			 	$Catalogo = array();
-			 	while ($Row = mysql_fetch_array($RSet)){
+			 	while ($Row = mysqli_fetch_array($RSet)){
 			 		
 			 		$Catalogo[] = array(
 			 				$Row["Id_CABMS"],
@@ -239,9 +237,8 @@ public function  Generar_Reporte($AData)
 			 				
 			 		);
 			 	}
-			 	
-			 	mysql_free_result($RSet);
-			 	$objDatosPDF->Cerrar($con);
+
+			 	$objDatosPDF->Cerrar($con,$RSet);
 			 	return $Catalogo;
  }
  

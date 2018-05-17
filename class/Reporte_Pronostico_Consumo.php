@@ -3,6 +3,7 @@ class Reporte_Pronostico_Consumo extends poolConnection
 {
 	public function buscar_cambs1($AData)
 	{
+        $where = "";
 		$Patron=$AData->Patron;
 		$Clave=$AData->Clave;
 		$Descripcion=$AData->Descripcion;
@@ -23,18 +24,18 @@ class Reporte_Pronostico_Consumo extends poolConnection
 			
 		$objGrid = new poolConnection();
 		$con=$objGrid->Conexion();
-		$objGrid->BaseDatos();
+		$objGrid->BaseDatos($con);
 		$sql="SELECT
 		sa_cabms.Id_CABMS,
 		sa_cabms.vDescripcionCABMS
 		FROM
 		sa_cabms
 		Where  $where";
-		$RSet=$objGrid->Query($sql);
+		$RSet=$objGrid->Query($con,$sql);
 		$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 		<tbody>";
 		$i=0;
-		while($fila=mysql_fetch_array($RSet))
+		while($fila=mysqli_fetch_array($RSet))
 		{
 		$i++;
 			
@@ -46,8 +47,7 @@ class Reporte_Pronostico_Consumo extends poolConnection
 			
 		</tr>";
 		}
-		mysql_free_result($RSet);
-		$objGrid->Cerrar($con);
+		$objGrid->Cerrar($con,$RSet);
 		$FliexGrid.="       </tbody>
 		</table><script>$('.flexme1').flexigrid({
 		title: '',
@@ -71,6 +71,7 @@ class Reporte_Pronostico_Consumo extends poolConnection
 	}
 	public function buscar_cambs2($AData)
 	{
+        $where = "";
 		$Patron=$AData->Patron;
 		$Clave=$AData->Clave;
 		$Descripcion=$AData->Descripcion;
@@ -91,18 +92,18 @@ class Reporte_Pronostico_Consumo extends poolConnection
 			
 		$objGrid = new poolConnection();
 		$con=$objGrid->Conexion();
-		$objGrid->BaseDatos();
+		$objGrid->BaseDatos($con);
 		$sql="SELECT
 		sa_cabms.Id_CABMS,
 		sa_cabms.vDescripcionCABMS
 		FROM
 		sa_cabms
 		Where  $where";
-		$RSet=$objGrid->Query($sql);
+		$RSet=$objGrid->Query($con,$sql);
 		$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 		<tbody>";
 		$i=0;
-		while($fila=mysql_fetch_array($RSet))
+		while($fila=mysqli_fetch_array($RSet))
 		{
 		$i++;
 			
@@ -114,8 +115,7 @@ class Reporte_Pronostico_Consumo extends poolConnection
 				
 			</tr>";
 		}
-		mysql_free_result($RSet);
-			$objGrid->Cerrar($con);
+			$objGrid->Cerrar($con,$RSet);
 			$FliexGrid.="       </tbody>
 			</table><script>$('.flexme1').flexigrid({
 			title: '',
@@ -144,8 +144,8 @@ class Reporte_Pronostico_Consumo extends poolConnection
 		$eMes1=$AData->eMes1;
 		$eMes2=$AData->eMes2;
 		$objPronostico = new poolConnection();
-		$objPronostico->Conexion();
-		$objPronostico->BaseDatos();
+		$con=$objPronostico->Conexion();
+		$objPronostico->BaseDatos($con);
 		$sql="Select 
 		sum(ifnull(sa_consumohistorico.eTotalAcumulado,0) * ifnull(sa_factorpronostico.eFactor,0)) as ConsumoPronosticadoA
 		From
@@ -158,8 +158,8 @@ class Reporte_Pronostico_Consumo extends poolConnection
 		sa_consumohistorico.eMes Between '11' And '12' and 
 		sa_consumohistorico.eAnio = sa_factorpronostico.eAnio and
 		sa_consumohistorico.eMes  = sa_factorpronostico.eMes";
-		$RSet = $objPronostico->Query($sql);
-		while($fila = mysql_fecth_array($RSet))
+		$RSet = $objPronostico->Query($con,$sql);
+		while($fila = mysqli_fecth_array($RSet))
 		{
 		$Pronostico_ConsumoA = $fila[ConsumoPronosticoA];
 		 
@@ -181,8 +181,8 @@ class Reporte_Pronostico_Consumo extends poolConnection
  	
  	$this->validar_mes($eMes1);
     $objPronostico = new poolConnection();
-    $objPronostico->Conexion();
-    $objPronostico->BaseDatos();
+    $con=$objPronostico->Conexion();
+    $objPronostico->BaseDatos($con);
     $sql="select
     sum(ifnull(sa_consumohistorico.eTotalAcumulado,0) * ifnull(sa_factorpronostico.eFactor,0)) As ConsumoPronosticoB
     from
@@ -194,8 +194,8 @@ class Reporte_Pronostico_Consumo extends poolConnection
     sa_consumohistorico.eMes   Between '$iMesaux' And '$iMesFin' and
     sa_consumohistorico.eAnio  = sa_factorpronostico.eAnio and
     sa_consumohistorico.eMes = sa_factorpronostico.eMes";
-    $RSet = $objPronostico->Query($sql);
-    while($fila = mysql_fetch_array($RSet))
+    $RSet = $objPronostico->Query($con,$sql);
+    while($fila = mysqli_fetch_array($RSet))
     {
     	$Pronostico_ConsumoB = $fila[ConsumoPronosticoB]; 
     	
@@ -307,8 +307,8 @@ class Reporte_Pronostico_Consumo extends poolConnection
  
  	$this->validar_mes($eMes1);
  	$objPronostico = new poolConnection();
- 	$objPronostico->Conexion();
- 	$objPronostico->BaseDatos();
+ 	$con=$objPronostico->Conexion();
+ 	$objPronostico->BaseDatos($con);
  	$sql="select
  	sum(ifnull(sa_consumohistorico.eTotalAcumulado,0) * ifnull(sa_factorpronostico.eFactor,0)) As ConsumoPronosticoB
  	from
@@ -320,8 +320,8 @@ class Reporte_Pronostico_Consumo extends poolConnection
  	sa_consumohistorico.eMes   Between '$iMesFin' And '$iMesFin' and
  	sa_consumohistorico.eAnio  = sa_factorpronostico.eAnio and
  	sa_consumohistorico.eMes = sa_factorpronostico.eMes";
- 	$RSet = $objPronostico->Query($sql);
- 	while($fila = mysql_fetch_array($RSet))
+ 	$RSet = $objPronostico->Query($con,$sql);
+ 	while($fila = mysqli_fetch_array($RSet))
  	{
  	$Pronostico_ConsumoB = $fila[ConsumoPronosticoB];
  	 
@@ -354,8 +354,8 @@ class Reporte_Pronostico_Consumo extends poolConnection
  
  	$this->validar_mes($eMes1);
  	$objPronostico = new poolConnection();
- 	$objPronostico->Conexion();
- 	$objPronostico->BaseDatos();
+ 	$con=$objPronostico->Conexion();
+ 	$objPronostico->BaseDatos($con);
  	$sql="select
  	sum(ifnull(sa_consumohistorico.eTotalAcumulado,0) * ifnull(sa_factorpronostico.eFactor,0)) As ConsumoPronosticoA
  	from
@@ -367,8 +367,8 @@ class Reporte_Pronostico_Consumo extends poolConnection
  	sa_consumohistorico.eMes   Between '$iMesini' And '$iMesaux' and
  	sa_consumohistorico.eAnio  = sa_factorpronostico.eAnio and
  	sa_consumohistorico.eMes = sa_factorpronostico.eMes";
- 	$RSet = $objPronostico->Query($sql);
- 	while($fila = mysql_fetch_array($RSet))
+ 	$RSet = $objPronostico->Query($con,$sql);
+ 	while($fila = mysqli_fetch_array($RSet))
  	{
  	$Pronostico_ConsumoA = $fila[ConsumoPronosticoA];
  		
@@ -404,8 +404,8 @@ class Reporte_Pronostico_Consumo extends poolConnection
  
  	$this->validar_mes($eMes1);
  	$objPronostico = new poolConnection();
- 	$objPronostico->Conexion();
- 	$objPronostico->BaseDatos();
+ 	$con=$objPronostico->Conexion();
+ 	$objPronostico->BaseDatos($con);
  	$sql="select
  	sum(ifnull(sa_consumohistorico.eTotalAcumulado,0) * ifnull(sa_factorpronostico.eFactor,0)) As ConsumoPronosticoB
  	from
@@ -417,8 +417,8 @@ class Reporte_Pronostico_Consumo extends poolConnection
  	sa_consumohistorico.eMes   Between '$iMesFin' And '$iMesFin' and
  	sa_consumohistorico.eAnio  = sa_factorpronostico.eAnio and
  	sa_consumohistorico.eMes = sa_factorpronostico.eMes";
- 	$RSet = $objPronostico->Query($sql);
- 	while($fila = mysql_fetch_array($RSet))
+ 	$RSet = $objPronostico->Query($con,$sql);
+ 	while($fila = mysqli_fetch_array($RSet))
  	{
  	$Pronostico_ConsumoB = $fila[ConsumoPronosticoB];
  		
@@ -451,8 +451,8 @@ class Reporte_Pronostico_Consumo extends poolConnection
  
  $this->validar_mes($eMes1);
  $objPronostico = new poolConnection();
- $objPronostico->Conexion();
- $objPronostico->BaseDatos();
+ $con=$objPronostico->Conexion();
+ $objPronostico->BaseDatos($con);
  $sql="select
  sum(ifnull(sa_consumohistorico.eTotalAcumulado,0) * ifnull(sa_factorpronostico.eFactor,0)) As ConsumoPronosticoA
  from
@@ -464,8 +464,8 @@ class Reporte_Pronostico_Consumo extends poolConnection
  sa_consumohistorico.eMes   Between '$iMesini' And '$iMesaux' and
  sa_consumohistorico.eAnio  = sa_factorpronostico.eAnio and
  sa_consumohistorico.eMes = sa_factorpronostico.eMes";
- $RSet = $objPronostico->Query($sql);
- while($fila = mysql_fetch_array($RSet))
+ $RSet = $objPronostico->Query($con,$sql);
+ while($fila = mysqli_fetch_array($RSet))
  {
  $Pronostico_ConsumoA = $fila[ConsumoPronosticoA];
  	
@@ -572,9 +572,9 @@ class Reporte_Pronostico_Consumo extends poolConnection
 						  		sa_consumohistorico.eMes = sa_factorpronostico.eMes)";
 						  		$objGrid = new poolConnection();
 						  		$con=$objGrid->Conexion();
-						  		$objGrid->BaseDatos();
-						  		$RSet=$objGrid->Query($sql);
-						  		while($fila=mysql_fetch_array($RSet))
+						  		$objGrid->BaseDatos($con);
+						  		$RSet=$objGrid->Query($con,$sql);
+						  		while($fila=mysqli_fetch_array($RSet))
 						  		{
 						  		$i++;
 						  		$info->Cambs=$fila[Id_CABMS];
@@ -594,8 +594,7 @@ class Reporte_Pronostico_Consumo extends poolConnection
 						  		<td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$MesPro</td>
 						  		</tr>";
 						  		}
-						  		mysql_free_result($RSet);
-						  		$objGrid->Cerrar($con);
+						  		$objGrid->Cerrar($con,$RSet);
 						  	}	
 						  	if($value==3)
 						  	{
@@ -611,9 +610,9 @@ class Reporte_Pronostico_Consumo extends poolConnection
 						  		sa_consumohistorico.eMes = sa_factorpronostico.eMes)";
 						  		$objGrid = new poolConnection();
 						  		$con=$objGrid->Conexion();
-						  		$objGrid->BaseDatos();
-						  		$RSet=$objGrid->Query($sql);
-						  		while($fila=mysql_fetch_array($RSet))
+						  		$objGrid->BaseDatos($con);
+						  		$RSet=$objGrid->Query($con,$sql);
+						  		while($fila=mysqli_fetch_array($RSet))
 						  		{
 						  		$i++;
 						  		$info->Cambs=$fila[Id_CABMS];
@@ -633,8 +632,7 @@ class Reporte_Pronostico_Consumo extends poolConnection
 						  			<td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$MesPro</td>
 						  			</tr>";
 						  		}
-						  		mysql_free_result($RSet);
-						  		$objGrid->Cerrar($con);
+						  		$objGrid->Cerrar($con,$RSet);
 						  	}
 		  	   }	  	
 		  	} 		
@@ -723,9 +721,9 @@ class Reporte_Pronostico_Consumo extends poolConnection
 					  	        			sa_consumohistorico.eMes = sa_factorpronostico.eMes)";
 					  	        			$objGrid = new poolConnection();
 					  	        			$con=$objGrid->Conexion();
-					  	        			$objGrid->BaseDatos();
-					  	        			$RSet=$objGrid->Query($sql);
-					  	        			while($fila=mysql_fetch_array($RSet))
+					  	        			$objGrid->BaseDatos($con);
+					  	        			$RSet=$objGrid->Query($con,$sql);
+					  	        			while($fila=mysqli_fetch_array($RSet))
 					  	        			{
 							  	        			$i++;
 							  	        			$info->Cambs=$fila[Id_CABMS];
@@ -744,8 +742,7 @@ class Reporte_Pronostico_Consumo extends poolConnection
 							  	        					$MesPro
 							  	        			);
 					  	        			}
-					  	        			mysql_free_result($RSet);
-					  	        			$objGrid->Cerrar($con);
+					  	        			$objGrid->Cerrar($con,$RSet);
 		  	        
 		  	        	    }
 		  	        				
@@ -763,9 +760,9 @@ class Reporte_Pronostico_Consumo extends poolConnection
 			  	        			sa_consumohistorico.eMes = sa_factorpronostico.eMes)";
 			  	        			$objGrid = new poolConnection();
 			  	        			$con=$objGrid->Conexion();
-			  	        			$objGrid->BaseDatos();
-			  	        			$RSet=$objGrid->Query($sql);
-			  	        			while($fila=mysql_fetch_array($RSet))
+			  	        			$objGrid->BaseDatos($con);
+			  	        			$RSet=$objGrid->Query($con,$sql);
+			  	        			while($fila=mysqli_fetch_array($RSet))
 			  	        			{
 			  	        			$i++;
 			  	        			$info->Cambs=$fila[Id_CABMS];
@@ -784,8 +781,7 @@ class Reporte_Pronostico_Consumo extends poolConnection
 							  	        					$MesPro
 							  	        			);
 			  	        			}
-			  	        			mysql_free_result($RSet);
-			  	        			$objGrid->Cerrar($con);
+			  	        			$objGrid->Cerrar($con,$RSet);
 		  	        		}
 		  	        	 if($value==3)
 		  	        		{
@@ -801,9 +797,9 @@ class Reporte_Pronostico_Consumo extends poolConnection
 			  	        				sa_consumohistorico.eMes = sa_factorpronostico.eMes)";
 			  	        			$objGrid = new poolConnection();
 			  	        			$con=$objGrid->Conexion();
-			  	        			$objGrid->BaseDatos();
-			  	        			$RSet=$objGrid->Query($sql);
-			  	        				while($fila=mysql_fetch_array($RSet))
+			  	        			$objGrid->BaseDatos($con);
+			  	        			$RSet=$objGrid->Query($con,$sql);
+			  	        				while($fila=mysqli_fetch_array($RSet))
 			  	        				{
 			  	        				$i++;
 			  	        				$info->Cambs=$fila[Id_CABMS];
@@ -822,8 +818,7 @@ class Reporte_Pronostico_Consumo extends poolConnection
 							  	        					$MesPro
 							  	        			);
 			  	        				}
-			  	        				mysql_free_result($RSet);
-			  	        				$objGrid->Cerrar($con);
+			  	        				$objGrid->Cerrar($con,$RSet);
 		  	        			}
   	        	}
   	        }       

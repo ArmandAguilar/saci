@@ -17,51 +17,47 @@ class Pedidos {
 
                                $objProveedor = new poolConnection();
                                $con=$objProveedor->Conexion();
-                               $objProveedor->BaseDatos();
+                               $objProveedor->BaseDatos($con);
                                $sql="SELECT Id_Proveedor,vNombre FROM sa_proveedor order by vNombre";
-                               $RSet=$objProveedor->Query($sql);
-                               while($fila=  mysql_fetch_array($RSet))
+                               $RSet=$objProveedor->Query($con,$sql);
+                               while($fila=  mysqli_fetch_array($RSet))
                                {
                                    $cboProveedor .= "<option value='$fila[Id_Proveedor]'>$fila[vNombre]</option>";
                                }
-                               mysql_free_result($RSet);
-                               $objProveedor->Cerrar($con);
+                               $objProveedor->Cerrar($con,$RSet);
 
                                $objUAdministrativa = new poolConnection();
                                $con=$objUAdministrativa->Conexion();
-                               $objUAdministrativa->BaseDatos();
+                               $objUAdministrativa->BaseDatos($con);
                                $sql="SELECT Id_Unidad,vDescripcion FROM sa_unidadadmva order by vDescripcion";
-                               $RSet=$objUAdministrativa->Query($sql);
-                               while($fila=  mysql_fetch_array($RSet))
+                               $RSet=$objUAdministrativa->Query($con,$sql);
+                               while($fila=  mysqli_fetch_array($RSet))
                                {
                                    $cboUAdministrativa .= "<option value='$fila[Id_Unidad]'>$fila[vDescripcion]</option>";
                                }
-                               mysql_free_result($RSet);
-                               $objUAdministrativa->Cerrar($con);
+                               $objUAdministrativa->Cerrar($con,$RSet);
 
                                $objCambs = new poolConnection();
                                $con=$objCambs->Conexion();
-                               $objCambs->BaseDatos();
+                               $objCambs->BaseDatos($con);
                                $sql="SELECT Id_CABMS,vDescripcionCABMS FROM sa_cabms order by vDescripcionCABMS ";
                                $RSet=$objCambs->Query($sql);
-                               while($fila=  mysql_fetch_array($RSet))
+                               while($fila=  mysqli_fetch_array($RSet))
                                {
                                    $cboCambs .= "<option value='$fila[Id_CABMS]'>$fila[vDescripcionCABMS]</option>";
                                }
-                               mysql_free_result($RSet);
-                               $objCambs->Cerrar($con);
+                               $objCambs->Cerrar($con,$RSet);
 
                                $objUMedida = new poolConnection();
                                $con=$objUMedida->Conexion();
-                               $objCambs->BaseDatos();
+                               $objCambs->BaseDatos($con);
                                $sql="SELECT Id_UMedida,vDescripcion FROM sa_umedida order by vDescripcion ";
-                               $RSet=$objUMedida->Query($sql);
-                               while($fila=  mysql_fetch_array($RSet))
+                               $RSet=$objUMedida->Query($con,$sql);
+                               while($fila=  mysqli_fetch_array($RSet))
                                {
                                    $cboUMedida .= "<option value='$fila[Id_UMedida]'>$fila[vDescripcion]</option>";
                                }
-                               mysql_free_result($RSet);
-                               $objUMedida->Cerrar($con);
+                               $objUMedida->Cerrar($con,$RSet);
 
                                //Grid detalle pedido
 
@@ -72,7 +68,7 @@ class Pedidos {
 
                                               $objGridPedido = new poolConnection();
                                               $con=$objGridPedido->Conexion();
-                                              $objGridPedido->BaseDatos();
+                                              $objGridPedido->BaseDatos($con);
                                               $sql="SELECT Id_Partida, 
                                                           Id_CABMS, 
                                                           Id_CveARTCABMS,
@@ -89,8 +85,8 @@ class Pedidos {
                                                           cTipoAlmacen,
                                                           eCantidadEntregada
                                                            FROM sa_detallepedido WHERE Id_Pedido='0'";
-                                              $RSet=$objGridPedido->Query($sql);
-                                              while($fila=mysql_fetch_array($RSet))
+                                              $RSet=$objGridPedido->Query($con,$sql);
+                                              while($fila=mysqli_fetch_array($RSet))
                                               {
                                                   $i++;
                                                   $FliexGrid.="
@@ -109,8 +105,7 @@ class Pedidos {
                                                                         <td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$fila[eCantidadEntregada]</td>    
                                                                     </tr>";
                                               }
-                                              mysql_free_result($RSet);
-                                              $objGridPedido->Cerrar($con);
+                                              $objGridPedido->Cerrar($con,$RSet);
                                               $FliexGrid.="       </tbody>
                                                                                             </table><script>$('.flexme1').flexigrid({
                                                                 title: '',
@@ -390,11 +385,11 @@ class Pedidos {
         $FechaPedido="$dFechaPedidoArray[2]/$dFechaPedidoArray[0]/$dFechaPedidoArray[1]";
         $ObjAdd = new poolConnection();
         $con=$ObjAdd->Conexion();
-        $ObjAdd->BaseDatos();
+        $ObjAdd->BaseDatos($con);
         $sql="INSERT INTO sa_pedido values('0','$Folio','$Id_Proveedor','$Id_UnidadAdmonDes','$FechaPedido','$vNoRequisicion','$vNoLicitacion','$Fecha','0000-00-00', '$cEstado','Null','0')";
-        $ObjAdd->Query($sql);
-        $Id_Pedido=mysql_insert_id($con);
-        $ObjAdd->Cerrar($con);
+        $R=$ObjAdd->Query($sql,$con);
+        $Id_Pedido=mysqli_insert_id($con);
+        $ObjAdd->Cerrar($con,$R);
         //obtenemos el ultimo registro
 
         return $Folio;
@@ -404,15 +399,14 @@ class Pedidos {
         
         $objArtCambs = new poolConnection();
         $con=$objArtCambs->Conexion();
-        $objArtCambs->BaseDatos();
+        $objArtCambs->BaseDatos($con);
         $sql="SELECT Id,Id_CveARTCABMS,vDescripcion FROM sa_cabmsconsumible  where Id_CABMS='$idCambs' order by vDescripcion";
-        $RSet=$objArtCambs->Query($sql);
-        while($fila=  mysql_fetch_array($RSet))
+        $RSet=$objArtCambs->Query($con,$sql);
+        while($fila=  mysqli_fetch_array($RSet))
         {
             $cboArtCambs .= "<option value='$fila[Id]'>$fila[vDescripcion]</option>";
         }
-        mysql_free_result($RSet);
-        $objArtCambs->Cerrar($con);
+        $objArtCambs->Cerrar($con,$RSet);
         $cbo = "<select id='cboArtCambs' name='cboArtCambs' data-placeholder=\" Art. Cabms\" style=\"width:460px;\" tabindex=\"1\"  class='chzn-select validate[required]'>
                 <option value=\"\"></option>
                 $cboArtCambs
@@ -443,7 +437,7 @@ class Pedidos {
         $Fecha="$Anio/$Mes/$Dia";
         $objAddArticulo =  new poolConnection();
         $con=$objAddArticulo->Conexion();
-        $objAddArticulo->BaseDatos();
+        $R=$objAddArticulo->BaseDatos($con);
         $sql="INSERT INTO sa_detallepedido  values(
                 '0', 
                 '$Id_Partida',
@@ -462,9 +456,9 @@ class Pedidos {
                 '$nDescuento',
                 '$cTipoAlmacen',
                 '0')";
-        $objAddArticulo->Query($sql);
-         $Id_Secuencia=mysql_insert_id($con);
-        $objAddArticulo->Cerrar($con);
+        $objAddArticulo->Query($con,$sql);
+         $Id_Secuencia=mysqli_insert_id($con);
+        $objAddArticulo->Cerrar($con,$R);
         
         
         //agremado a Fechaentergapedido
@@ -480,9 +474,9 @@ class Pedidos {
                  )";
        $objFechasEntregas = new poolConnection();
        $con=$objFechasEntregas->Conexion();
-       $objFechasEntregas->BaseDatos();
-       $objFechasEntregas->Query($sql2);
-       $objFechasEntregas->Cerrar($con);
+       $objFechasEntregas->BaseDatos($con);
+       $R=$objFechasEntregas->Query($con,$sql2);
+       $objFechasEntregas->Cerrar($con,$R);
        return $sql;
   
     }
@@ -496,7 +490,7 @@ class Pedidos {
 
         $objGridPedido = new poolConnection();
         $con=$objGridPedido->Conexion();
-        $objGridPedido->BaseDatos();
+        $objGridPedido->BaseDatos($con);
         $sql="SELECT sa_detallepedido.Id_Partida, 
                     sa_detallepedido.Id_CABMS, 
                     sa_detallepedido.Id_CveARTCABMS,
@@ -520,8 +514,8 @@ class Pedidos {
                     sa_fechaprogramadaentrega.Id_Pedido=sa_detallepedido.Id_Pedido
                     and 
                      sa_fechaprogramadaentrega.Id_Partida = sa_detallepedido.Id_Partida";
-        $RSet=$objGridPedido->Query($sql);
-        while($fila=mysql_fetch_array($RSet))
+        $RSet=$objGridPedido->Query($con,$sql);
+        while($fila=mysqli_fetch_array($RSet))
         {
             $i++;
             $FliexGrid.="
@@ -540,8 +534,7 @@ class Pedidos {
                                   <td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$fila[eCantidadEntregada]</td>    
                               </tr>";
         }
-        mysql_free_result($RSet);
-        $objGridPedido->Cerrar($con);
+        $objGridPedido->Cerrar($con,$RSet);
         $FliexGrid.="       </tbody>
                                                       </table><script>$('.flexme1').flexigrid({
                           title: '',
@@ -582,7 +575,7 @@ class Pedidos {
 
         $objGridPedido = new poolConnection();
         $con=$objGridPedido->Conexion();
-        $objGridPedido->BaseDatos();
+        $objGridPedido->BaseDatos($con);
         $sql="SELECT 
                 Id,
                 Id_Pedido,
@@ -593,8 +586,8 @@ class Pedidos {
                 dFechaRegistro,
                 dFechaModRegistro
                 FROM  sa_fechaprogramadaentrega Where Id_Pedido='$idpedido'";
-        $RSet=$objGridPedido->Query($sql);
-        while($fila=mysql_fetch_array($RSet))
+        $RSet=$objGridPedido->Query($con,$sql);
+        while($fila=mysqli_fetch_array($RSet))
         {
             $i++;
             $FliexGrid.="
@@ -609,8 +602,7 @@ class Pedidos {
            $scriptFecha .="$(function() {\$(\"#Fecha$i\").datepicker();});\n";
            
         }
-        mysql_free_result($RSet);
-        $objGridPedido->Cerrar($con);
+        $objGridPedido->Cerrar($con,$RSet);
         $FliexGrid.="       </tbody>
                                                       </table><script>$('.flexme2').flexigrid({
                           title: '',
@@ -641,20 +633,20 @@ public function borrar_partida($id)
  {
      $objBorrar = new poolConnection();
      $con=$objBorrar->Conexion();
-     $objBorrar->BaseDatos();
+     $objBorrar->BaseDatos($con);
      $sql="Delete from sa_detallepedido Where Id='$id'";
-     $objBorrar->Query($sql);
-     $objBorrar->Cerrar($con);
+     $R=$objBorrar->Query($con,$sql);
+     $objBorrar->Cerrar($con,$R);
      
  }
  public function borrar_fecha_entrega($id)
  {
     $objBorrar = new poolConnection();
      $con=$objBorrar->Conexion();
-     $objBorrar->BaseDatos();
+     $objBorrar->BaseDatos($con);
      $sql="Delete from sa_fechaprogramadaentrega Where Id='$id'";
-     $objBorrar->Query($sql);
-     $objBorrar->Cerrar($con); 
+     $R=$objBorrar->Query($con,$sql);
+     $objBorrar->Cerrar($con,$R);
  }
  
  public function frm_buscar_editar()
@@ -699,11 +691,11 @@ public function borrar_partida($id)
   public function getProveedor($id)
     {
         $objProveedor = new poolConnection();
-        $objProveedor->Conexion();
-        $objProveedor->BaseDatos();
+        $con=$objProveedor->Conexion();
+        $objProveedor->BaseDatos($con);
         $sqlp="select vNombre from sa_proveedor where Id_Proveedor='$id'";
-        $RSetPro=$objProveedor->Query($sqlp);
-        while($fila = mysql_fetch_array($RSetPro))
+        $RSetPro=$objProveedor->Query($con,$sqlp);
+        while($fila = mysqli_fetch_array($RSetPro))
         {
             $NProveedor = $fila[vNombre];
         }
@@ -734,7 +726,7 @@ public function grid_buscar_editar($AData)
         $objGridFacturas = new poolConnection();
         $objGetProveedor = new Pedidos(); 
         $con=$objGridFacturas->Conexion();
-        $objGridFacturas->BaseDatos();
+        $objGridFacturas->BaseDatos($con);
         $sql="SELECT 
                 Id_Pedido,
                 Id_Proveedor,
@@ -743,10 +735,10 @@ public function grid_buscar_editar($AData)
                 vNoLicitacion
                 FROM sa_pedido
                 Where $where";
-        $RSet=$objGridFacturas->Query($sql);
+        $RSet=$objGridFacturas->Query($con,$sql);
         $FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
                                          <tbody>";
-        while($fila=mysql_fetch_array($RSet))
+        while($fila=mysqli_fetch_array($RSet))
         {
             $i++;
             $proveedor = $objGetProveedor->getProveedor($fila[Id_Proveedor]); 
@@ -760,8 +752,7 @@ public function grid_buscar_editar($AData)
                                   <td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$fila[vNoLicitacion]</td>   
                               </tr>";
         }
-        mysql_free_result($RSet);
-        $objGridFacturas->Cerrar($con);
+        $objGridFacturas->Cerrar($con,$RSet);
         $FliexGrid.="       </tbody>
                                                       </table><script>$('.flexme1').flexigrid({
                           title: '',
@@ -791,10 +782,10 @@ public function grid_buscar_editar($AData)
                                //Obtenemos los datos
                                $objDatos =  new poolConnection();
                                $con=$objDatos ->Conexion();
-                               $objDatos ->BaseDatos();
+                               $objDatos ->BaseDatos($con);
                                $sql="select Id_Proveedor,Id_UnidadAdmonDes,dFechaPedido,vNoRequisicion,vNoLicitacion,dFechaRegistro,cEstado,eNumModificaciones  from sa_pedido where Id_Pedido='$id'";
-                               $Rset=$objDatos ->Query($sql);
-                               while ($row = mysql_fetch_array($Rset))
+                               $Rset=$objDatos ->Query($con,$sql);
+                               while ($row = mysqli_fetch_array($Rset))
                                    {
                                        $Id_Pedido=$row[Id_Pedido];
                                        $Id_Proveedor=$row[Id_Proveedor];
@@ -806,7 +797,7 @@ public function grid_buscar_editar($AData)
                                        $cEstado=$row[cEstado];
                                        $eNumModificaciones =$row[eNumModificaciones ];
                                     }
-                               $objDatos ->Cerrar($con);
+                               $objDatos ->Cerrar($con,$Rset);
                                $ArrayFecha = split("-",$dFechaRegistro);
                                $D=$ArrayFecha[2];
                                $M=$ArrayFecha[1];
@@ -828,10 +819,10 @@ public function grid_buscar_editar($AData)
                                     }
                                $objProveedor = new poolConnection();
                                $con=$objProveedor->Conexion();
-                               $objProveedor->BaseDatos();
+                               $objProveedor->BaseDatos($con);
                                $sql="SELECT Id_Proveedor,vNombre FROM sa_proveedor order by vNombre";
-                               $RSet=$objProveedor->Query($sql);
-                               while($fila=  mysql_fetch_array($RSet))
+                               $RSet=$objProveedor->Query($con,$sql);
+                               while($fila=  mysqli_fetch_array($RSet))
                                {
                                    if($Id_Proveedor==$fila[Id_Proveedor])
                                    {
@@ -843,15 +834,14 @@ public function grid_buscar_editar($AData)
                                   }
                                    
                                }
-                               mysql_free_result($RSet);
-                               $objProveedor->Cerrar($con);
+                               $objProveedor->Cerrar($con,$RSet);
 
                                $objUAdministrativa = new poolConnection();
                                $con=$objUAdministrativa->Conexion();
-                               $objUAdministrativa->BaseDatos();
+                               $objUAdministrativa->BaseDatos($con);
                                $sql="SELECT Id_Unidad,vDescripcion FROM sa_unidadadmva order by vDescripcion";
-                               $RSet=$objUAdministrativa->Query($sql);
-                               while($fila=  mysql_fetch_array($RSet))
+                               $RSet=$objUAdministrativa->Query($con,$sql);
+                               while($fila=  mysqli_fetch_array($RSet))
                                {
                                    if($Id_UnidadAdmonDes==$fila[Id_Unidad])
                                    {
@@ -863,32 +853,29 @@ public function grid_buscar_editar($AData)
                                   }
                                    
                                }
-                               mysql_free_result($RSet);
-                               $objUAdministrativa->Cerrar($con);
+                               $objUAdministrativa->Cerrar($con,$RSet);
 
                                 $objCambs = new poolConnection();
                                $con=$objCambs->Conexion();
-                               $objCambs->BaseDatos();
+                               $objCambs->BaseDatos($con);
                                $sql="SELECT Id_CABMS,vDescripcionCABMS FROM sa_cabms order by vDescripcionCABMS ";
-                               $RSet=$objCambs->Query($sql);
-                               while($fila=  mysql_fetch_array($RSet))
+                               $RSet=$objCambs->Query($con,$sql);
+                               while($fila=  mysqli_fetch_array($RSet))
                                {
                                    $cboCambs .= "<option value='$fila[Id_CABMS]'>$fila[vDescripcionCABMS]</option>";
                                }
-                               mysql_free_result($RSet);
-                               $objCambs->Cerrar($con);
+                               $objCambs->Cerrar($con,$RSet);
                           
                                $objUMedida = new poolConnection();
                                $con=$objUMedida->Conexion();
-                               $objCambs->BaseDatos();
+                               $objCambs->BaseDatos($con);
                                $sql="SELECT Id_UMedida,vDescripcion FROM sa_umedida order by vDescripcion ";
-                               $RSet=$objUMedida->Query($sql);
-                               while($fila=  mysql_fetch_array($RSet))
+                               $RSet=$objUMedida->Query($con,$sql);
+                               while($fila=  mysqli_fetch_array($RSet))
                                {
                                    $cboUMedida .= "<option value='$fila[Id_UMedida]'>$fila[vDescripcion]</option>";
                                }
-                               mysql_free_result($RSet);
-                               $objUMedida->Cerrar($con);
+                               $objUMedida->Cerrar($con,$RSet);
 
        //Frid Detalle
                         $frm="
@@ -1123,8 +1110,8 @@ public function grid_buscar_editar($AData)
         $eNumModificaciones=$eNumModificaciones + 1;
         
         $objActualizar = new poolConnection();
-        $objActualizar->Conexion();
-        $objActualizar->BaseDatos();
+     $con=$objActualizar->Conexion();
+        $objActualizar->BaseDatos($con);
         $sql="update  sa_pedido set
             Id_Proveedor='$Id_Proveedor',
             Id_UnidadAdmonDes='$Id_UnidadAdmonDes', 
@@ -1136,8 +1123,8 @@ public function grid_buscar_editar($AData)
             dFechaModRegistro ='$dFechaModRegistro'
         Where  Id_Pedido='$Filio'";
         
-        $objActualizar->Query($sql);
-        $objActualizar->Cerrar($com);
+        $R=$objActualizar->Query($con,$sql);
+        $objActualizar->Cerrar($con,$R);
      return $sql;
          
  }
@@ -1188,6 +1175,7 @@ public function grid_buscar_editar($AData)
         $ACRequisicion=$AData->Requisicion;
         $ACLicitacion=$AData->Licitacion;
         #Preparamos ware
+     $where = "";
         if($ACFolio=="Si")
         {
             $where.="Id_Pedido  like '%$Patron%' or "; 
@@ -1206,7 +1194,7 @@ public function grid_buscar_editar($AData)
         $objGridFacturas = new poolConnection();
         $objGetProveedor = new Pedidos(); 
         $con=$objGridFacturas->Conexion();
-        $objGridFacturas->BaseDatos();
+        $objGridFacturas->BaseDatos($con);
         $sql="SELECT 
                 Id_Pedido,
                 Id_Proveedor,
@@ -1215,10 +1203,10 @@ public function grid_buscar_editar($AData)
                 vNoLicitacion
                 FROM sa_pedido
                 Where $where";
-        $RSet=$objGridFacturas->Query($sql);
+        $RSet=$objGridFacturas->Query($con,$sql);
         $FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
                                          <tbody>";
-        while($fila=mysql_fetch_array($RSet))
+        while($fila=mysqli_fetch_array($RSet))
         {
             $i++;
             $proveedor = $objGetProveedor->getProveedor($fila[Id_Proveedor]); 
@@ -1232,8 +1220,7 @@ public function grid_buscar_editar($AData)
                                   <td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$fila[vNoLicitacion]</td>   
                               </tr>";
         }
-        mysql_free_result($RSet);
-        $objGridFacturas->Cerrar($con);
+        $objGridFacturas->Cerrar($con,$RSet);
         $FliexGrid.="       </tbody>
                                                       </table><script>$('.flexme1').flexigrid({
                           title: '',
@@ -1271,9 +1258,9 @@ public function grid_buscar_editar($AData)
               {
                     $objBorrar = new poolConnection();
                     $con=$objBorrar ->Conexion();
-                    $objBorrar->BaseDatos();
-                    $objBorrar->Query($value);
-                    $objBorrar->Cerrar($con);
+                    $objBorrar->BaseDatos($con);
+                    $R=$objBorrar->Query($con,$value);
+                    $objBorrar->Cerrar($con,$R);
               }  
          }
      
@@ -1326,6 +1313,7 @@ public function buscar_consultar_pedido($AData)
         $ACRequisicion=$AData->Requisicion;
         $ACLicitacion=$AData->Licitacion;
         #Preparamos ware
+    $where = "";
         if($ACFolio=="Si")
         {
             $where.="Id_Pedido  like '%$Patron%' or "; 
@@ -1344,7 +1332,7 @@ public function buscar_consultar_pedido($AData)
         $objGridFacturas = new poolConnection();
         $objGetProveedor = new Pedidos(); 
         $con=$objGridFacturas->Conexion();
-        $objGridFacturas->BaseDatos();
+        $objGridFacturas->BaseDatos($con);
         $sql="SELECT 
                 Id_Pedido,
                 Id_Proveedor,
@@ -1353,10 +1341,10 @@ public function buscar_consultar_pedido($AData)
                 vNoLicitacion
                 FROM sa_pedido
                 Where $where";
-        $RSet=$objGridFacturas->Query($sql);
+        $RSet=$objGridFacturas->Query($con,$sql);
         $FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
                                          <tbody>";
-        while($fila=mysql_fetch_array($RSet))
+        while($fila=mysqli_fetch_array($RSet))
         {
             $i++;
             $proveedor = $objGetProveedor->getProveedor($fila[Id_Proveedor]); 
@@ -1370,8 +1358,7 @@ public function buscar_consultar_pedido($AData)
                                   <td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$fila[vNoLicitacion]</td>   
                               </tr>";
         }
-        mysql_free_result($RSet);
-        $objGridFacturas->Cerrar($con);
+        $objGridFacturas->Cerrar($con,$RSet);
         $FliexGrid.="       </tbody>
                                                       </table><script>$('.flexme1').flexigrid({
                           title: '',
@@ -1419,10 +1406,10 @@ public function detalle($id)
       //Obtenemos los datos
                                $objDatos =  new poolConnection();
                                $con=$objDatos ->Conexion();
-                               $objDatos ->BaseDatos();
+                               $objDatos ->BaseDatos($con);
                                $sql="select Id_Proveedor,Id_UnidadAdmonDes,dFechaPedido,vNoRequisicion,vNoLicitacion,dFechaRegistro,cEstado,eNumModificaciones  from sa_pedido where Id_Pedido='$id'";
-                               $Rset=$objDatos ->Query($sql);
-                               while ($row = mysql_fetch_array($Rset))
+                               $Rset=$objDatos ->Query($con,$sql);
+                               while ($row = mysqli_fetch_array($Rset))
                                    {
                                        $Id_Pedido=$row[Id_Pedido];
                                        $Id_Proveedor=$row[Id_Proveedor];
@@ -1434,7 +1421,7 @@ public function detalle($id)
                                        $cEstado=$row[cEstado];
                                        $eNumModificaciones =$row[eNumModificaciones ];
                                     }
-                               $objDatos ->Cerrar($con);
+                               $objDatos ->Cerrar($con,$Rset);
                                $ArrayFecha = split("-",$dFechaRegistro);
                                $D=$ArrayFecha[2];
                                $M=$ArrayFecha[1];
@@ -1454,10 +1441,10 @@ public function detalle($id)
                                     }
                                $objProveedor = new poolConnection();
                                $con=$objProveedor->Conexion();
-                               $objProveedor->BaseDatos();
+                               $objProveedor->BaseDatos($con);
                                $sql="SELECT Id_Proveedor,vNombre FROM sa_proveedor order by vNombre";
-                               $RSet=$objProveedor->Query($sql);
-                               while($fila=  mysql_fetch_array($RSet))
+                               $RSet=$objProveedor->Query($con,$sql);
+                               while($fila=  mysqli_fetch_array($RSet))
                                {
                                    if($Id_Proveedor==$fila[Id_Proveedor])
                                    {
@@ -1466,47 +1453,43 @@ public function detalle($id)
                                   
                                    
                                }
-                               mysql_free_result($RSet);
-                               $objProveedor->Cerrar($con);
+                               $objProveedor->Cerrar($con,$RSet);
 
                                $objUAdministrativa = new poolConnection();
                                $con=$objUAdministrativa->Conexion();
-                               $objUAdministrativa->BaseDatos();
+                               $objUAdministrativa->BaseDatos($con);
                                $sql="SELECT Id_Unidad,vDescripcion FROM sa_unidadadmva order by vDescripcion";
-                               $RSet=$objUAdministrativa->Query($sql);
-                               while($fila=  mysql_fetch_array($RSet))
+                               $RSet=$objUAdministrativa->Query($con,$sql);
+                               while($fila=  mysqli_fetch_array($RSet))
                                {
                                    
                                       $cboUAdministrativa = "$fila[vDescripcion]"; 
                                   
                                    
                                }
-                               mysql_free_result($RSet);
-                               $objUAdministrativa->Cerrar($con);
+                               $objUAdministrativa->Cerrar($con,$RSet);
 
                                 $objCambs = new poolConnection();
                                $con=$objCambs->Conexion();
-                               $objCambs->BaseDatos();
+                               $objCambs->BaseDatos($con);
                                $sql="SELECT Id_CABMS,vDescripcionCABMS FROM sa_cabms order by vDescripcionCABMS ";
-                               $RSet=$objCambs->Query($sql);
-                               while($fila=  mysql_fetch_array($RSet))
+                               $RSet=$objCambs->Query($con,$sql);
+                               while($fila=  mysqli_fetch_array($RSet))
                                {
                                    $cboCambs .= "<option value='$fila[Id_CABMS]'>$fila[vDescripcionCABMS]</option>";
                                }
-                               mysql_free_result($RSet);
-                               $objCambs->Cerrar($con);
+                               $objCambs->Cerrar($con,$RSet);
                           
                                $objUMedida = new poolConnection();
                                $con=$objUMedida->Conexion();
-                               $objCambs->BaseDatos();
+                               $objCambs->BaseDatos($con);
                                $sql="SELECT Id_UMedida,vDescripcion FROM sa_umedida order by vDescripcion ";
-                               $RSet=$objUMedida->Query($sql);
-                               while($fila=  mysql_fetch_array($RSet))
+                               $RSet=$objUMedida->Query($con,$sql);
+                               while($fila=  mysqli_fetch_array($RSet))
                                {
                                    $cboUMedida .= "<option value='$fila[Id_UMedida]'>$fila[vDescripcion]</option>";
                                }
-                               mysql_free_result($RSet);
-                               $objUMedida->Cerrar($con);
+                               $objUMedida->Cerrar($con,$RSet);
        $Flex=$this->detalle_peido_grid($id);
        $Flex2=$this->detalle_peidofehca_grid($id);
        //Frid Detalle
@@ -1613,7 +1596,7 @@ public function detalle($id)
 
         $objGridPedido = new poolConnection();
         $con=$objGridPedido->Conexion();
-        $objGridPedido->BaseDatos();
+        $objGridPedido->BaseDatos($con);
         $sql="SELECT sa_detallepedido.Id_Partida, 
                     sa_detallepedido.Id_CABMS, 
                     sa_detallepedido.Id_CveARTCABMS,
@@ -1637,8 +1620,8 @@ public function detalle($id)
                     sa_fechaprogramadaentrega.Id_Pedido=sa_detallepedido.Id_Pedido
                     and 
                      sa_fechaprogramadaentrega.Id_Partida = sa_detallepedido.Id_Partida";
-        $RSet=$objGridPedido->Query($sql);
-        while($fila=mysql_fetch_array($RSet))
+        $RSet=$objGridPedido->Query($con,$sql);
+        while($fila=mysqli_fetch_array($RSet))
         {
             $i++;
             $FliexGrid.="
@@ -1659,8 +1642,7 @@ public function detalle($id)
                                   <td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$fila[eCantidadEntregada]</td>    
                               </tr>";
         }
-        mysql_free_result($RSet);
-        $objGridPedido->Cerrar($con);
+        $objGridPedido->Cerrar($con,$RSet);
         $FliexGrid.="       </tbody>
                                                       </table><script>$('.flexme1').flexigrid({
                           title: '',
@@ -1703,7 +1685,7 @@ public function detalle($id)
 
         $objGridPedido = new poolConnection();
         $con=$objGridPedido->Conexion();
-        $objGridPedido->BaseDatos();
+        $objGridPedido->BaseDatos($con);
         $sql="SELECT 
                 Id,
                 Id_Pedido,
@@ -1714,8 +1696,8 @@ public function detalle($id)
                 dFechaRegistro,
                 dFechaModRegistro
                 FROM  sa_fechaprogramadaentrega Where Id_Pedido='$idpedido'";
-        $RSet=$objGridPedido->Query($sql);
-        while($fila=mysql_fetch_array($RSet))
+        $RSet=$objGridPedido->Query($con,$sql);
+        while($fila=mysqli_fetch_array($RSet))
         {
             $i++;
             $FliexGrid.="
@@ -1730,8 +1712,7 @@ public function detalle($id)
            $scriptFecha .="$(function() {\$(\"#Fecha$i\").datepicker();});\n";
            
         }
-        mysql_free_result($RSet);
-        $objGridPedido->Cerrar($con);
+        $objGridPedido->Cerrar($con,$RSet);
         $FliexGrid.="       </tbody>
                                                       </table><script>$('.flexme2').flexigrid({
                           title: '',
@@ -1766,7 +1747,7 @@ public function detalle($id)
 			 	
 			 	$objGridPedido = new poolConnection();
 			 	$con=$objGridPedido->Conexion();
-			 	$objGridPedido->BaseDatos();
+			 	$objGridPedido->BaseDatos($con);
 			 	$sql="SELECT sa_detallepedido.Id_Partida,
 			 	sa_detallepedido.Id_CABMS,
 			 	sa_detallepedido.Id_CveARTCABMS,
@@ -1790,8 +1771,8 @@ public function detalle($id)
 			 	sa_fechaprogramadaentrega.Id_Pedido=sa_detallepedido.Id_Pedido
 			 	and
 			 	sa_fechaprogramadaentrega.Id_Partida = sa_detallepedido.Id_Partida";
-			 	$RSet=$objGridPedido->Query($sql);
-			 	while($fila=mysql_fetch_array($RSet))
+			 	$RSet=$objGridPedido->Query($con,$sql);
+			 	while($fila=mysqli_fetch_array($RSet))
 			 	{
 			 	$i++;
 			 	$FliexGrid.="
@@ -1810,8 +1791,7 @@ public function detalle($id)
 			 	<td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$fila[eCantidadEntregada]</td>
 			 	</tr>";
 			 	}
-			 	mysql_free_result($RSet);
-			 	$objGridPedido->Cerrar($con);
+			 	$objGridPedido->Cerrar($con,$RSet);
 			 	$FliexGrid.="       </tbody>
 			 	</table><script>$('.flexme1').flexigrid({
 			 	title: '',
@@ -1851,7 +1831,7 @@ public function detalle($id)
 			 	
 			 	$objGridPedido = new poolConnection();
 			 	$con=$objGridPedido->Conexion();
-			 	$objGridPedido->BaseDatos();
+			 	$objGridPedido->BaseDatos($con);
 			 	$sql="SELECT
 			 	Id,
 			 	Id_Pedido,
@@ -1862,8 +1842,8 @@ public function detalle($id)
 			 	dFechaRegistro,
 			 	dFechaModRegistro
 			 	FROM  sa_fechaprogramadaentrega Where Id_Pedido='$id'";
-			 	$RSet=$objGridPedido->Query($sql);
-			 	while($fila=mysql_fetch_array($RSet))
+			 	$RSet=$objGridPedido->Query($con,$sql);
+			 	while($fila=mysqli_fetch_array($RSet))
 			 	{
 			 	$i++;
 			 	$FliexGrid.="
@@ -1878,8 +1858,7 @@ public function detalle($id)
 			 	
 			 	 
 			 	}
-			 	mysql_free_result($RSet);
-			 	$objGridPedido->Cerrar($con);
+			 	$objGridPedido->Cerrar($con,$RSet);
 			 	$FliexGrid.="       </tbody>
 			 	</table><script>$('.flexme2').flexigrid({
 			 	title: '',

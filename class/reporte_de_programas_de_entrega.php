@@ -85,12 +85,12 @@ class Reporte_Programas_Entrega extends poolConnection {
         echo $StrConsulta."<p/>";
         $objConexion = new poolConnection();
         $con = $objConexion->Conexion();
-        $objConexion->BaseDatos();
-        $TReporte = $objConexion->Query($StrConsulta);
+        $objConexion->BaseDatos($con);
+        $TReporte = $objConexion->Query($con,$StrConsulta);
         
         $Contador = 0;
-        if (mysql_num_rows($TReporte) > 0) {
-            while ($Registro = mysql_fetch_array($TReporte)) {
+        if (mysqli_num_rows($TReporte) > 0) {
+            while ($Registro = mysqli_fetch_array($TReporte)) {
                 $Respuesta[$Contador]->Zona = $Registro["Zona"];
                 $Respuesta[$Contador]->Prioridad = $Registro["Prioridad"];
                 $Respuesta[$Contador]->Unidad_Administrativa = $Registro["Unidad_Administrativa"];
@@ -193,12 +193,12 @@ class Reporte_Programas_Entrega extends poolConnection {
     	".$StrOrden." LIMIT 100;";
     	$objGrid = new poolConnection();
     	$con=$objGrid->Conexion();
-    	$objGrid->BaseDatos();
+    	$objGrid->BaseDatos($con);
     	
-    	$RSet=$objGrid->Query($StrConsulta);
+    	$RSet=$objGrid->Query($con,$StrConsulta);
     		
     	$Capasidad = "Normal";
-    	while($fila=mysql_fetch_array($RSet))
+    	while($fila=mysqli_fetch_array($RSet))
     	{
     		
     		
@@ -219,8 +219,7 @@ class Reporte_Programas_Entrega extends poolConnection {
     		
     		 
     		}
-    		mysql_free_result($RSet);
-    			$objGrid->Cerrar($con);
+    			$objGrid->Cerrar($con,$RSet);
     			
     			
     	
@@ -353,10 +352,10 @@ class Reporte_Programas_Entrega extends poolConnection {
     	
     	$objDatosPDF = new poolConnection();
     	$con=$objDatosPDF -> Conexion();
-    	$objDatosPDF -> BaseDatos();	
-    	$RSet = $objDatosPDF ->Query($StrConsulta);
+    	$objDatosPDF -> BaseDatos($con);	
+    	$RSet = $objDatosPDF ->Query($con,$StrConsulta);
     	$Catalogo = array();
-    	while ($Row = mysql_fetch_array($RSet)){
+    	while ($Row = mysqli_fetch_array($RSet)){
     		
 			    	$Catalogo[] = array(
 			    	$Row["Zona"],
@@ -373,8 +372,8 @@ class Reporte_Programas_Entrega extends poolConnection {
 			    		);
     	}
     
-    		mysql_free_result($RSet);
-    		$objDatosPDF->Cerrar($con);
+
+    		$objDatosPDF->Cerrar($con,$RSet);
     		return $Catalogo;
     	}
 }

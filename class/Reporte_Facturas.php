@@ -15,11 +15,11 @@ class Reporte_Facturas extends poolConnection {
      public function getProveedor($id)
     {
         $objProveedor = new poolConnection();
-        $objProveedor->Conexion();
-        $objProveedor->BaseDatos();
+        $con=$objProveedor->Conexion();
+        $objProveedor->BaseDatos($con);
         $sqlp="select vNombre from sa_proveedor where Id_Proveedor='$id'";
-        $RSetPro=$objProveedor->Query($sqlp);
-        while($fila = mysql_fetch_array($RSetPro))
+        $RSetPro=$objProveedor->Query($con,$sqlp);
+        while($fila = mysqli_fetch_array($RSetPro))
         {
             $NProveedor = $fila[vNombre];
         }
@@ -32,6 +32,7 @@ class Reporte_Facturas extends poolConnection {
         $ACFolio=$AData->Folio;
         $ACLicitacion=$AData->Licitacion;
         $ACRequisicion=$AData->Requisicion;
+        $where = "";
         #Preparamos ware
         if($ACFolio=="Si")
         {
@@ -51,17 +52,18 @@ class Reporte_Facturas extends poolConnection {
         
         $objGridPedido = new poolConnection();
         $con=$objGridPedido->Conexion();
-        $objGridPedido->BaseDatos();
+        $objGridPedido->BaseDatos($con);
         $sql="SELECT Id_Pedido, 
                      vNoRequisicion,
                      vNoLicitacion,
                      Id_Proveedor,
                      dFechaPedido
                      FROM sa_pedido Where $where";
-        $RSet=$objGridPedido->Query($sql);
+        $RSet=$objGridPedido->Query($con,$sql);
         $FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
                                          <tbody>";
-        while($fila=mysql_fetch_array($RSet))
+        $i = 0;
+        while($fila=mysqli_fetch_array($RSet))
         {
             $i++;
             $proveedor = $objNomProveedor->getProveedor($fila[Id_Proveedor]);
@@ -75,8 +77,7 @@ class Reporte_Facturas extends poolConnection {
                                   <td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$fila[dFechaPedido]</td>    
                               </tr>";
         }
-        mysql_free_result($RSet);
-        $objGridPedido->Cerrar($con);
+        $objGridPedido->Cerrar($con,$RSet);
         $FliexGrid.="       </tbody>
                                                       </table><script>$('.flexme1').flexigrid({
                           title: '',
@@ -111,6 +112,7 @@ class Reporte_Facturas extends poolConnection {
         $ACLicitacion=$AData->Licitacion;
         $ACRequisicion=$AData->Requisicion;
         #Preparamos ware
+        $where = "";
         if($ACFolio=="Si")
         {
             $where.="Id_Pedido like '%$Patron%' or "; 
@@ -129,17 +131,18 @@ class Reporte_Facturas extends poolConnection {
         
         $objGridPedido = new poolConnection();
         $con=$objGridPedido->Conexion();
-        $objGridPedido->BaseDatos();
+        $objGridPedido->BaseDatos($con);
         $sql="SELECT Id_Pedido, 
                      vNoRequisicion,
                      vNoLicitacion,
                      Id_Proveedor,
                      dFechaPedido
                      FROM sa_pedido Where $where";
-        $RSet=$objGridPedido->Query($sql);
+        $RSet=$objGridPedido->Query($con,$sql);
         $FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
                                          <tbody>";
-        while($fila=mysql_fetch_array($RSet))
+        $i = 0;
+        while($fila=mysqli_fetch_array($RSet))
         {
             $i++;
             $proveedor = $objNomProveedor->getProveedor($fila[Id_Proveedor]);
@@ -153,8 +156,7 @@ class Reporte_Facturas extends poolConnection {
                                   <td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$fila[dFechaPedido]</td>    
                               </tr>";
         }
-        mysql_free_result($RSet);
-        $objGridPedido->Cerrar($con);
+        $objGridPedido->Cerrar($con,$RSet);
         $FliexGrid.="       </tbody>
                                                       </table><script>$('.flexme1').flexigrid({
                           title: '',
@@ -191,12 +193,12 @@ class Reporte_Facturas extends poolConnection {
        From sa_pedido,sa_contrarecibo $Where";
         $objMenu = new poolConnection();
         $con=$objMenu -> Conexion();
-        $objMenu -> BaseDatos();
+        $objMenu -> BaseDatos($con);
         if(!$sidx) $sidx =1;
         
         $StrConsulta = "Select COUNT(*) AS count From sa_pedido,sa_contrarecibo $Where";
         $ResultadoTotal = $objMenu->Query($StrConsulta);
-        $row = mysql_fetch_array($ResultadoTotal);
+        $row = mysqli_fetch_array($ResultadoTotal);
         $count = $row['count'];
         
         if( $count > 0 ) {
@@ -208,12 +210,12 @@ class Reporte_Facturas extends poolConnection {
         $start = $limit*$page - $limit; // do not put $limit*($page - 1)
         
         $sql .= " LIMIT ".$start." , ".$limit;
-        $RSet = $objMenu ->Query($sql);
+        $RSet = $objMenu ->Query($con,$sql);
         $Respuesta->page = $page;
         $Respuesta->total = $total_pages;
         $Respuesta->records = $count;
         $Contador = 0;
-        while ($rows = mysql_fetch_array($RSet)){
+        while ($rows = mysqli_fetch_array($RSet)){
             $Respuesta->rows[$Contador]["Id"] = $rows["Id_Pedido"];
             $Respuesta->rows[$Contador]["cell"] = array($rows["Id_Pedido"], $rows["Id_Proveedor"], $rows["dFechaPedido"], $rows["vNoRemisionFactura"], $rows["mImporte"]);
             $Contador++;
@@ -243,7 +245,7 @@ class Reporte_Facturas extends poolConnection {
         	$FechaFinal="";
         }
         
-        $where .=" ";
+        $where =" ";
         
         if(!empty($FechaInicial) && !empty($FechaFinal))
         {
@@ -287,7 +289,7 @@ class Reporte_Facturas extends poolConnection {
         
         $objDatosPDF = new poolConnection();
         $con=$objDatosPDF -> Conexion();
-        $objDatosPDF -> BaseDatos();
+        $objDatosPDF -> BaseDatos($con);
         
         $StrConsulta = "Select sa_pedido.Id_Pedido,
        sa_pedido.Id_Proveedor,
@@ -297,9 +299,9 @@ class Reporte_Facturas extends poolConnection {
        sa_contrarecibo.dFechaRegistro,
        Format(sa_contrarecibo.mImporte,2) As Importe
        From sa_pedido,sa_contrarecibo,sa_proveedor where $whereFinal and sa_pedido.Id_Pedido = sa_contrarecibo.Id_Pedido and sa_contrarecibo.Id_Proveedor=sa_proveedor.Id";
-        $RSet = $objDatosPDF ->Query($StrConsulta);
+        $RSet = $objDatosPDF ->Query($con,$StrConsulta);
         $Catalogo = array();
-        while ($Row = mysql_fetch_array($RSet)){
+        while ($Row = mysqli_fetch_array($RSet)){
             $Importe = "$ $Row[Importe]";
             $Catalogo[] = array($Row["Id_Pedido"], 
                                 $Row["Proveedor"],
@@ -308,9 +310,8 @@ class Reporte_Facturas extends poolConnection {
                                 $StrConsulta
                                 );
         }
-        
-        mysql_free_result($RSet);
-        $objDatosPDF->Cerrar($con);
+
+        $objDatosPDF->Cerrar($con,$RSet);
         return $Catalogo;
     }
     

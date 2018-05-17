@@ -23,18 +23,18 @@ class Reporte_Resguardos extends poolConnection
 			
 		$objGrid = new poolConnection();
 		$con=$objGrid->Conexion();
-		$objGrid->BaseDatos();
+		$objGrid->BaseDatos($con);
 		$sql="SELECT
 		sa_cabms.Id_CABMS,
 		sa_cabms.vDescripcionCABMS
 		FROM
 		sa_cabms
 		Where  $where";
-		$RSet=$objGrid->Query($sql);
+		$RSet=$objGrid->Query($con,$sql);
 		$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 		<tbody>";
 		$i=0;
-		while($fila=mysql_fetch_array($RSet))
+		while($fila=mysqli_fetch_array($RSet))
 		{
 		$i++;
 			
@@ -46,8 +46,7 @@ class Reporte_Resguardos extends poolConnection
 			
 		</tr>";
 		}
-		mysql_free_result($RSet);
-		$objGrid->Cerrar($con);
+		$objGrid->Cerrar($con,$RSet);
 		$FliexGrid.="       </tbody>
 		</table><script>$('.flexme1').flexigrid({
 		title: '',
@@ -72,6 +71,7 @@ class Reporte_Resguardos extends poolConnection
 	 
 	public function buscar_inv_empleado($AData)
 	{
+        $where = "";
 		$Patron=$AData->Patron;
 		$Clave=$AData->Clave;
 		$Nombre=$AData->Nombre;
@@ -92,16 +92,16 @@ class Reporte_Resguardos extends poolConnection
 			
 		$objGrid = new poolConnection();
 		$con=$objGrid->Conexion();
-		$objGrid->BaseDatos();
+		$objGrid->BaseDatos($con);
 		$sql="SELECT IdEmpleado,Nombres
 		FROM
 		sa_usuarios
 		Where   $where";
-		$RSet=$objGrid->Query($sql);
+		$RSet=$objGrid->Query($con,$sql);
 		$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 		<tbody>";
 		$i=0;
-		while($fila=mysql_fetch_array($RSet))
+		while($fila=mysqli_fetch_array($RSet))
 		{
 		$i++;
 	
@@ -113,8 +113,7 @@ class Reporte_Resguardos extends poolConnection
 	
 			</tr>";
 		}
-		mysql_free_result($RSet);
-		$objGrid->Cerrar($con);
+		$objGrid->Cerrar($con,$RSet);
 		$FliexGrid.="       </tbody>
 		</table><script>$('.flexme1').flexigrid({
 				title: '',
@@ -141,11 +140,11 @@ class Reporte_Resguardos extends poolConnection
 	{
 
 		$objData =  new poolConnection();
-		$objData->Conexion();
+		$con=$objData->Conexion();
 		$objData->BaseDatos();
 		$Sql="Select * From sa_acervo Where Id_CABMS='$idCambs'";
-		$RSet=$objData->Query($Sql);
-		while($row = mysql_fetch_array($RSet))
+		$RSet=$objData->Query($con,$Sql);
+		while($row = mysqli_fetch_array($RSet))
 		{
 			$ArrayObj[vCaracteristicas]=$row[vCaracteristicas];
 			$ArrayObj[Id_ConsecutivoInv]=$row[Id_ConsecutivoInv];
@@ -160,11 +159,11 @@ class Reporte_Resguardos extends poolConnection
 	public function data_informatico($idCambs)
 	{
 		$objData =  new poolConnection();
-		$objData->Conexion();
-		$objData->BaseDatos();
+		$con=$objData->Conexion();
+		$objData->BaseDatos($con);
 		$Sql="Select *  From sa_informatico Where Id_CABMS='$idCambs'";
-		$RSet=$objData->Query($Sql);
-		while($row = mysql_fetch_array($RSet))
+		$RSet=$objData->Query($con,$Sql);
+		while($row = mysqli_fetch_array($RSet))
 		{
 			$ArrayObj[Id_ConsecutivoInv] =  $row[Id_ConsecutivoInv];
 			$ArrayObj[vNumSerie] =  $row[vNumSerie];
@@ -190,11 +189,11 @@ class Reporte_Resguardos extends poolConnection
 	{
 		
 		$objData =  new poolConnection();
-		$objData->Conexion();
-		$objData->BaseDatos();
+		$con=$objData->Conexion();
+		$objData->BaseDatos($con);
 		$Sql="Select *  From sa_mueble Where Id_CABMS='$idCambs'";
-		$RSet=$objData->Query($Sql);
-		while($row = mysql_fetch_array($RSet))
+		$RSet=$objData->Query($con,$Sql);
+		while($row = mysqli_fetch_array($RSet))
 		{
 			$ArrayObj[vCaracteristicas] =  $row[vCaracteristicas];
 			$ArrayObj[Id_ConsecutivoInv] =  $row[Id_ConsecutivoInv];
@@ -218,11 +217,11 @@ class Reporte_Resguardos extends poolConnection
 	public function data_vehiculo($idCambs)
 	{
 		$objData =  new poolConnection();
-		$objData->Conexion();
-		$objData->BaseDatos();
+		$con=$objData->Conexion();
+		$objData->BaseDatos($con);
 		$Sql="Select *  From sa_vehiculo Where Id_CABMS='$idCambs'";
-		$RSet=$objData->Query($Sql);
-		while($row = mysql_fetch_array($RSet))
+		$RSet=$objData->Query($con,$Sql);
+		while($row = mysqli_fetch_array($RSet))
 		{
 			$ArrayObj[vMarca] =  $row[vMarca];
 			$ArrayObj[Id_ConsecutivoInv] =  $row[Id_ConsecutivoInv];
@@ -250,7 +249,7 @@ class Reporte_Resguardos extends poolConnection
 			
 				$objQRS =  new poolConnection();
 				$con=$objQRS->Conexion();
-				$objQRS->BaseDatos();
+				$objQRS->BaseDatos($con);
 				$sql="Select 
 					sa_cabms.Id_CABMS,
 					sa_cabms.vDescripcionCABMS,
@@ -262,8 +261,8 @@ class Reporte_Resguardos extends poolConnection
 					where
 					sa_inventario.Id_CABMS='$CveCambs' and
 					sa_inventario.Id_CABMS = sa_cabms.Id_CABMS";
-				$RSet=$objQRS->Query($sql);
-				while($row=mysql_fetch_array($RSet))
+				$RSet=$objQRS->Query($con,$sql);
+				while($row=mysqli_fetch_array($RSet))
 				{
 					$Id_TipoBien=$row[Id_TipoBien];
 					//$CveCambs="2111000002";
@@ -417,8 +416,7 @@ class Reporte_Resguardos extends poolConnection
 					}
 					
 				}
-				mysql_free_result($RSet);
-				$objQRS->Cerrar($con);
+				$objQRS->Cerrar($con,$RSet);
 						
 						
 				switch ($Id_TipoBien)
@@ -435,7 +433,7 @@ class Reporte_Resguardos extends poolConnection
 						{display: 'Tipo', name : 'Tipo', width :120, sortable :false, align: 'center'},
 						{display: 'Cajon', name : 'Cajon', width :120, sortable :false, align: 'center'},
 						{display: 'Gaveta', name : 'Gaveta', width :120, sortable :false, align: 'center'},
-						{display: 'Entrepa–o', name : 'Entrepa–o', width :120, sortable :false, align: 'center'},
+						{display: 'Entrepaï¿½o', name : 'Entrepaï¿½o', width :120, sortable :false, align: 'center'},
 						{display: 'Pedestal', name : 'Pedestal', width :120, sortable :false, align: 'center'},
 						{display: 'Fija', name : 'Fija', width :120, sortable :false, align: 'center'},
 						{display: 'Giratoria', name : 'Serie', width :120, sortable :false, align: 'center'},
@@ -569,7 +567,7 @@ class Reporte_Resguardos extends poolConnection
 				
 				$objDatosPDF = new poolConnection();
 				$con=$objDatosPDF -> Conexion();
-				$objDatosPDF -> BaseDatos();
+				$objDatosPDF -> BaseDatos($con);
 					
 				$StrConsulta="Select 
 					sa_cabms.Id_CABMS,
@@ -583,9 +581,9 @@ class Reporte_Resguardos extends poolConnection
 					sa_inventario.Id_CABMS='$CveCambs' and
 					sa_inventario.Id_CABMS = sa_cabms.Id_CABMS";
 			
-				$RSet = $objDatosPDF ->Query($StrConsulta);
+				$RSet = $objDatosPDF ->Query($con,$StrConsulta);
 				$Catalogo = array();
-				while ($Row = mysql_fetch_array($RSet)){
+				while ($Row = mysqli_fetch_array($RSet)){
 					$Id_TipoBien=$Row[Id_TipoBien];
 					
 					switch ($Row[Id_TipoBien])
@@ -760,9 +758,7 @@ class Reporte_Resguardos extends poolConnection
 			
 				
 				}
-					
-				mysql_free_result($RSet);
-				$objDatosPDF->Cerrar($con);
+				$objDatosPDF->Cerrar($con,$RSet);
 				return $Catalogo;
 		}
 	

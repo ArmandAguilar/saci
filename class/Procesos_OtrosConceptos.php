@@ -22,10 +22,10 @@ class OtrosConceptos extends poolConnection{
          
         $objBuscarDetalles = new poolConnection();
         $con=$objBuscarDetalles->Conexion();
-        $objBuscarDetalles->BaseDatos();
+        $objBuscarDetalles->BaseDatos($con);
         $sql="SELECT * FROM sa_grid_otroscargos where Session='$session'";
-        $RSet=$objBuscarDetalles->Query($sql);
-        while ($row = mysql_fetch_array($RSet))
+        $RSet=$objBuscarDetalles->Query($con,$sql);
+        while ($row = mysqli_fetch_array($RSet))
             {
                 $MostrarAceptar="Si"; 
                 $FliexGrid.="
@@ -42,8 +42,7 @@ class OtrosConceptos extends poolConnection{
                                   </tr>
                               ";
             }
-         mysql_free_result($RSet);  
-        $objBuscarDetalles->Cerrar($con);
+        $objBuscarDetalles->Cerrar($con,$RSet);
         if($MostrarAceptar=="Si")
         {
             $btnAceptar = "<img src=\"../../interfaz_modulos/botones/aceptar.jpg\" name=\"ImageAceptar\" width=\"120\" height=\"45\" border=\"0\" id=\"ImageAceptar\" onmouseout=\"MM_swapImgRestore()\" onmouseover=\"MM_swapImage('ImageAceptar','','../../interfaz_modulos/botones/aceptar_over.jpg',1)\" style=\"cursor:pointer\" onclick=\"click_save();\"/>";
@@ -114,7 +113,7 @@ class OtrosConceptos extends poolConnection{
     }
     public function buscarArt($AData) 
     {
-
+        $where = "";
         $Patron=$AData->Patron;
         $ACClave=$AData->Clave;
         $ACDescripcion=$AData->Descripcion;
@@ -136,10 +135,10 @@ class OtrosConceptos extends poolConnection{
         $objBuscar = new poolConnection();
         $ObjDetalles = new OtrosConceptos();
         $con=$objBuscar->Conexion();
-        $objBuscar->BaseDatos();
+        $objBuscar->BaseDatos($con);
         $sql="select Id_CABMS,vDescripcionCABMS  from sa_cabms  where $where order by vDescripcionCABMS";
-        $RSet=$objBuscar->Query($sql);
-        while ($row = mysql_fetch_array($RSet))
+        $RSet=$objBuscar->Query($con,$sql);
+        while ($row = mysqli_fetch_array($RSet))
             {
                  $i++;
                  $info->Id_CABMS = $row[Id_CABMS]; 
@@ -153,8 +152,7 @@ class OtrosConceptos extends poolConnection{
                                   </tr>
                               ";
             }
-         mysql_free_result($RSet);  
-        $objBuscar->Cerrar($con);
+        $objBuscar->Cerrar($con,$RSet);
         $FliexGrid.="  </tbody>
                                  </table><script>$('.flexme2').flexigrid({
                                             title: '',
@@ -191,10 +189,10 @@ class OtrosConceptos extends poolConnection{
       $arrayDatos[5]=" ";
       $sql="Select eCantidadExistenciaDisponible,mCostoPromedioActual,eCantidadExistenciaApartada from sa_existenciasconsumible Where Id_CABMS='$Id_CABMS'";
       $objArticulo  = new poolConnection();
-      $objArticulo->Conexion();
-      $objArticulo->BaseDatos();
-      $RsetArticulo = $objArticulo->Query($sql);
-      while($fila=  mysql_fetch_array($RsetArticulo))
+      $con=$objArticulo->Conexion();
+      $objArticulo->BaseDatos($con);
+      $RsetArticulo = $objArticulo->Query($con,$sql);
+      while($fila=  mysqli_fetch_array($RsetArticulo))
       {
           $Existe="YES";
           $arrayDatos[0]=$fila[eCantidadExistenciaApartada];
@@ -207,10 +205,10 @@ class OtrosConceptos extends poolConnection{
            //Buscamos Descripcion y idunidadamedida
              $objArtCambs =  new poolConnection();
              $objArtCambs->Conexion();
-             $objArtCambs->BaseDatos();
+             $objArtCambs->BaseDatos($con);
              $sql="SELECT vDescripcionCABMS,Id_UMedida  FROM sa_cabms Where Id_CABMS='$Id_CABMS'";
-             $RsetArtCambs=$objArtCambs->Query($sql);
-             while($row = mysql_fetch_array($RsetArtCambs))
+             $RsetArtCambs=$objArtCambs->Query($con,$sql);
+             while($row = mysqli_fetch_array($RsetArtCambs))
                     {
                         $arrayDatos[1]=$row[vDescripcionCABMS];
                         $arrayDatos[2]=$row[Id_UMedida];
@@ -218,21 +216,21 @@ class OtrosConceptos extends poolConnection{
 
             //Buscamos unidada de medida 
              $objUnidadMedida = new poolConnection();
-             $objUnidadMedida->Conexion();
-             $objUnidadMedida->BaseDatos();
+             $con=$objUnidadMedida->Conexion();
+             $objUnidadMedida->BaseDatos($con);
              $sql="SELECT  vDescripcion FROM sa_umedida Where Id_UMedida='$arrayDatos[2]'";
-             $RsetUM=$objUnidadMedida->Query($sql);
-             $arrayDatos[3]=mysql_result($RsetUM,0);
+             $RsetUM=$objUnidadMedida->Query($con,$sql);
+             $arrayDatos[3]=mysqli_result($RsetUM,0);
    
       }
       else{
               //Buscamos Descripcion y idunidadamedida
              $objArtCambs =  new poolConnection();
-             $objArtCambs->Conexion();
-             $objArtCambs->BaseDatos();
+             $con=$objArtCambs->Conexion();
+             $objArtCambs->BaseDatos($con);
              $sql="SELECT vDescripcionCABMS,Id_UMedida  FROM sa_cabms Where Id_CABMS='$Id_CABMS'";
-             $RsetArtCambs=$objArtCambs->Query($sql);
-             while($row = mysql_fetch_array($RsetArtCambs))
+             $RsetArtCambs=$objArtCambs->Query($con,$sql);
+             while($row = mysqli_fetch_array($RsetArtCambs))
                     {
                         $arrayDatos[1]=$row[vDescripcionCABMS];
                         $arrayDatos[2]=$row[Id_UMedida];
@@ -240,11 +238,11 @@ class OtrosConceptos extends poolConnection{
 
             //Buscamos unidada de medida 
              $objUnidadMedida = new poolConnection();
-             $objUnidadMedida->Conexion();
-             $objUnidadMedida->BaseDatos();
+             $con=$objUnidadMedida->Conexion();
+             $objUnidadMedida->BaseDatos($con);
              $sql="SELECT  vDescripcion FROM sa_umedida Where Id_UMedida='$arrayDatos[2]'";
-             $RsetUM=$objUnidadMedida->Query($sql);
-             $arrayDatos[3]=mysql_result($RsetUM,0);
+             $RsetUM=$objUnidadMedida->Query($con,$sql);
+             $arrayDatos[3]=mysqli_result($RsetUM,0);
       }
       return $arrayDatos;
   }
@@ -262,9 +260,9 @@ class OtrosConceptos extends poolConnection{
               $sql ="INSERT INTO sa_grid_otroscargos value('0','$Id_CABMS','$Descripcion','$UnidadMedida','$IdUMedida','$RemFac','$CostoPromedio','$Cantidad','$Session')";
               $objAddGrid = new poolConnection();
               $con=$objAddGrid ->Conexion();
-              $objAddGrid ->BaseDatos();
-              $objAddGrid ->Query($sql);
-              $objAddGrid ->Cerrar($con);
+              $objAddGrid ->BaseDatos($con);
+              $R=$objAddGrid ->Query($con,$sql);
+              $objAddGrid ->Cerrar($con,$R);
               return $sql;
   }
   public function grid($session)
@@ -275,10 +273,11 @@ class OtrosConceptos extends poolConnection{
          
         $objBuscarDetalles = new poolConnection();
         $con=$objBuscarDetalles->Conexion();
-        $objBuscarDetalles->BaseDatos();
+        $objBuscarDetalles->BaseDatos($con);
         $sql="SELECT * FROM sa_grid_otroscargos where Session='$session'";
-        $RSet=$objBuscarDetalles->Query($sql);
-        while ($row = mysql_fetch_array($RSet))
+        $RSet=$objBuscarDetalles->Query($con,$sql);
+        $i=0;
+        while ($row = mysqli_fetch_array($RSet))
             {
                 $i++; 
                 $MostrarAceptar="Si"; 
@@ -295,8 +294,7 @@ class OtrosConceptos extends poolConnection{
                                   </tr>
                               ";
             }
-         mysql_free_result($RSet);  
-        $objBuscarDetalles->Cerrar($con);
+        $objBuscarDetalles->Cerrar($con,$RSet);
         if($MostrarAceptar=="Si")
         {
             $btnAceptar = "<img src=\"../../interfaz_modulos/botones/aceptar.jpg\" name=\"ImageAceptar\" width=\"120\" height=\"45\" border=\"0\" id=\"ImageAceptar\" onmouseout=\"MM_swapImgRestore()\" onmouseover=\"MM_swapImage('ImageAceptar','','../../interfaz_modulos/botones/aceptar_over.jpg',1)\" style=\"cursor:pointer\" onclick=\"click_save();\"/>";
@@ -330,10 +328,10 @@ class OtrosConceptos extends poolConnection{
   {
       $objBorrar = new poolConnection();
       $con=$objBorrar->Conexion();
-      $objBorrar->BaseDatos();
+      $objBorrar->BaseDatos($con);
       $sql="delete from sa_grid_otroscargos Where Id='$id'";
-      $objBorrar->Query($sql);
-      $objBorrar->Cerrar($con);
+      $R=$objBorrar->Query($con,$sql);
+      $objBorrar->Cerrar($con,$R);
       return $sql;
   }
   public function InsertMov($AData)
@@ -380,9 +378,9 @@ class OtrosConceptos extends poolConnection{
                '$mCostoPromedioIniMovto')";
       $objInsertarMov =  new poolConnection();
       $con=$objInsertarMov->Conexion();
-      $objInsertarMov->BaseDatos();
-      $objInsertarMov->Query($Sql);
-      $objInsertarMov->Cerrar($con);
+      $objInsertarMov->BaseDatos($con);
+      $R=$objInsertarMov->Query($con,$Sql);
+      $objInsertarMov->Cerrar($con,$con);
   }
   public function guardar($AData)
   {
@@ -397,8 +395,8 @@ class OtrosConceptos extends poolConnection{
       $con=$objUpdateCambs->Conexion();
       $objUpdateCambs->BaseDatos();
       $sqlUpdateCAmbs = "update sa_cabms set Id_UMedida ='$Id_UnidadMedida' Where Id_CABMS='$Id_CABMS'";
-      $objUpdateCambs->Query($sqlUpdateCAmbs);
-      $objUpdateCambs->Cerrar($con);
+      $R=$objUpdateCambs->Query($con,$sqlUpdateCAmbs);
+      $objUpdateCambs->Cerrar($con,$R);
       
       //vars
       $eExistenciaIniMovto=0;
@@ -415,10 +413,10 @@ class OtrosConceptos extends poolConnection{
       $Accion ="Insertar";
       $objBuscar = new poolConnection();
       $con=$objBuscar->Conexion();
-      $objBuscar->BaseDatos();
+      $objBuscar->BaseDatos($con);
       $sql="SELECT * FROM sa_existenciasconsumible WHERE Id_CABMS = '$Id_CABMS'";
       $RSetB=$objBuscar->Query($sql);
-      while($fila = mysql_fetch_array($RSetB))
+      while($fila = mysqli_fetch_array($RSetB))
       {
            $Accion ="Actualizar";
            $eExistenciaIniMovto=$fila[eCantidadExistenciaDisponible];
@@ -428,8 +426,7 @@ class OtrosConceptos extends poolConnection{
            $mCostoPromedioActual=$fila[mCostoPromedioActual];
            $eCantidadExistenciaDisponible=$fila[eCantidadExistenciaDisponible];
       }
-      mysql_free_result($RSetB);
-      $objBuscar->Cerrar($con);
+      $objBuscar->Cerrar($con,$RSetB);
       
        $infos->Id_CABMS=$Id_CABMS;
        $infos->vDocumento=$RemFactura;
@@ -462,9 +459,9 @@ class OtrosConceptos extends poolConnection{
                                                '0')";
                           $objQuy  =  new poolConnection();
                           $con=$objQuy->Conexion();
-                          $objQuy->BaseDatos();
-                          $objQuy->Query($SqlInsertar);
-                          $objQuy->Cerrar($con);
+                          $objQuy->BaseDatos($con);
+                          $R=$objQuy->Query($con,$SqlInsertar);
+                          $objQuy->Cerrar($con,$R);
                           
               break;
           
@@ -483,9 +480,9 @@ class OtrosConceptos extends poolConnection{
                                             WHERE Id_CABMS = '$Id_CABMS'";
                                 $objQuy  =  new poolConnection();
                                 $con=$objQuy->Conexion();
-                                $objQuy->BaseDatos();
-                                $objQuy->Query($SqlUpdate);
-                                $objQuy->Cerrar($con);
+                                $objQuy->BaseDatos($con);
+                                $R=$objQuy->Query($con,$SqlUpdate);
+                                $objQuy->Cerrar($con,$R);
               break;
       }
      
@@ -497,15 +494,14 @@ class OtrosConceptos extends poolConnection{
       $sqlBuscarArt = "SELECT * FROM sa_locarticulos  WHERE Id_Localizacion = '$Id_Localizacion' AND Id_CABMS = '$Id_CABMS' ";
       $objBArt = new poolConnection();
       $con=$objBArt->Conexion();
-      $objBArt->BaseDatos();
-      $RSetBArt=$objBArt->Query($sqlBuscarArt);
+      $objBArt->BaseDatos($con);
+      $RSetBArt=$objBArt->Query($con,$sqlBuscarArt);
       while($fila = mysql_fetch_array($RSetBArt))
       {
          $ArtExiste = "Actualizar";
          $eCantidadLocalizacion=$fila[eCantidadLocalizacion];
       }
-      mysql_free_result($RSetBArt);
-      $objBArt->Cerrar($con);
+      $objBArt->Cerrar($con,$RSetBArt);
       
       
       switch ($ArtExiste)
@@ -524,9 +520,9 @@ class OtrosConceptos extends poolConnection{
                                                 '0000-00-00')";
                                 $objQuyArt = new poolConnection();
                                 $con=$objQuyArt->Conexion();
-                                $objQuyArt->BaseDatos();
-                                $objQuyArt->Query($sqlArtInsert);
-                                $objQuyArt->Cerrar($con);
+                                $objQuyArt->BaseDatos($con);
+                                $R=$objQuyArt->Query($con,$sqlArtInsert);
+                                $objQuyArt->Cerrar($con,$R);
                                 
               break;
     
@@ -543,9 +539,9 @@ class OtrosConceptos extends poolConnection{
                                                Id_Localizacion = '$Id_Localizacion' AND Id_CABMS = '$Id_CABMS'";
                                 $objQuyArt = new poolConnection();
                                 $con=$objQuyArt->Conexion();
-                                $objQuyArt->BaseDatos();
-                                $objQuyArt->Query($sqlArtUpdate);
-                                $objQuyArt->Cerrar($con);
+                                $objQuyArt->BaseDatos($con);
+                                $R=$objQuyArt->Query($con,$sqlArtUpdate);
+                                $objQuyArt->Cerrar($con,$R);
               break;
           
       }
@@ -555,10 +551,10 @@ class OtrosConceptos extends poolConnection{
   {
       $objBorrar = new poolConnection();
       $con=$objBorrar->Conexion();
-      $objBorrar->BaseDatos();
+      $objBorrar->BaseDatos($con);
       $sql="delete from sa_grid_otroscargos Where Session='$session'";
-      $objBorrar->Query($sql);
-      $objBorrar->Cerrar($con);
+      $R=$objBorrar->Query($con,$sql);
+      $objBorrar->Cerrar($con,$R);
       return $sql;
   }
 }

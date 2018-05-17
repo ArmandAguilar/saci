@@ -10,7 +10,7 @@ class Reporte_Inventario_Consumible
         $ArrayFinal = split("/",$AData->FechaFinal);
         $FechaInicio="$ArrayInicio[2]/$ArrayInicio[0]/$ArrayInicio[1]";
         $FechaFinal="$ArrayFinal[2]/$ArrayFinal[0]/$ArrayFinal[1]";
-        $where .=" ";
+        $where =" ";
 
         if(!empty($AData->FechaInicial) && !empty($AData->FechaFinal)) {
             $where .=" AND sa_existenciasconsumible.dFechaModRegistro >='$FechaInicio' and sa_existenciasconsumible.dFechaModRegistro <='$FechaFinal'"; 
@@ -29,7 +29,7 @@ class Reporte_Inventario_Consumible
 		<tbody>";
 		$objGrid = new poolConnection();
 		$con=$objGrid->Conexion();
-		$objGrid->BaseDatos();
+		$objGrid->BaseDatos($con);
 		$sql="Select
                 sa_cabms.Id_CABMS,
                 sa_cabms.ePartidaPresupuestal,
@@ -49,8 +49,8 @@ class Reporte_Inventario_Consumible
                 sa_cabms.Id_CABMS  = sa_existenciasconsumible.Id_CABMS and
                 sa_cabms.Id_CABMS = sa_existenciasconsumible.Id_CABMS and
                 sa_cabms.id_Umedida = sa_umedida.id_Umedida" .$whereFinal;
-		$RSet=$objGrid->Query($sql);
-		while($fila=mysql_fetch_array($RSet))
+		$RSet=$objGrid->Query($con,$sql);
+		while($fila=mysqli_fetch_array($RSet))
 		{
 		$FliexGrid.="
 		<tr>
@@ -65,8 +65,7 @@ class Reporte_Inventario_Consumible
 		</tr>";
 	
 		}
-		mysql_free_result($RSet);
-		$objGrid->Cerrar($con);
+		$objGrid->Cerrar($con,$RSet);
 	
 	
 	
@@ -116,7 +115,7 @@ class Reporte_Inventario_Consumible
         $ArrayFinal = split("/",$AData->FechaFinal);
         $FechaInicio="$ArrayInicio[2]/$ArrayInicio[0]/$ArrayInicio[1]";
         $FechaFinal="$ArrayFinal[2]/$ArrayFinal[0]/$ArrayFinal[1]";
-        $where .=" ";
+        $where =" ";
 
         if(!empty($AData->FechaInicial) && !empty($AData->FechaFinal)) {
             $where .=" AND sa_existenciasconsumible.dFechaModRegistro >='$FechaInicio' and sa_existenciasconsumible.dFechaModRegistro <='$FechaFinal'"; 
@@ -133,7 +132,7 @@ class Reporte_Inventario_Consumible
 
         $objG = new poolConnection();
         $con=$objG -> Conexion();
-        $objG -> BaseDatos();
+        $objG -> BaseDatos($con);
         $StrConsulta ="Select
                 sa_cabms.Id_CABMS,
                 sa_cabms.ePartidaPresupuestal,
@@ -153,9 +152,9 @@ class Reporte_Inventario_Consumible
                 sa_cabms.Id_CABMS  = sa_existenciasconsumible.Id_CABMS and
                 sa_cabms.Id_CABMS = sa_existenciasconsumible.Id_CABMS and
                 sa_cabms.id_Umedida = sa_umedida.id_Umedida";
-        $TResultado = $objG->Query($StrConsulta);
+        $TResultado = $objG->Query($con,$StrConsulta);
         $Catalogo = array();
-        while ($Row = mysql_fetch_array($TResultado)){
+        while ($Row = mysqli_fetch_array($TResultado)){
         
         	$Catalogo[] = array(
         			$Row["ePartidaPresupuestal"],
@@ -167,9 +166,8 @@ class Reporte_Inventario_Consumible
         			$Row["Total"]
         	);
         }
-        	
-        mysql_free_result($TResultado);
-        $objG->Cerrar($con);
+
+        $objG->Cerrar($con,$TResultado);
         //echo $StrConsulta;
         return $Catalogo;
     }    

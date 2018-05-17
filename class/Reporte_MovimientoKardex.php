@@ -17,7 +17,7 @@ class Reporte_MovimientoKardex {
                         $Patron=$AData->Patron;
                         $Clave=$AData->Clave;
 			$Descripcion=$AData->Descripcion;
-			
+        $where = "";
 			#Preparamos ware
 			if($Clave=="Si")
 			{
@@ -34,18 +34,18 @@ class Reporte_MovimientoKardex {
 			
 			$objGrid = new poolConnection();
 			$con=$objGrid->Conexion();
-			$objGrid->BaseDatos();
+			$objGrid->BaseDatos($con);
 			$sql="SELECT 
                                     sa_cabms.Id_CABMS,
                                     sa_cabms.vDescripcionCABMS
 	                      FROM 
                             sa_cabms
 			Where  $where";
-			$RSet=$objGrid->Query($sql);
+			$RSet=$objGrid->Query($con,$sql);
 			$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 			<tbody>";
                         $i=0;
-		    while($fila=mysql_fetch_array($RSet))
+		    while($fila=mysqli_fetch_array($RSet))
 			{
 			$i++;
 			
@@ -57,8 +57,7 @@ class Reporte_MovimientoKardex {
 			
 			</tr>";
 			}
-			mysql_free_result($RSet);
-			$objGrid->Cerrar($con);
+			$objGrid->Cerrar($con,$RSet);
 					$FliexGrid.="       </tbody>
 					</table><script>$('.flexme1').flexigrid({
 					title: '',
@@ -85,7 +84,7 @@ class Reporte_MovimientoKardex {
                         $Patron=$AData->Patron;
                         $Clave=$AData->Clave;
 			$Descripcion=$AData->Descripcion;
-			
+        	$where = "";
 			#Preparamos ware
 			if($Clave=="Si")
 			{
@@ -102,18 +101,18 @@ class Reporte_MovimientoKardex {
 			
 			$objGrid = new poolConnection();
 			$con=$objGrid->Conexion();
-			$objGrid->BaseDatos();
+			$objGrid->BaseDatos($con);
 			$sql="SELECT 
                                     sa_cabms.Id_CABMS,
                                     sa_cabms.vDescripcionCABMS
 	                      FROM 
                             sa_cabms
 			Where  $where";
-			$RSet=$objGrid->Query($sql);
+			$RSet=$objGrid->Query($con,$sql);
 			$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 			<tbody>";
                         $i=0;
-		    while($fila=mysql_fetch_array($RSet))
+		    while($fila=mysqli_fetch_array($RSet))
 			{
 			$i++;
 			
@@ -155,7 +154,7 @@ class Reporte_MovimientoKardex {
                        // $Cabms="2221000002";
 			$objGrid = new poolConnection();
 			$con=$objGrid->Conexion();
-			$objGrid->BaseDatos();
+			$objGrid->BaseDatos($con);
 			$sql="Select
                                 MC.dFechaMovRegistro,
                                 MC.nFolio,
@@ -179,7 +178,7 @@ class Reporte_MovimientoKardex {
 			$RSet=$objGrid->Query($sql);
 			
                         $i=0;
-		    while($fila=mysql_fetch_array($RSet))
+		    while($fila=mysqli_fetch_array($RSet))
 			{
 			$i++;
 			
@@ -200,8 +199,7 @@ class Reporte_MovimientoKardex {
                         $mCostoInversion =$fila[CostoInversion];
                         $mCostoInversion=number_format($mCostoInversion,'2',',','.');
 			}
-			mysql_free_result($RSet);
-			$objGrid->Cerrar($con);
+			$objGrid->Cerrar($con,$RSet);
                         
                         $FliexGrid = "<br><br>
                                      <table>
@@ -275,7 +273,7 @@ class Reporte_MovimientoKardex {
 			 	$Cabms="2221000002";
 			 	$objDatosPDF = new poolConnection();
 			 	$con=$objDatosPDF -> Conexion();
-			 	$objDatosPDF -> BaseDatos();
+			 	$objDatosPDF -> BaseDatos($con);
 			 	
 			 	$StrConsulta="Select
 			 	MC.dFechaMovRegistro,
@@ -298,9 +296,9 @@ class Reporte_MovimientoKardex {
 			 	MC.Id_CABMS = CA.Id_CABMS and
 			 	CA.Id_UMedida = UM.Id_UMedida";
 			 
-			 	$RSet = $objDatosPDF ->Query($StrConsulta);
+			 	$RSet = $objDatosPDF ->Query($con,$StrConsulta);
 			 	$Catalogo = array();
-			 	while ($Row = mysql_fetch_array($RSet)){
+			 	while ($Row = mysqli_fetch_array($RSet)){
 			 		
 			 		$Catalogo[] = array(
 			 				$Row["dFechaMovRegistro"],
@@ -316,8 +314,8 @@ class Reporte_MovimientoKardex {
 			 		);
 			 	}
 			 	
-			 	mysql_free_result($RSet);
-			 	$objDatosPDF->Cerrar($con);
+
+			 	$objDatosPDF->Cerrar($con,$RSet);
 			 	return $Catalogo;
  }
  

@@ -65,12 +65,12 @@ class Reporte_Generacion_Notas_Cargo extends poolConnection {
         if ($StrConsulta != "") {
             $objConexion = new poolConnection();
             $con = $objConexion->Conexion();
-            $objConexion->BaseDatos();
+            $objConexion->BaseDatos($con);
             
-            $TPedidos = $objConexion->Query($StrConsulta);
+            $TPedidos = $objConexion->Query($con,$StrConsulta);
             $Contador = 0;            
-            if (mysql_num_rows($TPedidos) > 0) {
-                while ($Pedido = mysql_fetch_array($TPedidos)) {
+            if (mysqli_num_rows($TPedidos) > 0) {
+                while ($Pedido = mysqli_fetch_array($TPedidos)) {
                     //$Respuesta->rows[$Contador]["cell"] = Array($Pedido["id_pedido"], utf8_encode($Pedido["vnombre"]), $Pedido["dfecharegistro"]);
                     $Respuesta->Pedidos[$Contador]->idpedido = $Pedido["id_pedido"];
                     $Respuesta->Pedidos[$Contador]->proveedor = $Pedido["vnombre"];
@@ -135,11 +135,11 @@ class Reporte_Generacion_Notas_Cargo extends poolConnection {
         //echo $StrConsulta."<p/>";
         $objConexion = new poolConnection();
         $con = $objConexion->Conexion();
-        $objConexion->BaseDatos();
-        $TReporte = $objConexion->Query($StrConsulta);        
+        $objConexion->BaseDatos($con);
+        $TReporte = $objConexion->Query($con,$StrConsulta);
         $Contador = 0;
-        if (mysql_num_rows($TReporte) > 0) {
-            while ($Registro = mysql_fetch_array($TReporte)) {
+        if (mysqli_num_rows($TReporte) > 0) {
+            while ($Registro = mysqli_fetch_array($TReporte)) {
                 $Respuesta[$Contador]->FechaPedido = $Registro["dFechaPedido"];
                 $Respuesta[$Contador]->IDCABMS = $Registro["Id_CABMS"];
                 $Respuesta[$Contador]->Cantidad = $Registro["eCantidad"];

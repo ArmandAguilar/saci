@@ -2,11 +2,11 @@
     class Reporte_Pedidos extends  poolConnection {
         public function getProveedor($id) {
             $objProveedor = new poolConnection();
-            $objProveedor->Conexion();
-            $objProveedor->BaseDatos();
+            $con=$objProveedor->Conexion();
+            $objProveedor->BaseDatos($con);
             $sqlp="select vNombre from sa_proveedor where Id_Proveedor='$id'";
             $RSetPro=$objProveedor->Query($sqlp);
-            while($fila = mysql_fetch_array($RSetPro))
+            while($fila = mysqli_fetch_array($RSetPro))
             {
                 $NProveedor = $fila[vNombre];
             }
@@ -14,6 +14,7 @@
         }
         
         public function buscar_pedidoInicial($AData){
+            $where = "";
             $Patron=$AData->Patron;
             $ACFolio=$AData->Folio;
             $ACLicitacion=$AData->Licitacion;
@@ -37,17 +38,17 @@
 
             $objGridPedido = new poolConnection();
             $con=$objGridPedido->Conexion();
-            $objGridPedido->BaseDatos();
+            $objGridPedido->BaseDatos($con);
             $sql="SELECT Id_Pedido, 
                          vNoRequisicion,
                          vNoLicitacion,
                          Id_Proveedor,
                          dFechaPedido
                          FROM sa_pedido Where $where";
-            $RSet=$objGridPedido->Query($sql);
+            $RSet=$objGridPedido->Query($con,$sql);
             $FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
                                              <tbody>";
-            while($fila=mysql_fetch_array($RSet))
+            while($fila=mysqli_fetch_array($RSet))
             {
                 $i++;
                 $proveedor = $objNomProveedor->getProveedor($fila[Id_Proveedor]);
@@ -61,8 +62,7 @@
                                       <td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$fila[dFechaPedido]</td>    
                                   </tr>";
             }
-            mysql_free_result($RSet);
-            $objGridPedido->Cerrar($con);
+            $objGridPedido->Cerrar($con,$RSet);
             $FliexGrid.="       </tbody>
                                                           </table><script>$('.flexme1').flexigrid({
                               title: '',
@@ -91,6 +91,7 @@
         }
         
         public function buscar_pedidoFinal($AData) {
+            $where = "";
             $Patron=$AData->Patron;
             $ACFolio=$AData->Folio;
             $ACLicitacion=$AData->Licitacion;
@@ -114,17 +115,17 @@
 
             $objGridPedido = new poolConnection();
             $con=$objGridPedido->Conexion();
-            $objGridPedido->BaseDatos();
+            $objGridPedido->BaseDatos($con);
             $sql="SELECT Id_Pedido, 
                          vNoRequisicion,
                          vNoLicitacion,
                          Id_Proveedor,
                          dFechaPedido
                          FROM sa_pedido Where $where";
-            $RSet=$objGridPedido->Query($sql);
+            $RSet=$objGridPedido->Query($con,$sql);
             $FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
                                              <tbody>";
-            while($fila=mysql_fetch_array($RSet))
+            while($fila=mysqli_fetch_array($RSet))
             {
                 $i++;
                 $proveedor = $objNomProveedor->getProveedor($fila[Id_Proveedor]);
@@ -138,8 +139,7 @@
                                       <td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$fila[dFechaPedido]</td>    
                                   </tr>";
             }
-            mysql_free_result($RSet);
-            $objGridPedido->Cerrar($con);
+            $objGridPedido->Cerrar($con,$RSet);
             $FliexGrid.="       </tbody>
                                                           </table><script>$('.flexme1').flexigrid({
                               title: '',
@@ -170,12 +170,12 @@
         public function JSONC_Pedidos($page, $limit, $sidx, $sord,$sql,$sqlcount) {   
             $objCount = new poolConnection();
             $con=$objCount -> Conexion();
-            $objCount -> BaseDatos();
+            $objCount -> BaseDatos($con);
             if(!$sidx) $sidx =1;
 
             $StrConsulta = "$sqlcount";
-            $ResultadoTotal = $objCount->Query($StrConsulta);
-            $row = mysql_fetch_array($ResultadoTotal);
+            $ResultadoTotal = $objCount->Query($con,$StrConsulta);
+            $row = mysqli_fetch_array($ResultadoTotal);
             $count = $row['count'];
 
             if( $count > 0 ) {
@@ -192,13 +192,13 @@
             $sLimite.="LIMIT $start,$limit";
             $sql.=$sLimite;
             $objGrid =  new poolConnection();
-            $objGrid->BaseDatos();
+            $objGrid->BaseDatos($con);
             $RSet = $objGrid ->Query($sql);
             $Respuesta->page = $page;
             $Respuesta->total = $total_pages;
             $Respuesta->records = $count;
             $Contador = 0;
-            while ($row = mysql_fetch_array($RSet))
+            while ($row = mysqli_fetch_array($RSet))
             {
 
                 $Respuesta->rows[$Contador]['Pedido'] = $row[Pedido];
@@ -216,7 +216,7 @@
         	$FechaIncial=$AData->FechaIncial;
         	$FechaFinal=$AData->FechaFinal;
         	
-        	$where .=" ";
+        	$where =" ";
         	
         	if(!empty($PedidoInicial) && !empty($PedidoFinal))
         	{
@@ -260,7 +260,7 @@
         	
 		            $objG = new poolConnection();
 		            $con=$objG -> Conexion();
-		            $objG -> BaseDatos();
+		            $objG -> BaseDatos($con);
 		            $StrConsulta = "Select
 		                            sa_pedido.Id_Pedido,
 		                            sa_pedido.dFechaPedido As FechaRegistro,
@@ -276,9 +276,9 @@
 		                            $whereFinal and
 		                            sa_pedido.Id_Proveedor = sa_proveedor.Id_Proveedor  and
 		                            sa_pedido.Id_UnidadAdmonDes=sa_unidadadmva.Id_Unidad  ORDER BY Id_Pedido";
-		             $RSet = $objG ->Query($StrConsulta);
+		             $RSet = $objG ->Query($con,$StrConsulta);
 			        $Catalogo = array();
-			        while ($Row = mysql_fetch_array($RSet)){
+			        while ($Row = mysqli_fetch_array($RSet)){
 			            
 			          $Catalogo[] = array($Row["Id_Pedido"], 
 			                                $Row["FechaRegistro"],
@@ -288,9 +288,7 @@
 			                                $Row["ImporteTotalIVA"]
 			                                );
 			        }
-			        
-			        mysql_free_result($RSet);
-			        $objG->Cerrar($con);
+			        $objG->Cerrar($con,$RSet);
 			        //$Catalogo[] = array( $whereFinal);
             return $Catalogo;
         }

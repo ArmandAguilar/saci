@@ -5,13 +5,13 @@ class  Entradas extends poolConnection
 	
 	public function load_form()
 	{
-		
+        $CboMovimientoOption = "";
 		$CboMovimiento =  new poolConnection();
 		$con=$CboMovimiento->Conexion();
-		$CboMovimiento->BaseDatos();
+		$CboMovimiento->BaseDatos($con);
 		$sql="SELECT Id_TipoMovimiento,vDescripcion FROM sa_tipomovimiento order by Id";
-		$RSet=$CboMovimiento->Query($sql);
-		while($fila = mysql_fetch_array($RSet))
+		$RSet=$CboMovimiento->Query($con,$sql);
+		while($fila = mysqli_fetch_array($RSet))
 		{
 			switch($fila[Id_TipoMovimiento])
 			{
@@ -30,8 +30,7 @@ class  Entradas extends poolConnection
 					
 			}
 		}
-		mysql_free_result($RSet);
-		$CboMovimiento->Cerrar($con);
+		$CboMovimiento->Cerrar($con,$RSet);
 		
 			/*($TipoMovimiento->ID == 101) ||
 			($TipoMovimiento->ID == 104) ||
@@ -132,7 +131,7 @@ class  Entradas extends poolConnection
         }
 	public function buscar_pedido($AData)
 	{
-		
+        $where = "";
 		$Patron=$AData->Patron;
 		$ACFolio=$AData->Folio;
 		$ACRequisicion=$AData->Requisicion;
@@ -158,12 +157,13 @@ class  Entradas extends poolConnection
 		
 		$objGridFacturas = new poolConnection();
 		$con=$objGridFacturas->Conexion();
-		$objGridFacturas->BaseDatos();
+		$objGridFacturas->BaseDatos($con);
 		
-		$RSet=$objGridFacturas->Query($sql);
+		$RSet=$objGridFacturas->Query($con,$sql);
 		$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 		<tbody>";
-		while($fila=mysql_fetch_array($RSet))
+		$i = 0;
+		while($fila=mysqli_fetch_array($RSet))
 		{
 		$i++;
 		
@@ -175,8 +175,7 @@ class  Entradas extends poolConnection
 		<td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$fila[dFechaPedido]</td>
 		</tr>";
 		}
-		mysql_free_result($RSet);
-		$objGridFacturas->Cerrar($con);
+		$objGridFacturas->Cerrar($con,$RSet);
 		$FliexGrid.="       </tbody>
 		</table><script>$('.flexme1').flexigrid({
 		title: '',
@@ -219,12 +218,13 @@ class  Entradas extends poolConnection
 	 	
 	 	$objGridFacturas = new poolConnection();
 	 	$con=$objGridFacturas->Conexion();
-	 	$objGridFacturas->BaseDatos();
+	 	$objGridFacturas->BaseDatos($con);
 	 	
-	 	$RSet=$objGridFacturas->Query($sql);
+	 	$RSet=$objGridFacturas->Query($con,$sql);
 	 	$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 	 	<tbody>";
-	 	while($fila=mysql_fetch_array($RSet))
+	 	$i = 0;
+	 	while($fila=mysqli_fetch_array($RSet))
 	 	{
 	 	$i++;
 	 	$Precio =  number_format($fila[mPrecioUnitario],'2','.',','); 
@@ -239,8 +239,7 @@ class  Entradas extends poolConnection
 	 	<td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$ $Precio</td>
 	 	</tr>";
 	 	}
-	 	mysql_free_result($RSet);
-	 	$objGridFacturas->Cerrar($con);
+	 	$objGridFacturas->Cerrar($con,$RSet);
 	 			$FliexGrid.="       </tbody>
 	 			</table><script>$('.flexme1').flexigrid({
 	 					title: '',
@@ -266,13 +265,14 @@ class  Entradas extends poolConnection
 	 	return $FliexGrid;
 	 }
   public function Detalles()
-  {	
-  	$objStaus =  new poolConnection();
+  {
+        $CboBien = "";
+  	    $objStaus =  new poolConnection();
         $con = $objStaus->Conexion();
         $objStaus->BaseDatos();
         $sql="SELECT Id_EdoBien,vDescripcion FROM sa_estadobien order by vDescripcion asc";
-        $RSet=$objStaus->Query($sql);
-        while($fila = mysql_fetch_array($RSet))
+        $RSet=$objStaus->Query($con,$sql);
+        while($fila = mysqli_fetch_array($RSet))
         {
             $CboBien .= "<option value=\"$fila[Id_EdoBien]\">$fila[vDescripcion]</option>";
         }
@@ -293,8 +293,8 @@ class  Entradas extends poolConnection
                               $(\".chzn-select-deselect\").chosen({allow_single_deselect:true}); 
                     </script>
   		                 ";
-  	
-  	
+
+      $frmDetalles = "";
   	$frmDetalles .="
   	<div id=\"DivTabs\">
   			<div id=\"tabs\">
@@ -417,14 +417,14 @@ class  Entradas extends poolConnection
   	    $Id_TipoBien = 0;
   	    $obj = new poolConnection();
   	    $con=$obj->Conexion();
-  	    $obj->BaseDatos();
+  	    $obj->BaseDatos($con);
   	    $sql="Select Id_TipoBien from sa_inventario Where Id_CABMS='$IdCambs'";
-  	    $St=$obj->Query($sql);
-  	    while($fila=mysql_fetch_array($St))
+  	    $St=$obj->Query($con,$sql);
+  	    while($fila=mysqli_fetch_array($St))
   	    {
   	    	$Id_TipoBien=$fila[Id_TipoBien];
   	    }
-  	    $obj->Cerrar($con);
+  	    $obj->Cerrar($con,$St);
   	    return $Id_TipoBien;
   }
   function add_tipobien_inventario($Id_ConsecutivoInv,$Id_TipoBien,$Id_CABMS,$CveUsuario)
@@ -707,7 +707,7 @@ class  Entradas extends poolConnection
   }
   public function buscar_resguardante($texto,$cve,$nombre)
  {
-
+     $sqlWhere = "";
  	$sql="Select Id_NumEmpleado,vNombre from sa_empleado where ";
  	if($cve == "Si")
  	 {
@@ -724,10 +724,11 @@ class  Entradas extends poolConnection
                                             <tbody>";
                           $objBuscar = new poolConnection();
                           $con=$objBuscar->Conexion();
-                          $objBuscar->BaseDatos();
+                          $objBuscar->BaseDatos($con);
                           
-                          $RSet=$objBuscar->Query($sql);
-                          while($fila=  mysql_fetch_array($RSet))
+                          $RSet=$objBuscar->Query($con,$sql);
+                          $i = 0;
+                          while($fila=  mysqli_fetch_array($RSet))
                           {
                               $i++;
                               $FliexGrid.="
@@ -738,8 +739,7 @@ class  Entradas extends poolConnection
                                                     
                                                </tr>";
                           }
-                          mysql_free_result($RSet);
-                          $objBuscar->Cerrar($con);
+                          $objBuscar->Cerrar($con,$RSet);
                           $FliexGrid.="       </tbody>
                                                                         </table><script>$('.flexme1').flexigrid({
                                             title: '',
@@ -761,7 +761,7 @@ class  Entradas extends poolConnection
  }
   public function buscar_resguardante2($texto,$cve,$nombre)
  {
-
+     $sqlWhere = "";
  	$sql="Select Id_NumEmpleado,vNombre from sa_empleado where ";
  	if($cve == "Si")
  	 {
@@ -778,10 +778,10 @@ class  Entradas extends poolConnection
                                             <tbody>";
                           $objBuscar = new poolConnection();
                           $con=$objBuscar->Conexion();
-                          $objBuscar->BaseDatos();
+                          $objBuscar->BaseDatos($con);
                           
-                          $RSet=$objBuscar->Query($sql);
-                          while($fila=  mysql_fetch_array($RSet))
+                          $RSet=$objBuscar->Query($con,$sql);
+                          while($fila=  mysqli_fetch_array($RSet))
                           {
                               $i++;
                               $FliexGrid.="
@@ -792,8 +792,7 @@ class  Entradas extends poolConnection
                                                     
                                                </tr>";
                           }
-                          mysql_free_result($RSet);
-                          $objBuscar->Cerrar($con);
+                          $objBuscar->Cerrar($con,$RSet);
                           $FliexGrid.="       </tbody>
                                                                         </table><script>$('.flexme1').flexigrid({
                                             title: '',
@@ -815,7 +814,7 @@ class  Entradas extends poolConnection
  }
   public function buscar_resguardante3($texto,$cve,$nombre)
  {
-
+     $sqlWhere = "";
  	$sql="Select Id_NumEmpleado,vNombre from sa_empleado where ";
  	if($cve == "Si")
  	 {
@@ -832,10 +831,10 @@ class  Entradas extends poolConnection
                                             <tbody>";
                           $objBuscar = new poolConnection();
                           $con=$objBuscar->Conexion();
-                          $objBuscar->BaseDatos();
-                          
-                          $RSet=$objBuscar->Query($sql);
-                          while($fila=  mysql_fetch_array($RSet))
+                          $objBuscar->BaseDatos($con);
+                          $RSet=$objBuscar->Query($con,$sql);
+                          $i = 0;
+                          while($fila=  mysqli_fetch_array($RSet))
                           {
                               $i++;
                               $FliexGrid.="
@@ -846,8 +845,7 @@ class  Entradas extends poolConnection
                                                     
                                                </tr>";
                           }
-                          mysql_free_result($RSet);
-                          $objBuscar->Cerrar($con);
+                          $objBuscar->Cerrar($con,$RSet);
                           $FliexGrid.="       </tbody>
                                                                         </table><script>$('.flexme1').flexigrid({
                                             title: '',
@@ -869,7 +867,8 @@ class  Entradas extends poolConnection
  }
  public function UAdministrativa($cve,$nombre,$patron)
  {
-        $sql="Select Id_Unidad,vDescripcion from sa_unidadadmva where ";
+     $sqlWhere = "";
+     $sql="Select Id_Unidad,vDescripcion from sa_unidadadmva where ";
  	if($cve == "Si")
  	 {
  	 	$sqlWhere .=" (Id_Unidad like '%$patron%') or ";
@@ -885,10 +884,10 @@ class  Entradas extends poolConnection
                                             <tbody>";
                           $objBuscar = new poolConnection();
                           $con=$objBuscar->Conexion();
-                          $objBuscar->BaseDatos();
-                          
+                          $objBuscar->BaseDatos($con);
                           $RSet=$objBuscar->Query($sql);
-                          while($fila=  mysql_fetch_array($RSet))
+                          $i = 0;
+                          while($fila=mysqli_fetch_array($RSet))
                           {
                               $i++;
                               $FliexGrid.="
@@ -899,8 +898,7 @@ class  Entradas extends poolConnection
                                                     
                                                </tr>";
                           }
-                          mysql_free_result($RSet);
-                          $objBuscar->Cerrar($con);
+                          $objBuscar->Cerrar($con,$RSet);
                           $FliexGrid.="       </tbody>
                                                                         </table><script>$('.flexme1').flexigrid({
                                             title: '',
@@ -960,25 +958,25 @@ class  Entradas extends poolConnection
      
      $objInv = new poolConnection();
      $con=$objInv->Conexion();
-     $objInv->BaseDatos();
-     $objInv->Query($sqlInventario);
-     $used_id = mysql_insert_id($con);
-     $objInv->Cerrar($con);
+     $objInv->BaseDatos($con);
+     $R=$objInv->Query($sqlInventario);
+     $used_id = mysqli_insert_id($con);
+     $objInv->Cerrar($con,$R);
      
      $sqlInventarioMov="INSERT INTO sa_movinventario values('0','$Id_CABMS', '$used_id','$txtResguardante1', '$txtCBTiposMovimiento', '$txtUIAdministrativa', '$txtResguardante2', '$txtResguardante3','0','$FRegistro','$FechaModificacion','$TBNoDocumento','$CboEstado')";
      $sqlAcervo="INSERT INTO sa_acervo values ('0','$Id_CABMS','$vCaracteristica','$used_id','$txtUbicacion','$txtTitulo','$txtAutor')";
      
      $objInvM = new poolConnection();
      $con=$objInvM->Conexion();
-     $objInvM->BaseDatos();
-     $objInvM->Query($sqlInventarioMov);
-     $objInvM->Cerrar($con);
+     $objInvM->BaseDatos($con);
+     $R=$objInvM->Query($con,$sqlInventarioMov);
+     $objInvM->Cerrar($con,$R);
      
      $obj = new poolConnection();
      $con=$obj->Conexion();
-     $obj->BaseDatos();
-     $obj->Query($sqlAcervo);
-     $obj->Cerrar($con);
+     $obj->BaseDatos($con);
+     $R=$obj->Query($sqlAcervo);
+     $obj->Cerrar($con,$R);
      return "$sqlInventario";
      
  }
@@ -1028,10 +1026,10 @@ class  Entradas extends poolConnection
      
      $objInv = new poolConnection();
      $con=$objInv->Conexion();
-     $objInv->BaseDatos();
-     $objInv->Query($sqlInventario);
-     $used_id = mysql_insert_id($con);
-     $objInv->Cerrar($con);
+     $objInv->BaseDatos($con);
+     $R=$objInv->Query($sqlInventario);
+     $used_id = mysqli_insert_id($con);
+     $objInv->Cerrar($con,$R);
      
       $sqlInventarioMov="INSERT INTO sa_movinventario values('0','$Id_CABMS', '$used_id','$txtResguardante1', '$txtCBTiposMovimiento', '$txtUIAdministrativa', '$txtResguardante2', '$txtResguardante3','0','$FRegistro','$FechaModificacion','$TBNoDocumento','$CboEstado')";
       $sqlVehiculo = "INSERT INTO sa_vehiculo values('0','$Id_CABMS','$txtMarcaVehiculo','$used_id','$txtTipoVehiculo','$txtModeloVehiculo','$txtSNVehiculo','$txtSNMotorVehiculo','$txtPlacasVehiculo','.','$txtTransmision','-','$vCaracteristica','$txtDireccion')";
@@ -1039,15 +1037,15 @@ class  Entradas extends poolConnection
      
      $objInvM = new poolConnection();
      $con=$objInvM->Conexion();
-     $objInvM->BaseDatos();
-     $objInvM->Query($sqlInventarioMov);
-     $objInvM->Cerrar($con);
+     $objInvM->BaseDatos($con);
+     $R=$objInvM->Query($sqlInventarioMov);
+     $objInvM->Cerrar($con,$R);
      
      $obj = new poolConnection();
      $con=$obj->Conexion();
-     $obj->BaseDatos();
-     $obj->Query($sqlVehiculo);
-     $obj->Cerrar($con);
+     $obj->BaseDatos($con);
+     $R=$obj->Query($sqlVehiculo);
+     $obj->Cerrar($con,$R);
      
      
      
@@ -1106,10 +1104,10 @@ class  Entradas extends poolConnection
      
      $objInv = new poolConnection();
      $con=$objInv->Conexion();
-     $objInv->BaseDatos();
-     $objInv->Query($sqlInventario);
-     $used_id = mysql_insert_id($con);
-     $objInv->Cerrar($con);
+     $objInv->BaseDatos($con);
+     $R=$objInv->Query($sqlInventario);
+     $used_id = mysqli_insert_id($con);
+     $objInv->Cerrar($con,$R);
      
      $sqlInventarioMov="INSERT INTO sa_movinventario values('0','$Id_CABMS', '$used_id','$txtResguardante1', '$txtCBTiposMovimiento', '$txtUIAdministrativa', '$txtResguardante2', '$txtResguardante3','0','$FRegistro','$FechaModificacion','$TBNoDocumento','$CboEstado')";
      $sqlInformatico ="INSERT INTO sa_informatico values('0','$Id_CABMS','$txtSerieInfomatico','$used_id','$txtMarcaInfomatico','$txtModeloInfomatico','$txtDicosDuroInfomatico','$txtRamInfomatico','$txtProcesadorInfomatico','$txtPaginasMinutoInfomatico','$txtFuentePoderInfomatico','$vCaracteristica','$txtMonitorSerieInfomatico','$txtMonitorMarcaInfomatico','$txtTecladoSerialInfomatico','$txtTecladoMarcaInfomatico','$txtMouseSerieInfomatico','$txtMouseMarcaInfomatico')";
@@ -1117,15 +1115,15 @@ class  Entradas extends poolConnection
      
      $objInvM = new poolConnection();
      $con=$objInvM->Conexion();
-     $objInvM->BaseDatos();
-     $objInvM->Query($sqlInventarioMov);
-     $objInvM->Cerrar($con);
+     $objInvM->BaseDatos($con);
+     $R=$objInvM->Query($sqlInventarioMov);
+     $objInvM->Cerrar($con,$R);
      
      $obj = new poolConnection();
      $con=$obj->Conexion();
-     $obj->BaseDatos();
-     $obj->Query($sqlInformatico);
-     $obj->Cerrar($con);
+     $obj->BaseDatos($con);
+     $R=$obj->Query($sqlInformatico);
+     $obj->Cerrar($con,$R);
      
      return "$sqlInventario $sqlInventarioMov $sqlInformatico";
      
@@ -1183,25 +1181,25 @@ class  Entradas extends poolConnection
      
      $objInv = new poolConnection();
      $con=$objInv->Conexion();
-     $objInv->BaseDatos();
-     $objInv->Query($sqlInventario);
-     $used_id = mysql_insert_id($con);
-     $objInv->Cerrar($con);
+     $objInv->BaseDatos($con);
+     $R=$objInv->Query($sqlInventario);
+     $used_id = mysqli_insert_id($con);
+     $objInv->Cerrar($con,$R);
      
      $sqlInventarioMov="INSERT INTO sa_movinventario values('0','$Id_CABMS', '$used_id','$txtResguardante1', '$txtCBTiposMovimiento', '$txtUIAdministrativa', '$txtResguardante2', '$txtResguardante3','0','$FRegistro','$FechaModificacion','$TBNoDocumento','$CboEstado')";
      $sqlMueble ="INSERT INTO sa_mueble values('0','$Id_CABMS','$vCaracteristica','$used_id','$txtMuebleModeloSerie','$txtMarcaMueble','$txtMuebleModelo','$txtMuebleTipo','$chkMuebleCajones','$chkMuebleGavetas','$chkMuebleEntrepano','$chkMueblePedestal','$chkMuebleFija','$chkMuebleGiratoria','$chkMuebleRodajas','$chkMueblePlegable')";
      
      $objInvM = new poolConnection();
      $con=$objInvM->Conexion();
-     $objInvM->BaseDatos();
-     $objInvM->Query($sqlInventarioMov);
-     $objInvM->Cerrar($con);
+     $objInvM->BaseDatos($con);
+     $R=$objInvM->Query($sqlInventarioMov);
+     $objInvM->Cerrar($con,$R);
      
      $obj = new poolConnection();
      $con=$obj->Conexion();
-     $obj->BaseDatos();
-     $obj->Query($sqlMueble);
-     $obj->Cerrar($con);
+     $obj->BaseDatos($con);
+     $R=$obj->Query($sqlMueble);
+     $obj->Cerrar($con,$R);
      
      return "$sqlInventario $sqlInventarioMov $sqlMueble";
      
@@ -1210,6 +1208,7 @@ class  Entradas extends poolConnection
  /* Agregar */
   public function buscar_Cambs_2000($info)
   {
+      $sqlWhere = "";
       $cve=$info->Folio;
       $nombre=$info->Descripcion;
       $texto=$info->Patron;
@@ -1229,10 +1228,10 @@ class  Entradas extends poolConnection
                                             <tbody>";
                           $objBuscar = new poolConnection();
                           $con=$objBuscar->Conexion();
-                          $objBuscar->BaseDatos();
-                          
-                          $RSet=$objBuscar->Query($sql);
-                          while($fila=  mysql_fetch_array($RSet))
+                          $objBuscar->BaseDatos($con);
+                          $i=0;
+                          $RSet=$objBuscar->Query($con,$sql);
+                          while($fila=  mysqli_fetch_array($RSet))
                           {
                               $i++;
                               $FliexGrid.="
@@ -1242,9 +1241,8 @@ class  Entradas extends poolConnection
                                                     <td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$fila[vDescripcionCABMS]</td>
                                                     
                                                </tr>";
-                          }
-                          mysql_free_result($RSet);
-                          $objBuscar->Cerrar($con);
+                          };
+                          $objBuscar->Cerrar($con,$RSet);
                           $FliexGrid.="       </tbody>
                                                                         </table><script>$('.flexme1').flexigrid({
                                             title: '',
@@ -1266,6 +1264,7 @@ class  Entradas extends poolConnection
   }
   public function buscar_Inv_2000($info)
   {
+      $sqlWhere = "";
       $cve=$info->Folio;
       $nombre=$info->Descripcion;
       $texto=$info->Patron;
@@ -1285,10 +1284,10 @@ class  Entradas extends poolConnection
                                             <tbody>";
                           $objBuscar = new poolConnection();
                           $con=$objBuscar->Conexion();
-                          $objBuscar->BaseDatos();
-                          
+                          $objBuscar->BaseDatos($con);
                           $RSet=$objBuscar->Query($sql);
-                          while($fila=  mysql_fetch_array($RSet))
+                          $i=0;
+                          while($fila=  mysqli_fetch_array($RSet))
                           {
                               $i++;
                               $FliexGrid.="
@@ -1300,8 +1299,7 @@ class  Entradas extends poolConnection
                                                     
                                                </tr>";
                           }
-                          mysql_free_result($RSet);
-                          $objBuscar->Cerrar($con);
+                          $objBuscar->Cerrar($con,$RSet);
                           $FliexGrid.="       </tbody>
                                                                         </table><script>$('.flexme1').flexigrid({
                                             title: '',
@@ -1330,9 +1328,9 @@ class  Entradas extends poolConnection
                 from sa_inventario,sa_movinventario where sa_inventario.Id_ConsecutivoInv='$id' and sa_inventario.Id_ConsecutivoInv=sa_movinventario.Id_ConsecutivoInv";
       $objData = new poolConnection();
       $con=$objData->Conexion();
-      $objData->BaseDatos();
-      $RSet=$objData->Query($sqlinv);
-      while($fila=  mysql_fetch_array($RSet))
+      $objData->BaseDatos($con);
+      $RSet=$objData->Query($con,$sqlinv);
+      while($fila=  mysqli_fetch_array($RSet))
             {
                 $AF = split("-",$fila[dFechaFactura]);
                 $dFechaFactura="$AF[2]/$AF[1]/$AF[0]";
@@ -1351,7 +1349,7 @@ class  Entradas extends poolConnection
                                 'Id_Unidad' =>$fila[Id_Unidad],
                     );
             }
-      $objData->Cerrar($con); 
+      $objData->Cerrar($con,$RSet);
       return json_encode($arr);
   }
   function dato_inv_DResguardo($info)
@@ -1364,46 +1362,46 @@ class  Entradas extends poolConnection
       $sqlUA="Select vDescripcion from sa_unidadadmva where Id_Unidad='$Id_Unidad'";
       $objData = new poolConnection();
       $con=$objData->Conexion();
-      $objData->BaseDatos();
+      $objData->BaseDatos($con);
       $RSet=$objData->Query($sqlUA);
-      while($fila=  mysql_fetch_array($RSet))
+      while($fila= mysqli_fetch_array($RSet))
             {
                  $UAvDescripcion = $fila[vDescripcion];
             }
-      $objData->Cerrar($con);
+      $objData->Cerrar($con,$RSet);
       $sqlR1="Select vNombre from sa_empleado where Id_NumEmpleado='$Resguardante1'";
       $sqlR2="Select vNombre from sa_empleado where Id_NumEmpleado='$Resguardante2'";
       $sqlR3="Select vNombre from sa_empleado where Id_NumEmpleado='$Resguardante3'";
       
       $objData = new poolConnection();
       $con=$objData->Conexion();
-      $objData->BaseDatos();
-      $RSet=$objData->Query($sqlR1);
-      while($fila=  mysql_fetch_array($RSet))
+      $objData->BaseDatos($con);
+      $RSet=$objData->Query($con,$sqlR1);
+      while($fila=  mysqli_fetch_array($RSet))
             {
                  $ResguardanteNom1 = $fila[vNombre];
             }
-      $objData->Cerrar($con);
+      $objData->Cerrar($con,$RSet);
       
       $objData = new poolConnection();
       $con=$objData->Conexion();
-      $objData->BaseDatos();
-      $RSet=$objData->Query($sqlR2);
-      while($fila=  mysql_fetch_array($RSet))
+      $objData->BaseDatos($con);
+      $RSet=$objData->Query($con,$sqlR2);
+      while($fila=  mysqli_fetch_array($RSet))
             {
                  $ResguardanteNom2 = $fila[vNombre];
             }
-      $objData->Cerrar($con);
+      $objData->Cerrar($con,$RSet);
       
       $objData = new poolConnection();
       $con=$objData->Conexion();
-      $objData->BaseDatos();
-      $RSet=$objData->Query($sqlR3);
-      while($fila=  mysql_fetch_array($RSet))
+      $objData->BaseDatos($con);
+      $RSet=$objData->Query($con,$sqlR3);
+      while($fila=  mysqli_fetch_array($RSet))
             {
                  $ResguardanteNom3 = $fila[vNombre];
             }
-      $objData->Cerrar($con);
+      $objData->Cerrar($con,$RSet);
            
       $ArrDatos[] = array('Resguardante1' => $ResguardanteNom1, 
                           'Resguardante2' => $ResguardanteNom2,
@@ -1425,9 +1423,9 @@ class  Entradas extends poolConnection
 	     	    /*echo $objEntrada->bien_mueble_frm($_POST[IdCambs]);*/
                         $objData = new poolConnection();
                         $con=$objData->Conexion();
-                        $objData->BaseDatos();
+                        $objData->BaseDatos($con);
                         $sql="SELECT vMarca,vTipo,vModelo,vNumSerie,eNoCajon,eNoGaveta,eNoEntrepanio,bPedestal,bFija,bGiratoria,bRodajas,bPlegable,vCaracteristicas FROM sa_mueble Where Id_CABMS='$IdCambs'";
-                        $RSet=$objData->Query($sql);
+                        $RSet=$objData->Query($con,$sql);
                         while($fila=  mysql_fetch_array($RSet))
                               {
                                     $vMarca=$fila[vMarca];
@@ -1444,7 +1442,7 @@ class  Entradas extends poolConnection
                                     $bPlegable=$fila[bPlegable];
                                     $vCaracteristicas=$fila[vCaracteristicas];
                               }
-                        $objData->Cerrar($con);
+                        $objData->Cerrar($con,$RSet);
                         $chkedbPedestal="";
                         $chkedbFija="";
                         $chkedbGiratoria="";
@@ -1541,7 +1539,7 @@ class  Entradas extends poolConnection
 	     	    /*echo $objEntrada->bien_informatico_frm($_POST[IdCambs]);*/
                     $objData = new poolConnection();
                         $con=$objData->Conexion();
-                        $objData->BaseDatos();
+                        $objData->BaseDatos($con);
                         $sql="SELECT
                                 vNumSerie,
                                 vMarca,
@@ -1559,8 +1557,8 @@ class  Entradas extends poolConnection
                                 vMouseSerie,
                                 vMouseMarca
                                  FROM sa_informatico Where Id_CABMS='$IdCambs'";
-                        $RSet=$objData->Query($sql);
-                        while($fila=  mysql_fetch_array($RSet))
+                        $RSet=$objData->Query($con,$sql);
+                        while($fila=  mysqli_fetch_array($RSet))
                               {
                                     $vNumSerie=$fila[vNumSerie];
                                     $vMarca=$fila[vMarca];
@@ -1578,7 +1576,7 @@ class  Entradas extends poolConnection
                                     $vMouseSerie=$fila[vMouseSerie];
                                     $vMouseMarca=$fila[vMouseMarca];
                               }
-                        $objData->Cerrar($con);
+                        $objData->Cerrar($con,$RSet);
                     $frm ="<script>
                                 $(\"#TBCaracteristicas\").val('$vCaracteristicas');
                                 $(\"#txtIdTipoBien\").val('2');
@@ -1660,7 +1658,7 @@ class  Entradas extends poolConnection
                    /* echo $objEntrada->bien_vehiculo_frm();*/
                     $objData = new poolConnection();
                         $con=$objData->Conexion();
-                        $objData->BaseDatos();
+                        $objData->BaseDatos($con);
                         $sql="SELECT
                                 vMarca,
                                 vTipo,
@@ -1674,8 +1672,8 @@ class  Entradas extends poolConnection
                                 vCaracteristicas,
                                 cTipoDireccion
                                  FROM sa_vehiculo Where Id_CABMS='$IdCambs'";
-                        $RSet=$objData->Query($sql);
-                        while($fila=  mysql_fetch_array($RSet))
+                        $RSet=$objData->Query($con,$sql);
+                        while($fila=  mysqli_fetch_array($RSet))
                               {
                                     $vMarca=$fila[vMarca];
                                     $vTipo=$fila[vTipo];
@@ -1687,7 +1685,7 @@ class  Entradas extends poolConnection
                                     $vCaracteristicas=$fila[vCaracteristicas];
                                     $cTipoDireccion=$fila[cTipoDireccion];
                               }
-                        $objData->Cerrar($con);
+                        $objData->Cerrar($con,$RSet);
                         $chkVehiculoManual="";
                         $chkVehiculoHidraulica="";
                         $chkVehiculoAmbas="";
@@ -1811,7 +1809,7 @@ class  Entradas extends poolConnection
 	     	     /*echo $objEntrada->bien_acervo_frm();*/
                      $objData = new poolConnection();
                         $con=$objData->Conexion();
-                        $objData->BaseDatos();
+                        $objData->BaseDatos($con);
                         $sql="SELECT
                                 vCaracteristicas,
                                 vUbicacion,
@@ -1819,14 +1817,14 @@ class  Entradas extends poolConnection
                                 vAutor
                                  FROM sa_acervo Where Id_CABMS='$IdCambs'";
                         $RSet=$objData->Query($sql);
-                        while($fila=  mysql_fetch_array($RSet))
+                        while($fila=  mysqli_fetch_array($RSet))
                               {
                                     $vCaracteristicas=$fila[vCaracteristicas];
                                     $vUbicacion=$fila[vUbicacion];
                                     $vTitulo=$fila[vTitulo];
                                     $vAutor=$fila[vAutor];
                               }
-                        $objData->Cerrar($con);
+                        $objData->Cerrar($con,$RSet);
                      $frm = "
                     <script>
                          $(\"#TBCaracteristicas\").val('$vCaracteristicas');
@@ -1868,9 +1866,9 @@ class  Entradas extends poolConnection
     
                
   	$CboBien = "XXXX";
-      
-        
-  	
+
+
+      $frmDetalles = "";
   	/*Poner cambs e iventario */
   	$frmDetalles .="
   	<div id=\"DivTabs\">
@@ -1983,6 +1981,7 @@ class  Entradas extends poolConnection
   }
  public function buscar_consulta_2000($info)
  {
+     $sqlWhere = "";
        $cve=$info->Folio;
       $nombre=$info->Descripcion;
       $texto=$info->Patron;
@@ -2002,10 +2001,10 @@ class  Entradas extends poolConnection
                                             <tbody>";
                           $objBuscar = new poolConnection();
                           $con=$objBuscar->Conexion();
-                          $objBuscar->BaseDatos();
-                          
-                          $RSet=$objBuscar->Query($sql);
-                          while($fila=  mysql_fetch_array($RSet))
+                          $objBuscar->BaseDatos($con);
+                          $RSet=$objBuscar->Query($con,$sql);
+                          $i=0;
+                          while($fila =  mysqli_fetch_array($RSet))
                           {
                               $i++;
                               $FliexGrid.="
@@ -2017,8 +2016,7 @@ class  Entradas extends poolConnection
                                                     
                                                </tr>";
                           }
-                          mysql_free_result($RSet);
-                          $objBuscar->Cerrar($con);
+                          $objBuscar->Cerrar($con,$RSet);
                           $FliexGrid.="       </tbody>
                                                                         </table><script>$('.flexme1').flexigrid({
                                             title: '',
@@ -2043,10 +2041,10 @@ class  Entradas extends poolConnection
  {
     $objBuscar = new poolConnection();
     $con=$objBuscar->Conexion();
-    $objBuscar->BaseDatos();
+    $objBuscar->BaseDatos($con);
     $sql="Select vDescripcion from sa_estadobien where Id_EdoBien='$id'";
-    $RSet=$objBuscar->Query($sql);
-    while($fila= mysql_fetch_array($RSet))
+    $RSet=$objBuscar->Query($con,$sql);
+    while($fila= mysqli_fetch_array($RSet))
     {
         $vDescripcion=$fila[vDescripcion];
     }
@@ -2062,20 +2060,20 @@ class  Entradas extends poolConnection
       //Tipo de movimiento
       $obj = new poolConnection();
       $con = $obj->Conexion();
-      $obj->BaseDatos();
+      $obj->BaseDatos($con);
       $sqlTipoMov = "SELECT Id_TipoMovimiento FROM sa_movinventario Where Id_ConsecutivoInv='$id' order by dFechaMovRegistro asc";
-      $RSet=$obj->Query($sqlTipoMov);
-      while($fila=  mysql_fetch_array($RSet))
+      $RSet=$obj->Query($con,$sqlTipoMov);
+      while($fila=  mysqli_fetch_array($RSet))
             {
                 $Id_TipoMovimiento = $fila[Id_TipoMovimiento];
              }
-      $obj->Cerrar($con); 
+      $obj->Cerrar($con,$RSet);
       
       $objData = new poolConnection();
       $con=$objData->Conexion();
-      $objData->BaseDatos();
-      $RSet=$objData->Query($sqlinv);
-      while($fila=  mysql_fetch_array($RSet))
+      $objData->BaseDatos($con);
+      $RSet=$objData->Query($RSet,$sqlinv);
+      while($fila=  mysqli_fetch_array($RSet))
             {
                 $AF = split("-",$fila[dFechaFactura]);
                 $AR = split("-",$fila[dFechaRegistro]);
@@ -2099,7 +2097,7 @@ class  Entradas extends poolConnection
                                 'IdTipoMov' =>$Id_TipoMovimiento,
                     );
             }
-      $objData->Cerrar($con); 
+      $objData->Cerrar($con,$RSet);
       return json_encode($arr);
   }
   /*Modificar*/
@@ -2241,6 +2239,7 @@ class  Entradas extends poolConnection
   }
   public function buscar_consulta_modificar($info)
  {
+     $sqlWhere = "";
        $cve=$info->Folio;
       $nombre=$info->Descripcion;
       $texto=$info->Patron;
@@ -2260,10 +2259,10 @@ class  Entradas extends poolConnection
                                             <tbody>";
                           $objBuscar = new poolConnection();
                           $con=$objBuscar->Conexion();
-                          $objBuscar->BaseDatos();
-                          
-                          $RSet=$objBuscar->Query($sql);
-                          while($fila=  mysql_fetch_array($RSet))
+                          $objBuscar->BaseDatos($con);
+                          $RSet=$objBuscar->Query($con,$sql);
+                          $i=0;
+                          while($fila=  mysqli_fetch_array($RSet))
                           {
                               $i++;
                               $FliexGrid.="
@@ -2275,8 +2274,7 @@ class  Entradas extends poolConnection
                                                     
                                                </tr>";
                           }
-                          mysql_free_result($RSet);
-                          $objBuscar->Cerrar($con);
+                          $objBuscar->Cerrar($con,$RSet);
                           $FliexGrid.="       </tbody>
                                                                         </table><script>$('.flexme1').flexigrid({
                                             title: '',
@@ -2401,10 +2399,10 @@ class  Entradas extends poolConnection
      
      $objInv = new poolConnection();
      $con=$objInv->Conexion();
-     $objInv->BaseDatos();
-     $objInv->Query($sqlInventario);
-     $used_id = mysql_insert_id($con);
-     $objInv->Cerrar($con);
+     $objInv->BaseDatos($con);
+     $R=$objInv->Query($con,$sqlInventario);
+     $used_id = mysqli_insert_id($con);
+     $objInv->Cerrar($con,$R);
      
       $sqlInventarioMov="INSERT INTO sa_movinventario values('0','$Id_CABMS', '$used_id','$txtResguardante1', '$txtCBTiposMovimiento', '$txtUIAdministrativa', '$txtResguardante2', '$txtResguardante3','0','$FRegistro','$FechaModificacion','$TBNoDocumento','$CboEstado')";
       
@@ -2491,10 +2489,10 @@ class  Entradas extends poolConnection
      
       $objInv = new poolConnection();
      $con=$objInv->Conexion();
-     $objInv->BaseDatos();
-     $objInv->Query($sqlInventario);
-     $used_id = mysql_insert_id($con);
-     $objInv->Cerrar($con);
+     $objInv->BaseDatos($con);
+     $R=$objInv->Query($con,$sqlInventario);
+     $used_id = mysqli_insert_id($con);
+     $objInv->Cerrar($con,$R);
      
      $sqlInventarioMov="INSERT INTO sa_movinventario values('0','$Id_CABMS', '$used_id','$txtResguardante1', '$txtCBTiposMovimiento', '$txtUIAdministrativa', '$txtResguardante2', '$txtResguardante3','0','$FRegistro','$FechaModificacion','$TBNoDocumento','$CboEstado')";
      /*$sqlInformatico ="INSERT INTO sa_informatico ('0','$Id_CABMS','$txtSerieInfomatico','$used_id','$txtMarcaInfomatico','$txtModeloInfomatico','$txtDicosDuroInfomatico','$txtRamInfomatico','$txtProcesadorInfomatico','$txtPaginasMinutoInfomatico','$txtFuentePoderInfomatico','$vCaracteristica','$txtMonitorSerieInfomatico','$txtMonitorMarcaInfomatico','$txtTecladoSerialInfomatico','$txtTecladoMarcaInfomatico','$txtMouseSerieInfomatico','$txtMouseMarcaInfomatico')";*/

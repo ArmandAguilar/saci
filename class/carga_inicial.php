@@ -9,8 +9,8 @@ class Carga_Inicial extends poolConnection{
         $StrConsulta = "SELECT * FROM sa_unidadadmva ua ORDER BY ua.Id";
         $TUnidades = $objConexion->Query($con,$StrConsulta);
         $Contador = 0;
-        if (mysql_num_rows($TUnidades) > 0) {
-            while ($Unidad = mysql_fetch_array($TUnidades)) {
+        if (mysqli_num_rows($TUnidades) > 0) {
+            while ($Unidad = mysqli_fetch_array($TUnidades)) {
                 $Respuesta[$Contador]->ID = $Unidad["Id_Unidad"];
                 $Respuesta[$Contador]->Descripcion = $Unidad["Id_Unidad"].' - '.$Unidad["vDescripcion"];
                 $Contador++;
@@ -22,7 +22,7 @@ class Carga_Inicial extends poolConnection{
     public function ObtenerCABMSAgregarCargaInicial($xIDUnidadAdministrativa) {        
         $objConexion = new poolConnection();
         $con = $objConexion->Conexion();
-        $objConexion->BaseDatos();
+        $objConexion->BaseDatos($con);
 
         /*$StrConsulta = "
             SELECT cc.id AS 'IDCABMS', cc.vdescripcion FROM sa_cabmsconsumible cc
@@ -41,10 +41,10 @@ class Carga_Inicial extends poolConnection{
             )
             ";*/
         $StrConsulta = "SELECT Id_CABMS,vDescripcionCABMS FROM sa_cabms  Where ePartidaPresupuestal>='1' and  ePartidaPresupuestal <='3000' ORDER BY  vDescripcionCABMS";
-        $TCABMS = $objConexion->Query($StrConsulta);
+        $TCABMS = $objConexion->Query($con,$StrConsulta);
         $Contador = 0;
-        if (mysql_num_rows($TCABMS) > 0) {
-            while ($CABMS = mysql_fetch_array($TCABMS)) {
+        if (mysqli_num_rows($TCABMS) > 0) {
+            while ($CABMS = mysqli_fetch_array($TCABMS)) {
                 $Respuesta[$Contador]->IDCABMSConsumible = $CABMS["Id_CABMS"];
                 $Respuesta[$Contador]->Descripcion = $CABMS["vDescripcionCABMS"];
                 $Contador++;
@@ -56,13 +56,13 @@ class Carga_Inicial extends poolConnection{
     public function ObtenerUnidadesMedidaHTML() {        
         $objConexion = new poolConnection();
         $con = $objConexion->Conexion();
-        $objConexion->BaseDatos();
+        $objConexion->BaseDatos($con);
 
         $StrConsulta = "SELECT * FROM sa_umedida um ORDER BY um.Id_UMedida";
-        $TUnidades = $objConexion->Query($StrConsulta);
+        $TUnidades = $objConexion->Query($con,$StrConsulta);
         $Respuesta = "<option value='0'></option>";
-        if (mysql_num_rows($TUnidades) > 0) {
-            while ($Unidad = mysql_fetch_array($TUnidades)) {
+        if (mysqli_num_rows($TUnidades) > 0) {
+            while ($Unidad = mysqli_fetch_array($TUnidades)) {
                 $Respuesta = $Respuesta."<option value='".$Unidad["Id_UMedida"]."'>".$Unidad["Id_UMedida"]." - ".$Unidad["vDescripcion"]."</option>";
             }
         }
@@ -72,7 +72,7 @@ class Carga_Inicial extends poolConnection{
     public function ObtenerDetalleCargaInicial($xIDUnidadAdministrativa) {
         $objConexion = new poolConnection();
         $con = $objConexion->Conexion();
-        $objConexion->BaseDatos();
+        $objConexion->BaseDatos($con);
 
       
          $StrConsulta = "
@@ -94,10 +94,10 @@ class Carga_Inicial extends poolConnection{
         CI.Id_CveCABMS = CC.Id_CABMS and
         CC.Id_UMedida = UM.Id_UMedida and
         CI.cEstadoCarga = 'A'";
-        $TUnidades = $objConexion->Query($StrConsulta);
+        $TUnidades = $objConexion->Query($con,$StrConsulta);
         $Contador = 0;
-        if (mysql_num_rows($TUnidades) > 0) {
-            while ($Unidad = mysql_fetch_array($TUnidades)) {
+        if (mysqli_num_rows($TUnidades) > 0) {
+            while ($Unidad = mysqli_fetch_array($TUnidades)) {
                 
                 /*$Respuesta->TipoCarga = $Unidad["tipocarga"];
                 $Respuesta->FechaElaboracion = $Unidad["fechacaptura"];
@@ -134,7 +134,7 @@ class Carga_Inicial extends poolConnection{
     public function ModificarEncabezado($xIDUnidadAdministrativa, $xTipoCarga, $xFechaCaptura){
         $objConexion = new poolConnection();
         $con = $objConexion->Conexion();
-        $objConexion->BaseDatos();
+        $objConexion->BaseDatos($con);
 
         $StrConsulta = "
             UPDATE sa_cargainiarticulo SET 
@@ -142,7 +142,7 @@ class Carga_Inicial extends poolConnection{
             WHERE id_unidad='".$xIDUnidadAdministrativa."'
         ";
         
-        $Actualizado = $objConexion->Query($StrConsulta);
+        $Actualizado = $objConexion->Query($con,$StrConsulta);
         $Respuesta = "0";
         if ($Actualizado) {
             $Respuesta = "1";
@@ -154,7 +154,7 @@ class Carga_Inicial extends poolConnection{
     public function EliminarArticuloCargaInicial($xIDUnidadAdministrativa, $xClaveAC, $xClaveInternaAC) {
         $objConexion = new poolConnection();
         $con = $objConexion->Conexion();
-        $objConexion->BaseDatos();
+        $objConexion->BaseDatos($con);
 
         $StrConsulta = "
             UPDATE sa_cargainiarticulo 
@@ -163,15 +163,15 @@ class Carga_Inicial extends poolConnection{
                 Id_Unidad = '".$xIDUnidadAdministrativa."'
 		AND Id_CveARTCABMS  = ".$xClaveAC."
 		AND Id_CveInternaAC = ".$xClaveInternaAC;
-        $Resultado = $objConexion->Query($StrConsulta);
-        $Eliminado = mysql_affected_rows();
+        $Resultado = $objConexion->Query($con,$StrConsulta);
+        $Eliminado = mysqli_affected_rows();
         return $Eliminado;
     }
     
     public function InsertarModificarArticuloCargaInicial($xIDUnidadAdministrativa, $xIDCABMS, $xClaveAC, $xClaveInternaAC, $xCantidadSolicitada, $xTipoCarga, $xFechaElaboracion) {
         $objConexion = new poolConnection();
         $con = $objConexion->Conexion();
-        $objConexion->BaseDatos();
+        $objConexion->BaseDatos($con);
         // cia.cEstadoCarga = 'C'
         //Aqui hay que reahacer el modulo por completoooo
         if (($xClaveAC == "") && ($xClaveInternaAC == "")){
@@ -192,10 +192,10 @@ class Carga_Inicial extends poolConnection{
                     AND cia.Id_CveInternaAC=".$xClaveInternaAC."
                     AND cia.Id_Unidad='".$xIDUnidadAdministrativa."'";
         }
-        $Resultado = $objConexion->Query($StrConsulta);
-        $Existe = mysql_num_rows($Resultado);
+        $Resultado = $objConexion->Query($con,$StrConsulta);
+        $Existe = mysqli_num_rows($Resultado);
         if ($Existe) {
-            $Articulo = mysql_fetch_array($Resultado);
+            $Articulo = mysqli_fetch_array($Resultado);
             if ($xClaveAC == "")
                 $xClaveAC = $Articulo["Id_CABMS"];
             if ($xClaveInternaAC == "")
@@ -226,11 +226,11 @@ class Carga_Inicial extends poolConnection{
             FROM sa_cabmsconsumible cc
             WHERE
                 cc.id=".$xIDCABMS;
-            $Resultado = $objConexion->Query($StrConsulta);
-            $Existe = mysql_affected_rows();
+            $Resultado = $objConexion->Query($con,$StrConsulta);
+            $Existe = mysqli_affected_rows();
             if ($Existe)
             {
-                $Articulo = mysql_fetch_array($Resultado);
+                $Articulo = mysqli_fetch_array($Resultado);
                 if ($xClaveAC == "")
                     $xClaveAC = $Articulo["Id_CABMS"];
                 
@@ -269,8 +269,8 @@ class Carga_Inicial extends poolConnection{
                 $StrConsulta = "";
             }
         }
-        $Resultado = $objConexion->Query($StrConsulta);
-        $Registrado = mysql_affected_rows();
+        $Resultado = $objConexion->Query($con,$StrConsulta);
+        $Registrado = mysqli_affected_rows();
         return $Registrado;
     }
 }

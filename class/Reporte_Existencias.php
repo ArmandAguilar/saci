@@ -7,8 +7,8 @@ class Reporte_Existencias extends poolConnection
 		$Clave=$AData->Clave;
 		$Nombre=$AData->Nombre;
 		$Sel = $AData->Sel;
-		
-			
+
+        $where = "";
 		#Preparamos ware
 		if($Clave=="Si")
 		{
@@ -25,16 +25,16 @@ class Reporte_Existencias extends poolConnection
 			
 		$objGrid = new poolConnection();
 		$con=$objGrid->Conexion();
-		$objGrid->BaseDatos();
+		$objGrid->BaseDatos($con);
 		$sql="SELECT IdEmpleado,Nombres
 		FROM
 		sa_usuarios
 		Where   $where";
-		$RSet=$objGrid->Query($sql);
+		$RSet=$objGrid->Query($con,$sql);
 		$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 		<tbody>";
 		$i=0;
-		while($fila=mysql_fetch_array($RSet))
+		while($fila=mysqli_fetch_array($RSet))
 		{
 		$i++;
 		
@@ -63,8 +63,7 @@ class Reporte_Existencias extends poolConnection
 		     }
 		
 		}
-		mysql_free_result($RSet);
-		$objGrid->Cerrar($con);
+		$objGrid->Cerrar($con,$RSet);
 		$FliexGrid.="       </tbody>
 		</table><script>$('.flexme1').flexigrid({
 				title: '',
@@ -92,8 +91,8 @@ class Reporte_Existencias extends poolConnection
 		$Clave=$AData->Clave;
 		$Nombre=$AData->Nombre;
 		$Sel = $AData->Sel;
-	
-			
+
+        $where = "";
 		#Preparamos ware
 			if($Clave=="Si")
 			{
@@ -110,16 +109,16 @@ class Reporte_Existencias extends poolConnection
 				
 			$objGrid = new poolConnection();
 			$con=$objGrid->Conexion();
-			$objGrid->BaseDatos();
+			$objGrid->BaseDatos($con);
 			$sql="SELECT Id_TipoMovimiento,vDescripcion
 			FROM
 			sa_tipomovimiento
 			Where   $where";
-			$RSet=$objGrid->Query($sql);
+			$RSet=$objGrid->Query($con,$sql);
 			$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 			<tbody>";
 			$i=0;
-			while($fila=mysql_fetch_array($RSet))
+			while($fila=mysqli_fetch_array($RSet))
 			{
 			$i++;
 				switch ($Sel)
@@ -144,8 +143,7 @@ class Reporte_Existencias extends poolConnection
 				}
 				
 			}
-			mysql_free_result($RSet);
-			$objGrid->Cerrar($con);
+			$objGrid->Cerrar($con,$RSet);
 			$FliexGrid.="       </tbody>
 			</table><script>$('.flexme1').flexigrid({
 			title: '',
@@ -172,22 +170,22 @@ class Reporte_Existencias extends poolConnection
 		{
 			$Patron=$AData->Patron;
 			$Sel = $AData->Sel;
-			
+            $where = "";
 			$where.="Id_ConsecutivoInv like '%$Patron%'  ";
 			
 		
 			$objGrid = new poolConnection();
 			$con=$objGrid->Conexion();
-			$objGrid->BaseDatos();
+			$objGrid->BaseDatos($con);
 			$sql="SELECT sa_inventario.Id_ConsecutivoInv,sa_inventario.Id_CABMS,sa_cabms.vDescripcionCABMS
 			FROM
 			sa_inventario,sa_cabms
 			Where   $where and sa_inventario.Id_CABMS = sa_cabms.Id_CABMS";
-			$RSet=$objGrid->Query($sql);
+			$RSet=$objGrid->Query($con,$sql);
 			$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 			<tbody>";
 			$i=0;
-			while($fila=mysql_fetch_array($RSet))
+			while($fila=mysqli_fetch_array($RSet))
 			{
 			$i++;
 		     switch($Sel)
@@ -212,8 +210,7 @@ class Reporte_Existencias extends poolConnection
 		     
 			
 			}
-			mysql_free_result($RSet);
-			$objGrid->Cerrar($con);
+			$objGrid->Cerrar($con,$RSet);
 			$FliexGrid.="       </tbody>
 			</table><script>$('.flexme1').flexigrid({
 					title: '',
@@ -241,7 +238,7 @@ class Reporte_Existencias extends poolConnection
 			$Clave=$AData->Clave;
 			$Nombre=$AData->Nombre;
 			$Sel = $AData->Sel;
-		
+            $where = "";
 				
 			#Preparamos ware
 			if($Clave=="Si")
@@ -259,16 +256,16 @@ class Reporte_Existencias extends poolConnection
 					
 				$objGrid = new poolConnection();
 				$con=$objGrid->Conexion();
-				$objGrid->BaseDatos();
+				$objGrid->BaseDatos($con);
 				$sql="SELECT Id_Unidad,vDescripcion
 				FROM
 				sa_unidadadmva
 				Where   $where";
-				$RSet=$objGrid->Query($sql);
+				$RSet=$objGrid->Query($con,$sql);
 				$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 				<tbody>";
 				$i=0;
-				while($fila=mysql_fetch_array($RSet))
+				while($fila=mysqli_fetch_array($RSet))
 				{
 				$i++;
 					switch($Sel)
@@ -295,8 +292,7 @@ class Reporte_Existencias extends poolConnection
 					}
 					
 				}
-				mysql_free_result($RSet);
-				$objGrid->Cerrar($con);
+				$objGrid->Cerrar($con,$RSet);
 				$FliexGrid.="       </tbody>
 				</table><script>$('.flexme1').flexigrid({
 				title: '',
@@ -327,16 +323,16 @@ class Reporte_Existencias extends poolConnection
 					
 				$objGrid = new poolConnection();
 				$con=$objGrid->Conexion();
-				$objGrid->BaseDatos();
+				$objGrid->BaseDatos($con);
 				$sql="SELECT DISTINCT (vMarca)
 				FROM
 				sa_mueble
 				Where   vMarca like '%$Patron%'";
-				$RSet=$objGrid->Query($sql);
+				$RSet=$objGrid->Query($con,$sql);
 				$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 				<tbody>";
 				$i=0;
-				while($fila=mysql_fetch_array($RSet))
+				while($fila=mysqli_fetch_array($RSet))
 				{
 				$i++;
 			     switch ($Sel)
@@ -358,8 +354,7 @@ class Reporte_Existencias extends poolConnection
 			     }
 				
 				}
-				mysql_free_result($RSet);
-				$objGrid->Cerrar($con);
+				$objGrid->Cerrar($con,$RSet);
 				$FliexGrid.="       </tbody>
 				</table><script>$('.flexme1').flexigrid({
 						title: '',
@@ -388,16 +383,16 @@ class Reporte_Existencias extends poolConnection
 								
 							$objGrid = new poolConnection();
 							$con=$objGrid->Conexion();
-							$objGrid->BaseDatos();
+							$objGrid->BaseDatos($con);
 							$sql="SELECT DISTINCT (vModelo)
 							FROM
 							sa_mueble
 							Where  vModelo like '%$Patron%'";
-							$RSet=$objGrid->Query($sql);
+							$RSet=$objGrid->Query($con,$sql);
 							$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 							<tbody>";
 							$i=0;
-							while($fila=mysql_fetch_array($RSet))
+							while($fila=mysqli_fetch_array($RSet))
 							{
 								$i++;
 								switch ($Sel)
@@ -421,8 +416,7 @@ class Reporte_Existencias extends poolConnection
 									
 								
 							}
-							mysql_free_result($RSet);
-							$objGrid->Cerrar($con);
+							$objGrid->Cerrar($con,$RSet);
 							$FliexGrid.="       </tbody>
 							</table><script>$('.flexme1').flexigrid({
 							title: '',
@@ -451,16 +445,16 @@ class Reporte_Existencias extends poolConnection
 						
 							$objGrid = new poolConnection();
 							$con=$objGrid->Conexion();
-							$objGrid->BaseDatos();
+							$objGrid->BaseDatos($con);
 							$sql="SELECT DISTINCT (vTipo)
 							FROM
 							sa_mueble
 							Where  vTipo like '%$Patron%'";
-							$RSet=$objGrid->Query($sql);
+							$RSet=$objGrid->Query($con,$sql);
 							$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 							<tbody>";
 							$i=0;
-							while($fila=mysql_fetch_array($RSet))
+							while($fila=mysqli_fetch_array($RSet))
 							{
 								$i++;
 								switch ($Sel)
@@ -483,8 +477,7 @@ class Reporte_Existencias extends poolConnection
 								}	
 								
 							}
-							mysql_free_result($RSet);
-							$objGrid->Cerrar($con);
+							$objGrid->Cerrar($con,$RSet);
 								$FliexGrid.="       </tbody>
 								</table><script>$('.flexme1').flexigrid({
 								title: '',
@@ -514,16 +507,16 @@ class Reporte_Existencias extends poolConnection
 						
 							$objGrid = new poolConnection();
 							$con=$objGrid->Conexion();
-							$objGrid->BaseDatos();
+							$objGrid->BaseDatos($con);
 							$sql="SELECT DISTINCT (vMarca)
 							FROM
 							sa_informatico
 							Where vMarca like '%$Patron%'";
-							$RSet=$objGrid->Query($sql);
+							$RSet=$objGrid->Query($con,$sql);
 							$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 							<tbody>";
 							$i=0;
-							while($fila=mysql_fetch_array($RSet))
+							while($fila=mysqli_fetch_array($RSet))
 							{
 								$i++;
 								switch ($Sel)
@@ -545,8 +538,7 @@ class Reporte_Existencias extends poolConnection
 								}	
 								
 							}
-							mysql_free_result($RSet);
-							$objGrid->Cerrar($con);
+							$objGrid->Cerrar($con,$RSet);
 								$FliexGrid.="       </tbody>
 								</table><script>$('.flexme1').flexigrid({
 								title: '',
@@ -575,16 +567,16 @@ class Reporte_Existencias extends poolConnection
 						
 							$objGrid = new poolConnection();
 							$con=$objGrid->Conexion();
-							$objGrid->BaseDatos();
+							$objGrid->BaseDatos($con);
 							$sql="SELECT DISTINCT (vMouseMarca)
 							FROM
 							sa_informatico
 							Where vMouseMarca like '%$Patron%'";
-							$RSet=$objGrid->Query($sql);
+							$RSet=$objGrid->Query($con,$sql);
 							$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 							<tbody>";
 							$i=0;
-							while($fila=mysql_fetch_array($RSet))
+							while($fila=mysqli_fetch_array($RSet))
 							{
 								$i++;
 								switch($Sel)
@@ -607,8 +599,7 @@ class Reporte_Existencias extends poolConnection
 								}	
 								
 							}
-							mysql_free_result($RSet);
-							$objGrid->Cerrar($con);
+							$objGrid->Cerrar($con,$RSet);
 								$FliexGrid.="       </tbody>
 								</table><script>$('.flexme1').flexigrid({
 								title: '',
@@ -637,16 +628,16 @@ class Reporte_Existencias extends poolConnection
 						
 							$objGrid = new poolConnection();
 							$con=$objGrid->Conexion();
-							$objGrid->BaseDatos();
+							$objGrid->BaseDatos($con);
 							$sql="SELECT DISTINCT (vTecladoMarca)
 							FROM
 							sa_informatico
 							Where vTecladoMarca like '%$Patron%'";
-							$RSet=$objGrid->Query($sql);
+							$RSet=$objGrid->Query($con,$sql);
 							$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 							<tbody>";
 							$i=0;
-							while($fila=mysql_fetch_array($RSet))
+							while($fila=mysqli_fetch_array($RSet))
 							{
 								$i++;
 								switch($Sel)
@@ -669,8 +660,7 @@ class Reporte_Existencias extends poolConnection
 								}	
 								
 							}
-							mysql_free_result($RSet);
-							$objGrid->Cerrar($con);
+							$objGrid->Cerrar($con,$RSet);
 								$FliexGrid.="       </tbody>
 								</table><script>$('.flexme1').flexigrid({
 								title: '',
@@ -699,16 +689,16 @@ class Reporte_Existencias extends poolConnection
 						
 							$objGrid = new poolConnection();
 							$con=$objGrid->Conexion();
-							$objGrid->BaseDatos();
+							$objGrid->BaseDatos($con);
 							$sql="SELECT DISTINCT (vProcesador)
 							FROM
 							sa_informatico
 							Where vProcesador like '%$Patron%'";
-							$RSet=$objGrid->Query($sql);
+							$RSet=$objGrid->Query($con,$sql);
 							$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 							<tbody>";
 							$i=0;
-							while($fila=mysql_fetch_array($RSet))
+							while($fila=mysqli_fetch_array($RSet))
 							{
 								$i++;
 								switch ($Sel)
@@ -731,8 +721,7 @@ class Reporte_Existencias extends poolConnection
 								}	
 								
 							}
-							mysql_free_result($RSet);
-							$objGrid->Cerrar($con);
+							$objGrid->Cerrar($con,$RSet);
 								$FliexGrid.="       </tbody>
 								</table><script>$('.flexme1').flexigrid({
 								title: '',
@@ -761,16 +750,16 @@ class Reporte_Existencias extends poolConnection
 						
 							$objGrid = new poolConnection();
 							$con=$objGrid->Conexion();
-							$objGrid->BaseDatos();
+							$objGrid->BaseDatos($con);
 							$sql="SELECT DISTINCT (vMarca)
 							FROM
 							sa_informatico
 							Where vMarca like '%$Patron%'";
-							$RSet=$objGrid->Query($sql);
+							$RSet=$objGrid->Query($con,$sql);
 							$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 							<tbody>";
 							$i=0;
-							while($fila=mysql_fetch_array($RSet))
+							while($fila=mysqli_fetch_array($RSet))
 							{
 								$i++;
 								switch ($Sel)
@@ -792,8 +781,7 @@ class Reporte_Existencias extends poolConnection
 								}	
 								
 							}
-							mysql_free_result($RSet);
-							$objGrid->Cerrar($con);
+							$objGrid->Cerrar($con,$RSet);
 								$FliexGrid.="       </tbody>
 								</table><script>$('.flexme1').flexigrid({
 								title: '',
@@ -822,16 +810,16 @@ class Reporte_Existencias extends poolConnection
 						
 							$objGrid = new poolConnection();
 							$con=$objGrid->Conexion();
-							$objGrid->BaseDatos();
+							$objGrid->BaseDatos($con);
 							$sql="SELECT DISTINCT (vRAM)
 							FROM
 							sa_informatico
 							Where vRAM like '%$Patron%'";
-							$RSet=$objGrid->Query($sql);
+							$RSet=$objGrid->Query($con,$sql);
 							$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 							<tbody>";
 							$i=0;
-							while($fila=mysql_fetch_array($RSet))
+							while($fila=mysqli_fetch_array($RSet))
 							{
 								$i++;
 								switch ($Sel)
@@ -854,8 +842,7 @@ class Reporte_Existencias extends poolConnection
 								}	
 								
 							}
-							mysql_free_result($RSet);
-							$objGrid->Cerrar($con);
+							$objGrid->Cerrar($con,$RSet);
 								$FliexGrid.="       </tbody>
 								</table><script>$('.flexme1').flexigrid({
 								title: '',
@@ -884,16 +871,16 @@ class Reporte_Existencias extends poolConnection
 						
 							$objGrid = new poolConnection();
 							$con=$objGrid->Conexion();
-							$objGrid->BaseDatos();
+							$objGrid->BaseDatos($con);
 							$sql="SELECT DISTINCT (vDiscoDuro)
 							FROM
 							sa_informatico
 							Where vDiscoDuro like '%$Patron%'";
-							$RSet=$objGrid->Query($sql);
+							$RSet=$objGrid->Query($con,$sql);
 							$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 							<tbody>";
 							$i=0;
-							while($fila=mysql_fetch_array($RSet))
+							while($fila=mysqli_fetch_array($RSet))
 							{
 								$i++;
 								switch ($Sel)
@@ -915,8 +902,7 @@ class Reporte_Existencias extends poolConnection
 								}	
 								
 							}
-							mysql_free_result($RSet);
-							$objGrid->Cerrar($con);
+							$objGrid->Cerrar($con,$RSet);
 								$FliexGrid.="       </tbody>
 								</table><script>$('.flexme1').flexigrid({
 								title: '',
@@ -946,16 +932,16 @@ class Reporte_Existencias extends poolConnection
 						
 							$objGrid = new poolConnection();
 							$con=$objGrid->Conexion();
-							$objGrid->BaseDatos();
+							$objGrid->BaseDatos($con);
 							$sql="SELECT DISTINCT (vMarca)
 							FROM
 							sa_vehiculo
 							Where vMarca like '%$Patron%'";
-							$RSet=$objGrid->Query($sql);
+							$RSet=$objGrid->Query($con,$sql);
 							$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 							<tbody>";
 							$i=0;
-							while($fila=mysql_fetch_array($RSet))
+							while($fila=mysqli_fetch_array($RSet))
 							{
 								$i++;
 								switch ($Sel)
@@ -977,8 +963,7 @@ class Reporte_Existencias extends poolConnection
 								}	
 								
 							}
-							mysql_free_result($RSet);
-							$objGrid->Cerrar($con);
+							$objGrid->Cerrar($con,$RSet);
 								$FliexGrid.="       </tbody>
 								</table><script>$('.flexme1').flexigrid({
 								title: '',
@@ -1007,16 +992,16 @@ class Reporte_Existencias extends poolConnection
 						
 							$objGrid = new poolConnection();
 							$con=$objGrid->Conexion();
-							$objGrid->BaseDatos();
+							$objGrid->BaseDatos($con);
 							$sql="SELECT DISTINCT (vModelo)
 							FROM
 							sa_vehiculo
 							Where vModelo like '%$Patron%'";
-							$RSet=$objGrid->Query($sql);
+							$RSet=$objGrid->Query($con,$sql);
 							$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 							<tbody>";
 							$i=0;
-							while($fila=mysql_fetch_array($RSet))
+							while($fila=mysqli_fetch_array($RSet))
 							{
 								$i++;
 								switch ($Sel)
@@ -1038,8 +1023,7 @@ class Reporte_Existencias extends poolConnection
 								}	
 								
 							}
-							mysql_free_result($RSet);
-							$objGrid->Cerrar($con);
+							$objGrid->Cerrar($con,$RSet);
 								$FliexGrid.="       </tbody>
 								</table><script>$('.flexme1').flexigrid({
 								title: '',
@@ -1068,16 +1052,16 @@ class Reporte_Existencias extends poolConnection
 						
 							$objGrid = new poolConnection();
 							$con=$objGrid->Conexion();
-							$objGrid->BaseDatos();
+							$objGrid->BaseDatos($con);
 							$sql="SELECT DISTINCT (vTipo)
 							FROM
 							sa_vehiculo
 							Where vTipo like '%$Patron%'";
-							$RSet=$objGrid->Query($sql);
+							$RSet=$objGrid->Query($con,$sql);
 							$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 							<tbody>";
 							$i=0;
-							while($fila=mysql_fetch_array($RSet))
+							while($fila=mysqli_fetch_array($RSet))
 							{
 								$i++;
 								switch ($Sel)
@@ -1099,8 +1083,7 @@ class Reporte_Existencias extends poolConnection
 								}	
 								
 							}
-							mysql_free_result($RSet);
-							$objGrid->Cerrar($con);
+							$objGrid->Cerrar($con,$RSet);
 								$FliexGrid.="       </tbody>
 								</table><script>$('.flexme1').flexigrid({
 								title: '',
@@ -1128,16 +1111,16 @@ class Reporte_Existencias extends poolConnection
 							$Sel = $AData->Sel;
 							$objGrid = new poolConnection();
 							$con=$objGrid->Conexion();
-							$objGrid->BaseDatos();
+							$objGrid->BaseDatos($con);
 							$sql="SELECT DISTINCT (vAutor)
 							FROM
 					        sa_acervo
 							Where vAutor like '%$Patron%'";
-							$RSet=$objGrid->Query($sql);
+							$RSet=$objGrid->Query($con,$sql);
 							$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 							<tbody>";
 							$i=0;
-							while($fila=mysql_fetch_array($RSet))
+							while($fila=mysqli_fetch_array($RSet))
 							{
 								$i++;
 								switch ($Sel)
@@ -1159,8 +1142,7 @@ class Reporte_Existencias extends poolConnection
 								}	
 								
 							}
-							mysql_free_result($RSet);
-							$objGrid->Cerrar($con);
+							$objGrid->Cerrar($con,$RSet);
 								$FliexGrid.="       </tbody>
 								</table><script>$('.flexme1').flexigrid({
 								title: '',
@@ -1189,16 +1171,16 @@ class Reporte_Existencias extends poolConnection
 						
 							$objGrid = new poolConnection();
 							$con=$objGrid->Conexion();
-							$objGrid->BaseDatos();
+							$objGrid->BaseDatos($con);
 							$sql="SELECT DISTINCT (vTitulo)
 							FROM
 							sa_acervo
 							Where vTitulo like '%$Patron%'";
-							$RSet=$objGrid->Query($sql);
+							$RSet=$objGrid->Query($con,$sql);
 							$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 							<tbody>";
 							$i=0;
-							while($fila=mysql_fetch_array($RSet))
+							while($fila=mysqli_fetch_array($RSet))
 							{
 								$i++;
 								switch ($Sel)
@@ -1220,8 +1202,7 @@ class Reporte_Existencias extends poolConnection
 								}	
 								
 							}
-							mysql_free_result($RSet);
-							$objGrid->Cerrar($con);
+							$objGrid->Cerrar($con,$RSet);
 								$FliexGrid.="       </tbody>
 								</table><script>$('.flexme1').flexigrid({
 								title: '',
@@ -1250,16 +1231,16 @@ class Reporte_Existencias extends poolConnection
 						
 							$objGrid = new poolConnection();
 							$con=$objGrid->Conexion();
-							$objGrid->BaseDatos();
+							$objGrid->BaseDatos($con);
 							$sql="SELECT DISTINCT (vUbicacion) As Ubicacion
 							FROM
 							sa_acervo
 							Where vUbicacion like '%$Patron%'";
-							$RSet=$objGrid->Query($sql);
+							$RSet=$objGrid->Query($con,$sql);
 							$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 							<tbody>";
 							$i=0;
-							while($fila=mysql_fetch_array($RSet))
+							while($fila=mysqli_fetch_array($RSet))
 							{
 								$i++;
 								switch ($Sel)
@@ -1281,8 +1262,7 @@ class Reporte_Existencias extends poolConnection
 								}	
 								
 							}
-							mysql_free_result($RSet);
-							$objGrid->Cerrar($con);
+							$objGrid->Cerrar($con,$RSet);
 								$FliexGrid.="       </tbody>
 								</table><script>$('.flexme1').flexigrid({
 								title: '',
@@ -1413,7 +1393,7 @@ class Reporte_Existencias extends poolConnection
 						    }	
 							$objGrid = new poolConnection();
 							$con=$objGrid->Conexion();
-							$objGrid->BaseDatos();
+							$objGrid->BaseDatos($con);
 							$sql="SELECT
 									sa_inventario.CveUsuario,
 									sa_inventario.Id_ConsecutivoInv,
@@ -1437,11 +1417,11 @@ class Reporte_Existencias extends poolConnection
 									$WhereBetween2
 									$where2";
 							
-							$RSet=$objGrid->Query($sql);
+							$RSet=$objGrid->Query($con,$sql);
 							$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 							<tbody>";
 							$i=0;
-							while($fila=mysql_fetch_array($RSet))
+							while($fila=mysqli_fetch_array($RSet))
 							{
 								$i++;
 								
@@ -1593,7 +1573,7 @@ class Reporte_Existencias extends poolConnection
 						}
 						$objGrid = new poolConnection();
 						$con=$objGrid->Conexion();
-						$objGrid->BaseDatos();
+						$objGrid->BaseDatos($con);
 						$sql="SELECT
 								sa_inventario.CveUsuario,
 								sa_inventario.Id_ConsecutivoInv,
@@ -1612,11 +1592,11 @@ class Reporte_Existencias extends poolConnection
 								(sa_inventario.Id_CABMS = sa_informatico.Id_CABMS   and  sa_inventario.Id_ConsecutivoInv = sa_informatico.Id_ConsecutivoInv) and
 								$WhereP 
 						        $WhereBetween2  ";
-						$RSet=$objGrid->Query($sql);
+						$RSet=$objGrid->Query($con,$sql);
 						$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 						<tbody>";
 						$i=0;
-						while($fila=mysql_fetch_array($RSet))
+						while($fila=mysqli_fetch_array($RSet))
 						{
 						$i++;
 						
@@ -1634,8 +1614,7 @@ class Reporte_Existencias extends poolConnection
 						<td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$fila[vDiscoDuro]</td>
 						</tr>";
 						}
-						mysql_free_result($RSet);
-						$objGrid->Cerrar($con);
+						$objGrid->Cerrar($con,$RSet);
 						$XSLyPDF="<br><table border=\"0\">
 						<tr>
 						<th><img id=\"BtnExportarPDF\" src=\"../../interfaz_modulos/botones/exportar_pdf.jpg\" name=\"ImagePdf\" width=\"120\" height=\"45\" border=\"0\" id=\"ImagePdf\" onmouseout=\"MM_swapImgRestore()\" onmouseover=\"MM_swapImage('ImagePdf','','../../interfaz_modulos/botones/exportar_pdf_over.jpg',1)\" style='cursor:pointer' onclick=\"open_Pdf_informatico();\"/></th>
@@ -1773,7 +1752,7 @@ class Reporte_Existencias extends poolConnection
 						}
 						$objGrid = new poolConnection();
 						$con=$objGrid->Conexion();
-						$objGrid->BaseDatos();
+						$objGrid->BaseDatos($con);
 						$sql="SELECT
 						sa_inventario.CveUsuario,
 						sa_inventario.Id_ConsecutivoInv,
@@ -1794,7 +1773,7 @@ class Reporte_Existencias extends poolConnection
 						$WhereBetween2
 						$where2 
 						";
-						$RSet=$objGrid->Query($sql);
+						$RSet=$objGrid->Query($con,$sql);
 						$XSLyPDF="<br><table border=\"0\">
 						<tr>
 						<th><img id=\"BtnExportarPDF\" src=\"../../interfaz_modulos/botones/exportar_pdf.jpg\" name=\"ImagePdf\" width=\"120\" height=\"45\" border=\"0\" id=\"ImagePdf\" onmouseout=\"MM_swapImgRestore()\" onmouseover=\"MM_swapImage('ImagePdf','','../../interfaz_modulos/botones/exportar_pdf_over.jpg',1)\" style='cursor:pointer' onclick=\"open_Pdf_vehiculo();\"/></th>
@@ -1807,7 +1786,7 @@ class Reporte_Existencias extends poolConnection
 						$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 						<tbody>";
 						$i=0;
-						while($fila=mysql_fetch_array($RSet))
+						while($fila=mysqli_fetch_array($RSet))
 						{
 							$i++;
 					
@@ -1826,8 +1805,7 @@ class Reporte_Existencias extends poolConnection
 							<td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$fila[vPlacas]</td>
 							</tr>";
 						}
-						mysql_free_result($RSet);
-						$objGrid->Cerrar($con);
+						$objGrid->Cerrar($con,$RSet);
 						$FliexGrid.="       </tbody>
 						</table><script>$('.flexme1').flexigrid({
 						title: '',
@@ -1920,7 +1898,7 @@ class Reporte_Existencias extends poolConnection
 						}
 						$objGrid = new poolConnection();
 						$con=$objGrid->Conexion();
-						$objGrid->BaseDatos();
+						$objGrid->BaseDatos($con);
 						$sql="SELECT
 						sa_inventario.CveUsuario,
 						sa_inventario.Id_ConsecutivoInv,
@@ -1935,7 +1913,7 @@ class Reporte_Existencias extends poolConnection
 						(sa_inventario.Id_CABMS = sa_acervo.Id_CABMS   and  sa_inventario.Id_ConsecutivoInv = sa_acervo.Id_ConsecutivoInv) and
 						$WhereP
 						$WhereBetween2";
-						$RSet=$objGrid->Query($sql);
+						$RSet=$objGrid->Query($con,$sql);
 						$XSLyPDF="<br><table border=\"0\">
 						<tr>
 						<th><img id=\"BtnExportarPDF\" src=\"../../interfaz_modulos/botones/exportar_pdf.jpg\" name=\"ImagePdf\" width=\"120\" height=\"45\" border=\"0\" id=\"ImagePdf\" onmouseout=\"MM_swapImgRestore()\" onmouseover=\"MM_swapImage('ImagePdf','','../../interfaz_modulos/botones/exportar_pdf_over.jpg',1)\" style='cursor:pointer' onclick=\"open_Pdf_acervo();\"/></th>
@@ -1948,7 +1926,7 @@ class Reporte_Existencias extends poolConnection
 						$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 						<tbody>";
 						$i=0;
-						while($fila=mysql_fetch_array($RSet))
+						while($fila=mysqli_fetch_array($RSet))
 						{
 							$i++;
 								
@@ -1961,8 +1939,7 @@ class Reporte_Existencias extends poolConnection
 							<td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$fila[vTitulo]</td>
 							<td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$fila[vUbicacion]</td></tr>";
 						}
-						mysql_free_result($RSet);
-						$objGrid->Cerrar($con);
+						$objGrid->Cerrar($con,$RSet);
 						$FliexGrid.="       </tbody>
 						</table><script>$('.flexme1').flexigrid({
 						title: '',
@@ -2120,10 +2097,10 @@ class Reporte_Existencias extends poolConnection
 									$where2";
 									$objDatosPDF = new poolConnection();
 									$con=$objDatosPDF->Conexion();
-									$objDatosPDF -> BaseDatos();	
-									$RSet = $objDatosPDF ->Query($StrConsulta);
+									$objDatosPDF -> BaseDatos($con);	
+									$RSet = $objDatosPDF ->Query($con,$StrConsulta);
 									$Catalogo = array();
-									while ($Row = mysql_fetch_array($RSet)){
+									while ($Row = mysqli_fetch_array($RSet)){
 					
 										$Catalogo[] = array(
 											$Row["CveUsuario"],
@@ -2141,9 +2118,8 @@ class Reporte_Existencias extends poolConnection
 										    $Row["eNoEntrepanio"]
 											);
 										}
-							
-									mysql_free_result($RSet);
-									$objDatosPDF->Cerrar($con);
+
+									$objDatosPDF->Cerrar($con,$RSet);
 								 	return $Catalogo;
 					}	
 					function print_informatico_pdf($AData)
@@ -2253,10 +2229,10 @@ class Reporte_Existencias extends poolConnection
 								$WhereBetween2  ";
 								$objDatosPDF = new poolConnection();
 								$con=$objDatosPDF->Conexion();
-								$objDatosPDF -> BaseDatos();
-								$RSet = $objDatosPDF ->Query($StrConsulta);
+								$objDatosPDF -> BaseDatos($con);
+								$RSet = $objDatosPDF ->Query($con,$StrConsulta);
 								$Catalogo = array();
-								while ($Row = mysql_fetch_array($RSet)){
+								while ($Row = mysqli_fetch_array($RSet)){
 										
 									$Catalogo[] = array(
 											$Row["CveUsuario"],
@@ -2271,9 +2247,8 @@ class Reporte_Existencias extends poolConnection
 											$Row["vDiscoDuro"]
 									);
 								}
-									
-								mysql_free_result($RSet);
-								$objDatosPDF->Cerrar($con);
+
+								$objDatosPDF->Cerrar($con,$RSet);
 								return $Catalogo;
 					}
 			function print_vehiculo_pdf($AData)
@@ -2397,10 +2372,10 @@ class Reporte_Existencias extends poolConnection
 						
 								$objDatosPDF = new poolConnection();
 								$con=$objDatosPDF->Conexion();
-								$objDatosPDF -> BaseDatos();
-								$RSet = $objDatosPDF ->Query($StrConsulta);
+								$objDatosPDF -> BaseDatos($con);
+								$RSet = $objDatosPDF ->Query($con,$StrConsulta);
 								$Catalogo = array();
-								while ($Row = mysql_fetch_array($RSet)){
+								while ($Row = mysqli_fetch_array($RSet)){
 								
 									$Catalogo[] = array(
 											$Row["CveUsuario"],
@@ -2416,9 +2391,8 @@ class Reporte_Existencias extends poolConnection
 											$Row["vPlacas"]
 									);
 								}
-									
-								mysql_free_result($RSet);
-								$objDatosPDF->Cerrar($con);
+
+								$objDatosPDF->Cerrar($con,$RSet);
 								return $Catalogo;
 			}	
 	function print_acervo_pdf($AData)
@@ -2498,10 +2472,10 @@ class Reporte_Existencias extends poolConnection
 						$WhereBetween2";
 			  	$objDatosPDF = new poolConnection();
 			  	$con=$objDatosPDF->Conexion();
-			  	$objDatosPDF -> BaseDatos();
-			  	$RSet = $objDatosPDF ->Query($StrConsulta);
+			  	$objDatosPDF -> BaseDatos($con);
+			  	$RSet = $objDatosPDF ->Query($con,$StrConsulta);
 			  	$Catalogo = array();
-			  	while ($Row = mysql_fetch_array($RSet)){
+			  	while ($Row = mysqli_fetch_array($RSet)){
 			  	
 			  		$Catalogo[] = array(
 			  				$Row["CveUsuario"],
@@ -2512,9 +2486,8 @@ class Reporte_Existencias extends poolConnection
 			  				$Row["vUbicacion"]
 			  		);
 			  	}
-			  		
-			  	mysql_free_result($RSet);
-			  	$objDatosPDF->Cerrar($con);
+
+			  	$objDatosPDF->Cerrar($con,$RSet);
 			  	return $Catalogo;
 	  }			
 }

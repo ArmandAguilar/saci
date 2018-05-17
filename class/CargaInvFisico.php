@@ -15,7 +15,7 @@ class CargaInvFisico  extends poolConnection
  	
  	$objInvM = new poolConnection();
  	$con2=$objInvM->Conexion();
- 	$objInvM->BaseDatos();
+ 	$objInvM->BaseDatos($con2);
  	if($Accion=="Insertar")
  	{
  		$sql="INSERT INTO sa_movinventario values('$Id_CABMS',
@@ -45,7 +45,7 @@ class CargaInvFisico  extends poolConnection
  		      Id_ConsecutivoInv='$Id_ConsecutivoInv'";
  	}	
  	
- 	$objInvM->Query($sql);
+ 	$objInvM->Query($con2,$sql);
  	return $sql;
  	//$objInvM->Cerrar($con);
  }

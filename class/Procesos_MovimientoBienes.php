@@ -202,7 +202,7 @@ class MovimientoBienes extends poolConnection
 			
 			$objGrid = new poolConnection();
 			$con=$objGrid->Conexion();
-			$objGrid->BaseDatos();
+			$objGrid->BaseDatos($con);
 			$sql="SELECT DISTINCT(sa_inventario.Id_ConsecutivoInv),
 					sa_inventario.Id_TipoBien,
 					sa_cabms.Id_CABMS, 
@@ -212,10 +212,10 @@ class MovimientoBienes extends poolConnection
 	             FROM 
                    sa_cabms,sa_inventario,sa_tipobieninventariable
 			Where (sa_cabms.Id_CABMS  =  sa_inventario.Id_CABMS) and (sa_inventario.Id_TipoBien=sa_tipobieninventariable.Id_TipoBien) and  $where";
-			$RSet=$objGrid->Query($sql);
+			$RSet=$objGrid->Query($con,$sql);
 			$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 			<tbody>";
-		    while($fila=mysql_fetch_array($RSet))
+		    while($fila=mysqli_fetch_array($RSet))
 			{
 			$i++;
 			$ArrayMMS=$this->modelo_marca_serie($fila[Id_CABMS],$fila[Id_TipoBien]);
@@ -227,8 +227,7 @@ class MovimientoBienes extends poolConnection
 			
 			</tr>";
 			}
-			mysql_free_result($RSet);
-			$objGrid->Cerrar($con);
+			$objGrid->Cerrar($con,$RSet);
 					$FliexGrid.="       </tbody>
 					</table><script>$('.flexme1').flexigrid({
 					title: '',
@@ -272,16 +271,16 @@ class MovimientoBienes extends poolConnection
 			
 		$objGrid = new poolConnection();
 		$con=$objGrid->Conexion();
-		$objGrid->BaseDatos();
+		$objGrid->BaseDatos($con);
 		$sql="SELECT IdEmpleado,Nombres
 		FROM
 		sa_usuarios
 		Where   $where";
-		$RSet=$objGrid->Query($sql);
+		$RSet=$objGrid->Query($con,$sql);
 		$FliexGrid = "<hr><form action='' name='frmOrderGrid' method='post'><table class=\"flexme1\">
 		<tbody>";
 		$i=0;
-		while($fila=mysql_fetch_array($RSet))
+		while($fila=mysqli_fetch_array($RSet))
 		{
 		$i++;
 		
@@ -293,8 +292,7 @@ class MovimientoBienes extends poolConnection
 				
 			</tr>";
 	}
-	mysql_free_result($RSet);
-	$objGrid->Cerrar($con);
+	$objGrid->Cerrar($con,$RSet);
 	$FliexGrid.="       </tbody>
 	</table><script>$('.flexme1').flexigrid({
 	title: '',
