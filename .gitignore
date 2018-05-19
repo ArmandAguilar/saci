@@ -2,3 +2,4 @@
 .idea
 sis.php
 /class/poolConnection.php
+*error_log
