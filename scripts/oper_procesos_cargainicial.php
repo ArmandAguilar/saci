@@ -12,8 +12,8 @@ switch ($_GET[o])
 	case 'ObtenerDetalleCargaInicial':
 		$IDUnidadAdministrativa = $_GET[idadmin];
 		$objDataGrid =  new poolConnection();
-		$objDataGrid->Conexion();
-		$objDataGrid->BaseDatos();
+		$con=$objDataGrid->Conexion();
+		$objDataGrid->BaseDatos($con);
 		/*
 		// get data and store in a json array
 		
@@ -129,7 +129,7 @@ switch ($_GET[o])
 							<tbody>";
 							$objGridCI = new poolConnection();
 							$con=$objGridCI->Conexion();
-							$objGridCI->BaseDatos();
+							$objGridCI->BaseDatos($con);
 							$sql = " SELECT
 							CI.eNumFolioCarga as eNumFolioCarga,
 							CI.eCantidadCargaIni as eCantidadCargaIni, 
@@ -150,8 +150,8 @@ switch ($_GET[o])
 							CI.Id_CveCABMS = CC.Id_CABMS and
 							CC.Id_UMedida = UM.Id_UMedida and
 							CI.cEstadoCarga = 'A' ";
-							$RSet=$objGridCI->Query($sql);
-							while($fila=mysql_fetch_array($RSet))
+							$RSet=$objGridCI->Query($con,$sql);
+							while($fila=mysqli_fetch_array($RSet))
 							{
 								$i++;
 								$FliexGrid.="
@@ -165,8 +165,7 @@ switch ($_GET[o])
 								<td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">$fila[cantidadentregada]</td>
 								<td style=\"font-family: Arial, Helvetica, sans-serif;font-size: 11px;\">-</td>";
 							}
-							mysql_free_result($RSet);
-							$objGridCI->Cerrar($con);
+							$objGridCI->Cerrar($con,$RSet);
 							$FliexGrid.="       </tbody>
 							</table><script>$('.flexme1').flexigrid({
 							title: '',
@@ -199,25 +198,24 @@ switch ($_GET[o])
 					$Actualizar = "Insertar";
 					$objBuscarCambs = new poolConnection();
 					$con=$objBuscarCambs->Conexion();
-					$objBuscarCambs->BaseDatos();
+					$objBuscarCambs->BaseDatos($con);
 					$sql = "SELECT Id_CAMBS
             				FROM sa_cargainiarticulo
             				WHERE
 					        Id_CAMBS='$_POST[IdCambs]'";
 					$RSet=$objBuscarCambs->Query($sql);
-					while($fila=mysql_fetch_array($RSet))
+					while($fila=mysqli_fetch_array($RSet))
 					{
 						$Actualizar="Actualizar";
 					}
-					mysql_free_result($RSet);
-					$objBuscarCambs->Cerrar($con);
+					$objBuscarCambs->Cerrar($con,$RSet);
 				
 					switch($Actualizar)
 					{
 						case 'Insertar':
 												$obj =  new poolConnection();
 												$obj->Conexion();
-												$obj->BaseDatos();
+												$obj->BaseDatos($con);
 												$Y=date(Y);
 												$M=date(m);
 												$D=date(d);
@@ -253,20 +251,20 @@ switch ($_GET[o])
 		break;
 	case 'Borrar':
                  $objBorrar =  new poolConnection();
-                 $objBorrar->Conexion();
-                 $objBorrar->BaseDatos();
+                 $con=$objBorrar->Conexion();
+                 $objBorrar->BaseDatos($con);
                  $sql="Delete from sa_cargainiarticulo  Where eNumFolioCarga ='$_POST[id]'";
-                 $objBorrar->Query($sql);
-                 $objBorrar->Cerrar($con);
+                 $R=$objBorrar->Query($con,$sql);
+                 $objBorrar->Cerrar($con,$R);
                  echo $sql;
 		break;
 	case 'Modificar':
 				$objActualizar =  new poolconnection();
 				$con=$objActualizar->Conexion();
-				$objActualizar->BaseDatos();
+				$objActualizar->BaseDatos($con);
 				$sql="update sa_cargainiarticulo set eCantidadCargaIni='$_POST[cantidad]' Where eNumFolioCarga ='$_POST[idactulaizar]'";
-				$objActualizar->Query($sql);
-				$objActualizar->Cerrar($con);
+				$R=$objActualizar->Query($con,$sql);
+				$objActualizar->Cerrar($con,$R);
 				echo $sql;
 		break;
 		

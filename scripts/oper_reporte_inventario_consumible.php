@@ -39,7 +39,7 @@
 
                             $objG = new poolConnection();
                             $con=$objG -> Conexion();
-                            $objG -> BaseDatos();
+                            $objG -> BaseDatos($con);
                             if(!$sidx) $sidx =1;
 
                             $StrConsulta = "Select COUNT(*) AS count
@@ -54,8 +54,8 @@
                                                 sa_cabmsconsumible.Id_CveInternaAC = sa_existenciasconsumible.Id_CveInternaAC and
                                                 sa_cabmsconsumible.id_Umedida = sa_umedida.id_Umedida";
                             
-                            $ResultadoTotal = $objG->Query($StrConsulta);
-                            $row = mysql_fetch_array($ResultadoTotal);
+                            $ResultadoTotal = $objG->Query($con,$StrConsulta);
+                            $row = mysqli_fetch_array($ResultadoTotal);
                             $count = $row['count'];
 
                             if( $count > 0 ) {
@@ -88,12 +88,12 @@
                                                 sa_cabmsconsumible.Id_CveInternaAC = sa_existenciasconsumible.Id_CveInternaAC and
                                                 sa_cabmsconsumible.id_Umedida = sa_umedida.id_Umedida
                                                   LIMIT ".$start." , ".$limit;
-                            $TEmpleados = $objG ->Query($StrConsulta);
+                            $TEmpleados = $objG ->Query($con,$StrConsulta);
                             $Respuesta->page = $page;
                             $Respuesta->total = $total_pages;
                             $Respuesta->records = $count;
                             $Contador = 0;
-                            while ($row = mysql_fetch_array($TEmpleados)){
+                            while ($row = mysqli_fetch_array($TEmpleados)){
                                 $Respuesta->rows[$Contador]["id"] = $row[Id_CveARTCABMS];
                                 $Respuesta->rows[$Contador]["cell"] = array($row[Id_CveARTCABMS],
                                                                             $row[Id_CveInternaAC],

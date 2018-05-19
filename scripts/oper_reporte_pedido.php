@@ -71,7 +71,7 @@
 
                             $objG = new poolConnection();
                             $con=$objG -> Conexion();
-                            $objG -> BaseDatos();
+                            $objG -> BaseDatos($con);
                             if(!$sidx) $sidx =1;
 
                             $StrConsulta = "Select COUNT(*) AS count
@@ -83,8 +83,8 @@
                                             $whereFinal and
                                             sa_pedido.Id_Proveedor = sa_proveedor.Id_Proveedor  and
                                             sa_pedido.Id_UnidadAdmonDes=sa_unidadadmva.Id_Unidad";
-                            $ResultadoTotal = $objG->Query($StrConsulta);
-                            $row = mysql_fetch_array($ResultadoTotal);
+                            $ResultadoTotal = $objG->Query($con,$StrConsulta);
+                            $row = mysqli_fetch_array($ResultadoTotal);
                             $count = $row['count'];
 
                             if( $count > 0 ) {
@@ -115,7 +115,7 @@
                             $Respuesta->total = $total_pages;
                             $Respuesta->records = $count;
                             $Contador = 0;
-                            while ($row = mysql_fetch_array($TEmpleados)){
+                            while ($row = mysqli_fetch_array($TEmpleados)){
                                 $Importe =  number_format($row[ImporteTotalIVA],2,'.',',');
                                 $Respuesta->rows[$Contador]["id"] = $row["Id_Pedido"];
                                 $Respuesta->rows[$Contador]["cell"] = array($row["Id_Pedido"],

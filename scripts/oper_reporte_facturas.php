@@ -93,12 +93,12 @@
        From sa_pedido,sa_contrarecibo,sa_proveedor where $whereFinal and sa_pedido.Id_Pedido = sa_contrarecibo.Id_Pedido and sa_contrarecibo.Id_Proveedor=sa_proveedor.Id";
         $objMenu = new poolConnection();
         $con=$objMenu -> Conexion();
-        $objMenu -> BaseDatos();
+        $objMenu -> BaseDatos($con);
         if(!$sidx) $sidx =1;
         
         $StrConsulta = "Select COUNT(*) AS count From sa_pedido,sa_contrarecibo,sa_proveedor where $whereFinal and sa_pedido.Id_Pedido = sa_contrarecibo.Id_Pedido and sa_contrarecibo.Id_Proveedor=sa_proveedor.Id";
         $ResultadoTotal = $objMenu->Query($StrConsulta);
-        $row = mysql_fetch_array($ResultadoTotal);
+        $row = mysqli_fetch_array($ResultadoTotal);
         $count = $row['count'];
         
         if( $count > 0 ) {
@@ -110,12 +110,12 @@
         $start = $limit*$page - $limit; // do not put $limit*($page - 1)
         
         $sql .= " LIMIT ".$start." , ".$limit;
-        $RSet = $objMenu ->Query($sql);
+        $RSet = $objMenu ->Query($con,$sql);
         $Respuesta->page = $page;
         $Respuesta->total = $total_pages;
         $Respuesta->records = $count;
         $Contador = 0;
-        while ($rows = mysql_fetch_array($RSet)){
+        while ($rows = mysqli_fetch_array($RSet)){
             $importe = number_format($rows["mImporte"],2,'.',',');
             $importefoamt = "$ $importe";
             $Respuesta->rows[$Contador]["Id"] = $rows["Id_Pedido"];
