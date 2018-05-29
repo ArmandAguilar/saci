@@ -25,9 +25,9 @@ if($_POST[ActGridFechas]=="Si")
            
            $objUpdate = new poolConnection();
            $con=$objUpdate->Conexion();
-           $objUpdate->BaseDatos();
-           $objUpdate->Query($sql);
-           $objUpdate->Cerrar($con);
+           $objUpdate->BaseDatos($con);
+           $R=$objUpdate->Query($con,$sql);
+           $objUpdate->Cerrar($con,$R);
 
        }
    }

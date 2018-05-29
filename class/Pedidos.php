@@ -41,7 +41,7 @@ class Pedidos {
                                $con=$objCambs->Conexion();
                                $objCambs->BaseDatos($con);
                                $sql="SELECT Id_CABMS,vDescripcionCABMS FROM sa_cabms order by vDescripcionCABMS ";
-                               $RSet=$objCambs->Query($sql);
+                               $RSet=$objCambs->Query($con,$sql);
                                while($fila=  mysqli_fetch_array($RSet))
                                {
                                    $cboCambs .= "<option value='$fila[Id_CABMS]'>$fila[vDescripcionCABMS]</option>";

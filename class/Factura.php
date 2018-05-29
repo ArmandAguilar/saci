@@ -20,7 +20,7 @@ class Factura {
                            $objProveedor->BaseDatos($con);
                            $sql="SELECT Id,Id_Proveedor,vNombre FROM sa_proveedor order by vNombre";
                            $RSet=$objProveedor->Query($con,$sql);
-                           while($fila=  mysqli_fetch_array($RSet))
+                           while($fila= mysqli_fetch_array($RSet))
                            {
                                $cboProveedor .= "<option value='$fila[Id_Proveedor]'>$fila[vNombre]</option>";
                            }
@@ -213,7 +213,7 @@ class Factura {
     {
         $objRequisicion = new poolConnection();
         $con=$objRequisicion->Conexion();
-        $objRequisicion->BaseDatos();
+        $objRequisicion->BaseDatos($con);
         $sqlp="select vNoRequisicion from sa_pedido where Id_Pedido='$id'";
         $RSetRe=$objRequisicion->Query($con,$sqlp);
         while($fila = mysqli_fetch_array($RSetRe))
@@ -256,7 +256,7 @@ class Factura {
                     '0000-00-00',
                     '0000-00-00')";
         $R=$objAdd->Query($con,$sql);
-        $objAdd->Cerrar($con),$R);
+        $objAdd->Cerrar($con,$R);
         return $sql;
     }
    public function fmr_buscar_factura()

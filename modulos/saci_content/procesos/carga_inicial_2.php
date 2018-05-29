@@ -5,7 +5,7 @@
     ini_set('session.auto_start','on');
     session_start();
     include("../../../sis.php");
-    include($path."/class/poolConnection.inic");
+    include($path."/class/poolConnection.php");
     include($path."/class/carga_inicial.php");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -308,13 +308,13 @@
                                     echo '<option value="0"></option>';
 									$objConexion = new poolConnection();
 									    	$con = $objConexion->Conexion();
-									    	$objConexion->BaseDatos();
+									    	$objConexion->BaseDatos($con);
 									    
 									    	$StrConsulta = "SELECT * FROM sa_cabms c Where ePartidaPresupuestal>='1' and  ePartidaPresupuestal <='3000' ORDER BY  	vDescripcionCABMS";
-									    	$TArticulo = $objConexion->Query($StrConsulta);
-									    	if (mysql_num_rows($TArticulo) > 0) {
+									    	$TArticulo = $objConexion->Query($con,$StrConsulta);
+									    	if (mysqli_num_rows($TArticulo) > 0) {
 									    		$Contador = 0;
-									    		while ($Articulo = mysql_fetch_array($TArticulo))
+									    		while ($Articulo = mysqli_fetch_array($TArticulo))
 									    		{
 									    			echo "<option value='$Articulo[Id_CABMS]'>$Articulo[vDescripcionCABMS]</option>";
 									    			
@@ -364,7 +364,7 @@
 			              <td><div id='IdCambsDiv'></div></td>
 			          </tr>
 			          <tr>
-			              <td>Descripci—n:</td>
+			              <td>Descripciï¿½n:</td>
 			              <td><div id='DesCambsDiv'></div></td>
 			          </tr>
 			    </table> 

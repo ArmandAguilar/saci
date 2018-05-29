@@ -152,7 +152,7 @@ body {
 <div style="width:1024px; position: relative; margin-left: auto; margin-right: auto; top: 0px;">
 <form id="login_form" name="login_form" id="login_form" method="post" action="">
 <div id="apDiv1">
-  <div id="apDiv5">SACI. Versión 1.0</div>
+  <div id="apDiv5">SACI. Versión 2.0</div>
 <img src="interfaz/login.png" width="735" height="517" border="0" /></div>
 <div id="apDiv2"><img src="interfaz/aceptar.png" name="Image4" width="119" height="49" border="0" id="Image4" onmouseover="MM_swapImage('Image4','','interfaz/aceptar_over.png',1)" onmouseout="MM_swapImgRestore()" style="cursor:pointer" onclick="login();"/></a></div>
 <div class="txt_contenido" id="apDiv6">Para iniciar Sesión en el Sistema ingrese su nombre de usuario y contraseña.</div>
@@ -169,7 +169,7 @@ body {
     </label>
 </div>
 <span id="msgbox" style="display:none"></span>
-<div class="txt_contenido_color2" id="apDiv9">Secretaría de Educación del Gobierno del Distrifto Federal © México 2013</div>
+<div class="txt_contenido_color2" id="apDiv9">SACI | SISTEMA DE ADMINISTRACIÓN Y CONTROL DE INVENTARIO © MÉXICO 2013 - 2018</div>
 </form>
 </body>
 </html>
