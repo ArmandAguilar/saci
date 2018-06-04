@@ -3,3 +3,4 @@
 sis.php
 /class/poolConnection.php
 *error_log
+*.DS_Store
