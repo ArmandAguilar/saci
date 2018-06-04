@@ -230,7 +230,7 @@ body {
 </div>
 <div id="apDiv13"><img src="interfaz/saci_sello.png" width="207" height="60" border="0" /></div>
 <div  id="apDiv14"><img src="logos/<?php echo $img; ?>"  /></div>
-<div id="apDiv15"><img src="interfaz/logo_sedf_saci.jpg" width="200" height="147" /></div>
+<div id="apDiv15"><!--<img src="interfaz/logo_sedf_saci.jpg" width="200" height="147" />--></div>
 <div id="apDiv16">Bienvenido.</div>
 </body>
 </html>
